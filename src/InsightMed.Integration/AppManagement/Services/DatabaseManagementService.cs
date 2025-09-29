@@ -14,7 +14,8 @@ public class DatabaseManagementService : IDatabaseManagementService
     public async Task Seed()
     {
         string basePath = Path.GetDirectoryName(typeof(DatabaseManagementService).Assembly.Location)!;
-        string filePath = Path.Combine(basePath, "Data", "SeedData.sql");
+        //string filePath = Path.Combine(basePath, "Data", "SeedData.sql");
+        string filePath = Path.Combine(basePath, "Data", "TruncateData.sql");
 
         string sql = await File.ReadAllTextAsync(filePath);
 
