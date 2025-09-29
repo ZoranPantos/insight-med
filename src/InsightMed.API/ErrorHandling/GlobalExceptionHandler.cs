@@ -20,13 +20,11 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
 
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
-        var problem = _exceptionHandlers
-            .TryGetValue(exception.GetType(), out var handler)
+        var problem = _exceptionHandlers.TryGetValue(exception.GetType(), out var handler)
             ? handler.Invoke(httpContext, exception)
             : DefaultHandler(httpContext, exception);
 
-        httpContext.Response.StatusCode =
-            problem.Status ?? StatusCodes.Status500InternalServerError;
+        httpContext.Response.StatusCode = problem.Status ?? StatusCodes.Status500InternalServerError;
 
         // TODO: log exception
 
