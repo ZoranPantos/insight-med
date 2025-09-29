@@ -6,6 +6,10 @@ public class LabReport
     public string Content { get; set; } = string.Empty;
 
     public DateTime Created { get; set; }
+
+    public int? LabRequestId { get; set; }
+    public LabRequest? LabRequest { get; set; }
+
+    public int PatientId { get; set; }
     public Patient Patient { get; set; }
-    public LabRequest LabRequest { get; set; }
 }
