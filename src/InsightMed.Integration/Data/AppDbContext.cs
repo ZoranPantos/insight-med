@@ -32,12 +32,24 @@ public sealed class AppDbContext : DbContext
             .HasOne(lr => lr.LabRequest)
             .WithOne(lrq => lrq.LabReport)
             .HasForeignKey<LabReport>(lr => lr.LabRequestId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.SetNull);
 
         modelBuilder.Entity<LabReport>()
             .HasOne(lr => lr.Patient)
             .WithMany(p => p.LabReports)
             .HasForeignKey(lr => lr.PatientId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.ClientCascade);
+
+        modelBuilder.Entity<LabRequest>()
+            .HasOne(lr => lr.Patient)
+            .WithMany(p => p.LabRequests)
+            .HasForeignKey(lr => lr.PatientId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Notification>()
+            .HasOne(n => n.LabReport)
+            .WithMany()
+            .HasForeignKey(n => n.LabReportId)
+            .OnDelete(DeleteBehavior.ClientCascade);
     }
 }

@@ -6,7 +6,6 @@ public class LabRequest
 {
     public int Id { get; set; }
     public DateTime Created { get; set; }
-
     public LabRequestState LabRequestState { get; set; }
     public LabReport? LabReport { get; set; }
 

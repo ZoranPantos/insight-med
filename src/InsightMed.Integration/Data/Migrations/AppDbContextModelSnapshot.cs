@@ -156,12 +156,12 @@ namespace InsightMed.Integration.Data.Migrations
                     b.HasOne("InsightMed.Domain.Entities.LabRequest", "LabRequest")
                         .WithOne("LabReport")
                         .HasForeignKey("InsightMed.Domain.Entities.LabReport", "LabRequestId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("InsightMed.Domain.Entities.Patient", "Patient")
                         .WithMany("LabReports")
                         .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.Navigation("LabRequest");
@@ -185,7 +185,7 @@ namespace InsightMed.Integration.Data.Migrations
                     b.HasOne("InsightMed.Domain.Entities.LabReport", "LabReport")
                         .WithMany()
                         .HasForeignKey("LabReportId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.Navigation("LabReport");

@@ -71,7 +71,7 @@ namespace InsightMed.Integration.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LabRequestId = table.Column<int>(type: "int", nullable: false),
+                    LabRequestId = table.Column<int>(type: "int", nullable: true),
                     PatientId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -82,13 +82,12 @@ namespace InsightMed.Integration.Data.Migrations
                         column: x => x.LabRequestId,
                         principalTable: "LabRequests",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_LabReports_Patients_PatientId",
                         column: x => x.PatientId,
                         principalTable: "Patients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -107,15 +106,15 @@ namespace InsightMed.Integration.Data.Migrations
                         name: "FK_Notifications_LabReports_LabReportId",
                         column: x => x.LabReportId,
                         principalTable: "LabReports",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_LabReports_LabRequestId",
                 table: "LabReports",
                 column: "LabRequestId",
-                unique: true);
+                unique: true,
+                filter: "[LabRequestId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LabReports_PatientId",
