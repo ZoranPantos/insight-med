@@ -27,5 +27,17 @@ public class AppManagementController : ControllerBase
         }
     }
 
-    // TODO: Add endpoint for truncating data
+    [HttpGet("[action]")]
+    public async Task<ActionResult> TruncateData()
+    {
+        try
+        {
+            await _sender.Send(new TruncateDatabaseCommand());
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
 }

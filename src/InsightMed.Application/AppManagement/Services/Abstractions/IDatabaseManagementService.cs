@@ -3,4 +3,5 @@
 public interface IDatabaseManagementService
 {
     Task Seed();
+    Task Truncate();
 }

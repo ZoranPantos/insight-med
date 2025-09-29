@@ -13,8 +13,27 @@ public class DatabaseManagementService : IDatabaseManagementService
 
     public async Task Seed()
     {
+        bool isDatabaseEmpty =
+            !await _context.Patients.AnyAsync() &&
+            !await _context.LabParameters.AnyAsync() &&
+            !await _context.LabRequests.AnyAsync() &&
+            !await _context.LabReports.AnyAsync() &&
+            !await _context.Notifications.AnyAsync();
+
+        if (!isDatabaseEmpty) return;
+
         string basePath = Path.GetDirectoryName(typeof(DatabaseManagementService).Assembly.Location)!;
         string filePath = Path.Combine(basePath, "Data/SqlScripts", "SeedData.sql");
+
+        string sql = await File.ReadAllTextAsync(filePath);
+
+        await _context.Database.ExecuteSqlRawAsync(sql);
+    }
+
+    public async Task Truncate()
+    {
+        string basePath = Path.GetDirectoryName(typeof(DatabaseManagementService).Assembly.Location)!;
+        string filePath = Path.Combine(basePath, "Data/SqlScripts", "TruncateData.sql");
 
         string sql = await File.ReadAllTextAsync(filePath);
 

@@ -12,8 +12,6 @@ public class SeedDatabaseCommandHandler : IRequestHandler<SeedDatabaseCommand>
     public SeedDatabaseCommandHandler(IDatabaseManagementService databaseManagementService) =>
         _databaseManagementService = databaseManagementService ?? throw new ArgumentNullException(nameof(databaseManagementService));
 
-    public async Task Handle(SeedDatabaseCommand request, CancellationToken cancellationToken)
-    {
+    public async Task Handle(SeedDatabaseCommand request, CancellationToken cancellationToken) =>
         await _databaseManagementService.Seed();
-    }
 }
