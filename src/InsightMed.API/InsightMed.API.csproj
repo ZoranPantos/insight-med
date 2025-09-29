@@ -18,4 +18,8 @@
     <ProjectReference Include="..\InsightMed.Integration\InsightMed.Integration.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
 </Project>
