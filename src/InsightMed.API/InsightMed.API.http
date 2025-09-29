@@ -1,0 +1,6 @@
+@InsightMed.API_HostAddress = http://localhost:5070
+
+GET {{InsightMed.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
