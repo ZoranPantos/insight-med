@@ -5,7 +5,7 @@ namespace InsightMed.Application.AppManagement.Commands;
 
 public record TruncateDatabaseCommand : IRequest;
 
-public class TruncateDatabaseCommandHandler : IRequestHandler<TruncateDatabaseCommand>
+public sealed class TruncateDatabaseCommandHandler : IRequestHandler<TruncateDatabaseCommand>
 {
     private readonly IDatabaseManagementService _databaseManagementService;
 

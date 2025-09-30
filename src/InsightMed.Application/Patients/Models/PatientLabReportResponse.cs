@@ -1,6 +1,6 @@
 ﻿namespace InsightMed.Application.Patients.Models;
 
-public class PatientLabReportResponse
+public sealed class PatientLabReportResponse
 {
     public int Id { get; set; }
     public string Content { get; set; } = string.Empty;

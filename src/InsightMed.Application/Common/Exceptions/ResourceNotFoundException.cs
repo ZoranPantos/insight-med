@@ -1,6 +1,6 @@
 ﻿namespace InsightMed.Application.Common.Exceptions;
 
-public class ResourceNotFoundException : Exception
+public sealed class ResourceNotFoundException : Exception
 {
     public ResourceNotFoundException()
     {

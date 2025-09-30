@@ -1,6 +1,6 @@
 ﻿namespace InsightMed.Application.Common.Exceptions;
 
-public class InvalidClientDataException : Exception
+public sealed class InvalidClientDataException : Exception
 {
     public InvalidClientDataException()
     {

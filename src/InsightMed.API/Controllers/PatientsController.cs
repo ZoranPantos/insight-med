@@ -8,7 +8,7 @@ namespace InsightMed.API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json", "application/problem+json")]
-public class PatientsController : ControllerBase
+public sealed class PatientsController : ControllerBase
 {
     private readonly ISender _sender;
 

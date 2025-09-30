@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace InsightMed.Application.Common.Behaviors;
 
-public class RequestResponseLoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+public sealed class RequestResponseLoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : class
 {
     // TODO: Inject and use logger instead of console logging

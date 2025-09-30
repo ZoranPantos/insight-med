@@ -5,7 +5,7 @@ namespace InsightMed.Application.AppManagement.Commands;
 
 public record SeedDatabaseCommand : IRequest;
 
-public class SeedDatabaseCommandHandler : IRequestHandler<SeedDatabaseCommand>
+public sealed class SeedDatabaseCommandHandler : IRequestHandler<SeedDatabaseCommand>
 {
     private readonly IDatabaseManagementService _databaseManagementService;
 

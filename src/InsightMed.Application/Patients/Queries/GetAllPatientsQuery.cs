@@ -7,7 +7,7 @@ namespace InsightMed.Application.Patients.Queries;
 
 public record GetAllPatientsQuery : IRequest<GetAllPatientsQueryResponse>;
 
-public class GetAllPatientsQueryHanlder : IRequestHandler<GetAllPatientsQuery, GetAllPatientsQueryResponse>
+public sealed class GetAllPatientsQueryHanlder : IRequestHandler<GetAllPatientsQuery, GetAllPatientsQueryResponse>
 {
     private readonly IMapper _mapper;
     private readonly IPatientsService _patientsService;

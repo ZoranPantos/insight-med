@@ -6,7 +6,7 @@ namespace InsightMed.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AppManagementController : ControllerBase
+public sealed class AppManagementController : ControllerBase
 {
     private readonly ISender _sender;
 

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InsightMed.Infrastructure.AppManagement.Services;
 
-public class DatabaseManagementService : IDatabaseManagementService
+public sealed class DatabaseManagementService : IDatabaseManagementService
 {
     private readonly AppDbContext _context;
 

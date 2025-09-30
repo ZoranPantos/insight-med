@@ -2,7 +2,7 @@
 
 namespace InsightMed.Application.Patients.Models;
 
-public class GetPatientByIdQueryResponse
+public sealed class GetPatientByIdQueryResponse
 {
     public int Id { get; set; }
     public string Uid { get; set; } = string.Empty;

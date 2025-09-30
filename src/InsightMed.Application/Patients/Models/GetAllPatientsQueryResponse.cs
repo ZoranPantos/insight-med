@@ -1,6 +1,6 @@
 ﻿namespace InsightMed.Application.Patients.Models;
 
-public class GetAllPatientsQueryResponse
+public sealed class GetAllPatientsQueryResponse
 {
     public List<PatientLiteResponse> Patients { get; set; } = [];
 }

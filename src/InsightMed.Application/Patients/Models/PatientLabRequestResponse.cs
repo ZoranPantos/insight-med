@@ -2,7 +2,7 @@
 
 namespace InsightMed.Application.Patients.Models;
 
-public class PatientLabRequestResponse
+public sealed class PatientLabRequestResponse
 {
     public int Id { get; set; }
     public DateTime Created { get; set; }
