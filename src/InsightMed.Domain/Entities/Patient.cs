@@ -2,6 +2,7 @@
 
 namespace InsightMed.Domain.Entities;
 
+// TODO: Add more info - contact for example
 public class Patient
 {
     public int Id { get; set; }
