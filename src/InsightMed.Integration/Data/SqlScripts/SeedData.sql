@@ -16,18 +16,18 @@ VALUES
     ('Thyroid Stimulating Hormone (TSH)'),
     ('Vitamin D');
 
-INSERT INTO [Patients] ([Uid], [FirstName], [LastName], [DateOfBirth], [Gender], [BloodGroup])
+INSERT INTO [Patients] ([Uid], [FirstName], [LastName], [DateOfBirth], [Gender], [BloodGroup], [Email], [Phone])
 VALUES
-    ('UID-1001', 'John', 'Doe', '1985-06-15', 0, 0),
-    ('UID-1002', 'Jane', 'Smith', '1990-02-20', 1, 2),
-    ('UID-1003', 'Michael', 'Johnson', '1975-11-30', 0, 4),
-    ('UID-1004', 'Emily', 'Davis', '2000-04-10', 1, 6),
-    ('UID-1005', 'David', 'Wilson', '1960-08-25', 0, 1),
-    ('UID-1006', 'Sarah', 'Martinez', '1988-12-05', 1, 3),
-    ('UID-1007', 'Robert', 'Anderson', '1995-07-18', 0, 5),
-    ('UID-1008', 'Linda', 'Taylor', '1972-03-12', 1, 7),
-    ('UID-1009', 'James', 'Thomas', '1982-09-22', 0, 0),
-    ('UID-1010', 'Patricia', 'Hernandez', '1993-01-08', 1, 2);
+    ('UID-1001', 'John', 'Doe', '1985-06-15', 0, 0, 'john.doe@example.com', '+38766123123'),
+    ('UID-1002', 'Jane', 'Smith', '1990-02-20', 1, 2, 'jane.smith@example.com', '+38766123123'),
+    ('UID-1003', 'Michael', 'Johnson', '1975-11-30', 0, 4, 'michael.johanson@example.com', '+38766123123'),
+    ('UID-1004', 'Emily', 'Davis', '2000-04-10', 1, 6, 'emily.davis@example.com', '+38766123123'),
+    ('UID-1005', 'David', 'Wilson', '1960-08-25', 0, 1, 'david.wilson@example.com', '+38766123123'),
+    ('UID-1006', 'Sarah', 'Martinez', '1988-12-05', 1, 3, 'sarah.martinez@example.com', '+38766123123'),
+    ('UID-1007', 'Robert', 'Anderson', '1995-07-18', 0, 5, 'anderson.robert@example.com', '+38766123123'),
+    ('UID-1008', 'Linda', 'Taylor', '1972-03-12', 1, 7, 'taylor.linda@example.com', '+38766123123'),
+    ('UID-1009', 'James', 'Thomas', '1982-09-22', 0, 0, 'james.thomas@example.com', '+38766123123'),
+    ('UID-1010', 'Patricia', 'Hernandez', '1993-01-08', 1, 2, 'patricia.hernandez@example.com', '+38766123123');
 
 INSERT INTO [LabRequests] ([Created], [LabRequestState], [PatientId])
 VALUES
