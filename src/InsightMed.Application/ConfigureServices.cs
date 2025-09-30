@@ -13,10 +13,12 @@ public static class ConfigureServices
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
-        services.AddMediatR(cfg =>
+        services.AddMediatR(config =>
         {
-            cfg.RegisterServicesFromAssembly(typeof(SeedDatabaseCommand).Assembly);
-            cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+            config.RegisterServicesFromAssembly(typeof(SeedDatabaseCommand).Assembly);
+
+            config.AddOpenBehavior(typeof(RequestResponseLoggingBehavior<,>));
+            config.AddOpenBehavior(typeof(ValidationBehavior<,>));
         });
 
         return services;
