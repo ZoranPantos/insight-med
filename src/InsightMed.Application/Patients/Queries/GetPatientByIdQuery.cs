@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using InsightMed.Application.Exceptions;
+using InsightMed.Application.Common.Exceptions;
 using InsightMed.Application.Patients.Models;
 using InsightMed.Application.Patients.Services.Abstractions;
 using MediatR;

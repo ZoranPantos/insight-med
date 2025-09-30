@@ -2,7 +2,7 @@
 using InsightMed.Application.Patients.Models;
 using InsightMed.Domain.Entities;
 
-namespace InsightMed.Application.Patients.Mappings;
+namespace InsightMed.Application.Patients.Mapping;
 
 public sealed class PatientMappingProfile : Profile
 {

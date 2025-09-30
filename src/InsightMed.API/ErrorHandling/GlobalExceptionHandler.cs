@@ -1,4 +1,4 @@
-﻿using InsightMed.Application.Exceptions;
+﻿using InsightMed.Application.Common.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,6 +20,10 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
             {
                 typeof(ResourceNotFoundException),
                 (ctx, ex) => HandleResourceNotFoundException(ctx, (ResourceNotFoundException)ex)
+            },
+            {
+                typeof(InvalidClientDataException),
+                (ctx, ex) => HandleInvalidClientDataException(ctx, (InvalidClientDataException)ex)
             }
         };
     }
@@ -53,7 +57,7 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
         var problemDetails = new ProblemDetails
         {
             Status = StatusCodes.Status500InternalServerError,
-            Title = "An unexpected error occurred",
+            Title = "Internal Server Error",
             Detail = ex.Message,
             Instance = ctx.Request.Path
         };
@@ -66,7 +70,20 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
         var problemDetails = new ProblemDetails
         {
             Status = StatusCodes.Status404NotFound,
-            Title = "Resource not found",
+            Title = "Not Found",
+            Detail = ex.Message,
+            Instance = ctx.Request.Path
+        };
+
+        return problemDetails;
+    }
+
+    private ProblemDetails HandleInvalidClientDataException(HttpContext ctx, InvalidClientDataException ex)
+    {
+        var problemDetails = new ProblemDetails
+        {
+            Status = StatusCodes.Status400BadRequest,
+            Title = "Bad Request",
             Detail = ex.Message,
             Instance = ctx.Request.Path
         };

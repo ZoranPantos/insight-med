@@ -1,5 +1,4 @@
 ﻿using InsightMed.API.ErrorHandling;
-using InsightMed.Application.AppManagement.Commands;
 
 namespace InsightMed.API;
 
@@ -12,11 +11,6 @@ public static class ConfigureServices
 
         services.AddProblemDetails();
         services.AddExceptionHandler<GlobalExceptionHandler>();
-
-        services.AddMediatR(config =>
-        {
-            config.RegisterServicesFromAssembly(typeof(SeedDatabaseCommand).Assembly);
-        });
 
         return services;
     }

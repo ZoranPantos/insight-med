@@ -1,4 +1,4 @@
-﻿namespace InsightMed.Application.Exceptions;
+﻿namespace InsightMed.Application.Common.Exceptions;
 
 public class ResourceNotFoundException : Exception
 {
