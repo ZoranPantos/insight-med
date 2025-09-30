@@ -20,7 +20,7 @@ public class GetAllPatientsQueryHanlder : IRequestHandler<GetAllPatientsQuery, G
 
     public async Task<GetAllPatientsQueryResponse> Handle(GetAllPatientsQuery request, CancellationToken cancellationToken)
     {
-        var patients = await _patientsService.GetAllPatients();
+        var patients = await _patientsService.GetAllPatientsAsync();
 
         var response = new GetAllPatientsQueryResponse
         {

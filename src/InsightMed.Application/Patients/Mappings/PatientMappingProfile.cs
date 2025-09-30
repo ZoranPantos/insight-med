@@ -6,5 +6,11 @@ namespace InsightMed.Application.Patients.Mappings;
 
 public sealed class PatientMappingProfile : Profile
 {
-    public PatientMappingProfile() => CreateMap<Patient, PatientLiteResponse>();
+    public PatientMappingProfile()
+    {
+        CreateMap<Patient, PatientLiteResponse>();
+        CreateMap<Patient, GetPatientByIdQueryResponse>();
+        CreateMap<LabReport, PatientLabReportResponse>();
+        CreateMap<LabRequest, PatientLabRequestResponse>();
+    }
 }

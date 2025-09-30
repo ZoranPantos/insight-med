@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using InsightMed.Application.Exceptions;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InsightMed.API.ErrorHandling;
@@ -14,8 +15,13 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
     {
         _problemDetailsService = problemDetailsService;
 
-        // TODO: Add custom exceptions and handlers
-        _exceptionHandlers = [];
+        _exceptionHandlers = new Dictionary<Type, Func<HttpContext, Exception, ProblemDetails>>
+        {
+            {
+                typeof(ResourceNotFoundException),
+                (ctx, ex) => HandleResourceNotFoundException(ctx, (ResourceNotFoundException)ex)
+            }
+        };
     }
 
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
@@ -25,6 +31,8 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
             : DefaultHandler(httpContext, exception);
 
         httpContext.Response.StatusCode = problem.Status ?? StatusCodes.Status500InternalServerError;
+
+        httpContext.Response.ContentType = "application/problem+json";
 
         // TODO: log exception
 
@@ -46,6 +54,19 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
         {
             Status = StatusCodes.Status500InternalServerError,
             Title = "An unexpected error occurred",
+            Detail = ex.Message,
+            Instance = ctx.Request.Path
+        };
+
+        return problemDetails;
+    }
+
+    private ProblemDetails HandleResourceNotFoundException(HttpContext ctx, ResourceNotFoundException ex)
+    {
+        var problemDetails = new ProblemDetails
+        {
+            Status = StatusCodes.Status404NotFound,
+            Title = "Resource not found",
             Detail = ex.Message,
             Instance = ctx.Request.Path
         };
