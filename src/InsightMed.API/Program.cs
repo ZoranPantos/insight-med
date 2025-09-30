@@ -1,27 +1,12 @@
-using InsightMed.API.ErrorHandling;
-using InsightMed.Application.AppManagement.Commands;
-using InsightMed.Application.AppManagement.Services.Abstractions;
-using InsightMed.Infrastructure.AppManagement.Services;
-using InsightMed.Integration.Data;
+using InsightMed.API;
+using InsightMed.Application;
+using InsightMed.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
-builder.Services.AddOpenApi();
-
-builder.Services.AddDbContext<AppDbContext>();
-
-builder.Services.AddProblemDetails();
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-
-// TODO: Split configuration into extension methods per project (see Betbuilder for reference)
-
-builder.Services.AddMediatR(config =>
-{
-    config.RegisterServicesFromAssembly(typeof(SeedDatabaseCommand).Assembly);
-});
-
-builder.Services.AddScoped<IDatabaseManagementService, DatabaseManagementService>();
+builder.Services.ConfigureApi();
+builder.Services.ConfigureApplication();
+builder.Services.ConfigureInfrastructure();
 
 var app = builder.Build();
 

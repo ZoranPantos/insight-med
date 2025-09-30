@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\InsightMed.Application\InsightMed.Application.csproj" />
     <ProjectReference Include="..\InsightMed.Integration\InsightMed.Infrastructure.csproj" />
   </ItemGroup>
 
