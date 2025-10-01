@@ -22,7 +22,6 @@ public sealed class RequestResponseLoggingBehavior<TRequest, TResponse> : IPipel
 
         var correlationId = Guid.NewGuid();
         string requestName = typeof(TRequest).Name;
-        string requestJson = JsonSerializer.Serialize(request);
 
         _logger.LogInformation(
             "Handling request {RequestName} {CorrelationId}: {@RequestJson}",
