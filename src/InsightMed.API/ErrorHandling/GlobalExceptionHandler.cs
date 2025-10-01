@@ -6,14 +6,14 @@ namespace InsightMed.API.ErrorHandling;
 
 public sealed class GlobalExceptionHandler : IExceptionHandler
 {
-    // TODO: Add logging exceptions
-
+    private readonly ILogger<GlobalExceptionHandler> _logger;
     private readonly IProblemDetailsService _problemDetailsService;
     private readonly Dictionary<Type, Func<HttpContext, Exception, ProblemDetails>> _exceptionHandlers;
 
-    public GlobalExceptionHandler(IProblemDetailsService problemDetailsService)
+    public GlobalExceptionHandler(IProblemDetailsService problemDetailsService, ILogger<GlobalExceptionHandler> logger)
     {
-        _problemDetailsService = problemDetailsService;
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _problemDetailsService = problemDetailsService ?? throw new ArgumentNullException(nameof(problemDetailsService));
 
         _exceptionHandlers = new Dictionary<Type, Func<HttpContext, Exception, ProblemDetails>>
         {
@@ -35,10 +35,7 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
             : DefaultHandler(httpContext, exception);
 
         httpContext.Response.StatusCode = problem.Status ?? StatusCodes.Status500InternalServerError;
-
         httpContext.Response.ContentType = "application/problem+json";
-
-        // TODO: log exception
 
         await _problemDetailsService.WriteAsync(
             new ProblemDetailsContext
@@ -54,6 +51,8 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
 
     private ProblemDetails DefaultHandler(HttpContext ctx, Exception ex)
     {
+        _logger.LogError(ex, "Internal Server Error");
+
         var problemDetails = new ProblemDetails
         {
             Status = StatusCodes.Status500InternalServerError,
@@ -67,6 +66,8 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
 
     private ProblemDetails HandleResourceNotFoundException(HttpContext ctx, ResourceNotFoundException ex)
     {
+        _logger.LogInformation(ex, "Resource Not Found");
+
         var problemDetails = new ProblemDetails
         {
             Status = StatusCodes.Status404NotFound,
@@ -80,6 +81,8 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
 
     private ProblemDetails HandleInvalidClientDataException(HttpContext ctx, InvalidClientDataException ex)
     {
+        _logger.LogWarning(ex, "Invalid Client Data");
+
         var problemDetails = new ProblemDetails
         {
             Status = StatusCodes.Status400BadRequest,

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Text.Json;
 
@@ -7,7 +8,10 @@ namespace InsightMed.Application.Common.Behaviors;
 public sealed class RequestResponseLoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : class
 {
-    // TODO: Inject and use logger instead of console logging
+    private readonly ILogger<RequestResponseLoggingBehavior<TRequest, TResponse>> _logger;
+
+    public RequestResponseLoggingBehavior(ILogger<RequestResponseLoggingBehavior<TRequest, TResponse>> logger) =>
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     public async Task<TResponse> Handle(
         TRequest request,
@@ -20,15 +24,17 @@ public sealed class RequestResponseLoggingBehavior<TRequest, TResponse> : IPipel
         string requestName = typeof(TRequest).Name;
         string requestJson = JsonSerializer.Serialize(request);
 
-        Console.WriteLine($"Handling request {requestName} {correlationId}: {requestJson}");
+        _logger.LogInformation(
+            "Handling request {RequestName} {CorrelationId}: {@RequestJson}",
+            requestName, correlationId, request);
 
         var stopwatch = Stopwatch.StartNew();
         var response = await next(cancellationToken).ConfigureAwait(false);
         stopwatch.Stop();
 
-        string responseJson = JsonSerializer.Serialize(response);
-
-        Console.WriteLine($"Response for {requestName} {correlationId}: {responseJson} in {stopwatch.ElapsedMilliseconds}ms");
+        _logger.LogInformation(
+            "Response for {RequestName} {CorrelationId}: {@ResponseJson} in {ElapsedMilliseconds} ms",
+            requestName, correlationId, response, stopwatch.ElapsedMilliseconds);
 
         return response;
     }
