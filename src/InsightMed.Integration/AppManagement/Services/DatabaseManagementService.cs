@@ -11,7 +11,7 @@ public sealed class DatabaseManagementService : IDatabaseManagementService
     public DatabaseManagementService(AppDbContext context) =>
         _context = context ?? throw new ArgumentNullException(nameof(context));
 
-    public async Task Seed()
+    public async Task SeedAsync()
     {
         bool isDatabaseEmpty =
             !await _context.Patients.AnyAsync() &&
@@ -30,7 +30,7 @@ public sealed class DatabaseManagementService : IDatabaseManagementService
         await _context.Database.ExecuteSqlRawAsync(sql);
     }
 
-    public async Task Truncate()
+    public async Task TruncateAsync()
     {
         string basePath = Path.GetDirectoryName(typeof(DatabaseManagementService).Assembly.Location)!;
         string filePath = Path.Combine(basePath, "Data/SqlScripts", "TruncateData.sql");
