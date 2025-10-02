@@ -1,10 +1,11 @@
-﻿using InsightMed.Domain.Entities;
+﻿using InsightMed.Application.Common.Abstractions;
+using InsightMed.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace InsightMed.Integration.Data;
+namespace InsightMed.Infrastructure.Data;
 
-public sealed class AppDbContext : DbContext
+public sealed class AppDbContext : DbContext, IAppDbContext
 {
     private readonly IConfiguration _configuration;
 

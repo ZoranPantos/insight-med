@@ -1,14 +1,14 @@
 ﻿using InsightMed.Application.AppManagement.Services.Abstractions;
-using InsightMed.Integration.Data;
+using InsightMed.Application.Common.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 namespace InsightMed.Infrastructure.AppManagement.Services;
 
 public sealed class DatabaseManagementService : IDatabaseManagementService
 {
-    private readonly AppDbContext _context;
+    private readonly IAppDbContext _context;
 
-    public DatabaseManagementService(AppDbContext context) =>
+    public DatabaseManagementService(IAppDbContext context) =>
         _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public async Task SeedAsync()

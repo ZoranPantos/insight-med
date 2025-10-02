@@ -1,14 +1,14 @@
-﻿using InsightMed.Application.Notifications.Services.Abstractions;
+﻿using InsightMed.Application.Common.Abstractions;
+using InsightMed.Application.Notifications.Services.Abstractions;
 using InsightMed.Domain.Entities;
-using InsightMed.Integration.Data;
 
 namespace InsightMed.Infrastructure.Notifications.Services;
 
 public sealed class NotificationsService : INotificationsService
 {
-    private readonly AppDbContext _context;
+    private readonly IAppDbContext _context;
 
-    public NotificationsService(AppDbContext context) =>
+    public NotificationsService(IAppDbContext context) =>
         _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public async Task AddAsync(Notification notification)

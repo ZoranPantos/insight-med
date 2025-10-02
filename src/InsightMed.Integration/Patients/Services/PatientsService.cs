@@ -1,15 +1,15 @@
-﻿using InsightMed.Application.Patients.Services.Abstractions;
+﻿using InsightMed.Application.Common.Abstractions;
+using InsightMed.Application.Patients.Services.Abstractions;
 using InsightMed.Domain.Entities;
-using InsightMed.Integration.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace InsightMed.Infrastructure.Patients.Services;
 
 public class PatientsService : IPatientsService
 {
-    private readonly AppDbContext _context;
+    private readonly IAppDbContext _context;
 
-    public PatientsService(AppDbContext context) =>
+    public PatientsService(IAppDbContext context) =>
         _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public async Task<List<Patient>> GetAllPatientsAsync()
