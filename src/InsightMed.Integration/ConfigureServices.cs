@@ -1,6 +1,8 @@
 ﻿using InsightMed.Application.AppManagement.Services.Abstractions;
+using InsightMed.Application.Notifications.Services.Abstractions;
 using InsightMed.Application.Patients.Services.Abstractions;
 using InsightMed.Infrastructure.AppManagement.Services;
+using InsightMed.Infrastructure.Notifications.Services;
 using InsightMed.Infrastructure.Patients.Services;
 using InsightMed.Integration.Data;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +17,7 @@ public static class ConfigureServices
 
         services.AddScoped<IDatabaseManagementService, DatabaseManagementService>();
         services.AddScoped<IPatientsService, PatientsService>();
+        services.AddScoped<INotificationsService, NotificationsService>();
 
         return services;
     }
