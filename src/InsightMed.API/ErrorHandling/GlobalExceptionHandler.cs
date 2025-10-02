@@ -51,7 +51,8 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
 
     private ProblemDetails DefaultHandler(HttpContext ctx, Exception ex)
     {
-        _logger.LogError(ex, "Internal Server Error");
+        string logMessage = $"Internal Server Error: {ex.Message}";
+        _logger.LogError(ex, logMessage);
 
         var problemDetails = new ProblemDetails
         {
@@ -66,7 +67,8 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
 
     private ProblemDetails HandleResourceNotFoundException(HttpContext ctx, ResourceNotFoundException ex)
     {
-        _logger.LogInformation(ex, "Resource Not Found");
+        string logMessage = $"Resource Not Found: {ex.Message}";
+        _logger.LogInformation(ex, logMessage);
 
         var problemDetails = new ProblemDetails
         {
@@ -81,7 +83,8 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
 
     private ProblemDetails HandleInvalidClientDataException(HttpContext ctx, InvalidClientDataException ex)
     {
-        _logger.LogWarning(ex, "Invalid Client Data");
+        string logMessage = $"Invalid Client Data: {ex.Message}";
+        _logger.LogWarning(ex, logMessage);
 
         var problemDetails = new ProblemDetails
         {
