@@ -22,7 +22,6 @@ public sealed class PatientsController : ControllerBase
         return Ok(response);
     }
 
-    // TODO: add validation for Id
     [HttpGet("{id:long}")]
     public async Task<ActionResult<GetPatientByIdQueryResponse>> GetByIdAsync(long id)
     {

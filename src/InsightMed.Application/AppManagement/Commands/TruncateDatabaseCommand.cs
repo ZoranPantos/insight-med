@@ -13,5 +13,5 @@ public sealed class TruncateDatabaseCommandHandler : IRequestHandler<TruncateDat
         _databaseManagementService = databaseManagementService ?? throw new ArgumentNullException(nameof(databaseManagementService));
 
     public async Task Handle(TruncateDatabaseCommand request, CancellationToken cancellationToken) =>
-        await _databaseManagementService.Truncate();
+        await _databaseManagementService.TruncateAsync();
 }

@@ -2,6 +2,6 @@
 
 public interface IDatabaseManagementService
 {
-    Task Seed();
-    Task Truncate();
+    Task SeedAsync();
+    Task TruncateAsync();
 }
