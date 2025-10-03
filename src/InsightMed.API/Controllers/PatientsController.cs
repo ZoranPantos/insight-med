@@ -16,7 +16,7 @@ public sealed class PatientsController : ControllerBase
         _sender = sender ?? throw new ArgumentNullException(nameof(sender));
 
     [HttpGet]
-    public async Task<ActionResult<GetAllPatientsQueryResponse>> PatientsAsync()
+    public async Task<ActionResult<GetAllPatientsQueryResponse>> GetAllAsync()
     {
         var response = await _sender.Send(new GetAllPatientsQuery());
         return Ok(response);

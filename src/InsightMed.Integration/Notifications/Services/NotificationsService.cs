@@ -1,6 +1,7 @@
 ﻿using InsightMed.Application.Common.Abstractions;
 using InsightMed.Application.Notifications.Services.Abstractions;
 using InsightMed.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace InsightMed.Infrastructure.Notifications.Services;
 
@@ -16,4 +17,6 @@ public sealed class NotificationsService : INotificationsService
         _context.Notifications.Add(notification);
         await _context.SaveChangesAsync();
     }
+
+    public Task<List<Notification>> GetAllAsync() => _context.Notifications.ToListAsync();
 }

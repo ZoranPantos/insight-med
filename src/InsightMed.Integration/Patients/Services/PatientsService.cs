@@ -12,7 +12,7 @@ public class PatientsService : IPatientsService
     public PatientsService(IAppDbContext context) =>
         _context = context ?? throw new ArgumentNullException(nameof(context));
 
-    public async Task<List<Patient>> GetAllPatientsAsync()
+    public async Task<List<Patient>> GetAllAsync()
     {
         return await _context.Patients
             .AsNoTracking()
@@ -20,7 +20,7 @@ public class PatientsService : IPatientsService
             .ConfigureAwait(false);
     }
 
-    public async Task<Patient?> GetPatientByIdAsync(long id)
+    public async Task<Patient?> GetByIdAsync(long id)
     {
         return await _context.Patients
             .AsNoTracking()

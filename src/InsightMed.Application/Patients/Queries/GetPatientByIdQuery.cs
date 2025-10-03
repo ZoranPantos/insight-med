@@ -21,7 +21,7 @@ public sealed class GetPatientByIdQueryHandler : IRequestHandler<GetPatientByIdQ
 
     public async Task<GetPatientByIdQueryResponse> Handle(GetPatientByIdQuery request, CancellationToken cancellationToken)
     {
-        var patient = await _patientsService.GetPatientByIdAsync(request.Id) ??
+        var patient = await _patientsService.GetByIdAsync(request.Id) ??
             throw new ResourceNotFoundException($"Patient with ID {request.Id} not found");
 
         var response = _mapper.Map<GetPatientByIdQueryResponse>(patient);
