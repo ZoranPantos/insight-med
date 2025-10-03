@@ -1,4 +1,5 @@
-﻿using InsightMed.Application.Notifications.Models;
+﻿using InsightMed.Application.Notifications.Commands;
+using InsightMed.Application.Notifications.Models;
 using InsightMed.Application.Notifications.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -20,5 +21,12 @@ public sealed class NotificationsController : ControllerBase
     {
         var response = await _sender.Send(new GetAllNotificationsQuery());
         return Ok(response);
+    }
+
+    [HttpDelete]
+    public async Task<ActionResult> DeleteAllAsync()
+    {
+        await _sender.Send(new DeleteAllNotificationsCommand());
+        return NoContent();
     }
 }

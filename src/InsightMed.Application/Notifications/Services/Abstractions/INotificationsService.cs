@@ -4,6 +4,7 @@ namespace InsightMed.Application.Notifications.Services.Abstractions;
 
 public interface INotificationsService
 {
-    Task AddAsync(Notification notification);
     Task<List<Notification>> GetAllAsync();
+    Task AddAsync(Notification notification);
+    Task DeleteAllAsync();
 }

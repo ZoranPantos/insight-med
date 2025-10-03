@@ -3,10 +3,10 @@ Functionalities DONE:
 - get all patients (with endpoint)
 - get patient by ID (with endpoint)
 - save notification (with endpoint to test)
-
-Functionalities TODO:  
 - get all notifications (with endpoint)
 - delete all notifications (with endpoint)
+
+Functionalities TODO:  
 - get all reports (with endpoint)
 - get all reports by patient ID (with endpoint)
 - get report by ID (with endpoint)
