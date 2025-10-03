@@ -12,7 +12,13 @@ public sealed class NotificationsService : INotificationsService
     public NotificationsService(IAppDbContext context) =>
         _context = context ?? throw new ArgumentNullException(nameof(context));
 
-    public Task<List<Notification>> GetAllAsync() => _context.Notifications.ToListAsync();
+    public async Task<List<Notification>> GetAllAsync()
+    {
+        return await _context.Notifications
+            .AsNoTracking()
+            .ToListAsync()
+            .ConfigureAwait(false);
+    }
 
     public async Task AddAsync(Notification notification)
     {
@@ -20,5 +26,10 @@ public sealed class NotificationsService : INotificationsService
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteAllAsync() => await _context.Notifications.ExecuteDeleteAsync();
+    public async Task DeleteAllAsync()
+    {
+        await _context.Notifications
+            .ExecuteDeleteAsync()
+            .ConfigureAwait(false);
+    }
 }

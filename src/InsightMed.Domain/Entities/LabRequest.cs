@@ -11,5 +11,5 @@ public class LabRequest
 
     public int PatientId { get; set; }
     public Patient Patient { get; set; }
-    // TODO: Add requester property
+    // TODO: Add requester property (identity account maybe)
 }
