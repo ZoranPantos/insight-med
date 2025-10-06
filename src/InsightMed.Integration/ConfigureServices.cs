@@ -1,11 +1,13 @@
 ﻿using InsightMed.Application.AppManagement.Services.Abstractions;
 using InsightMed.Application.Common.Abstractions;
+using InsightMed.Application.LabParameters.Services.Abstractions;
 using InsightMed.Application.LabReports.Services.Abstactions;
 using InsightMed.Application.LabRequests.Services.Abstractions;
 using InsightMed.Application.Notifications.Services.Abstractions;
 using InsightMed.Application.Patients.Services.Abstractions;
 using InsightMed.Infrastructure.AppManagement.Services;
 using InsightMed.Infrastructure.Data;
+using InsightMed.Infrastructure.LabParameters.Services;
 using InsightMed.Infrastructure.LabReports.Services;
 using InsightMed.Infrastructure.LabRequests.Services;
 using InsightMed.Infrastructure.Notifications.Services;
@@ -26,6 +28,7 @@ public static class ConfigureServices
         services.AddScoped<INotificationsService, NotificationsService>();
         services.AddScoped<ILabReportsService, LabReportsService>();
         services.AddScoped<ILabRequestsService, LabRequestsService>();
+        services.AddScoped<ILabParametersService, LabParametersService>();
 
         return services;
     }
