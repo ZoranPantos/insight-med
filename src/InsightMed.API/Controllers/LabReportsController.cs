@@ -21,4 +21,11 @@ public sealed class LabReportsController : ControllerBase
         var response = await _sender.Send(new GetAllLabReportsQuery());
         return Ok(response);
     }
+
+    [HttpGet("{patientId:int}")]
+    public async Task<ActionResult<GetAllLabReportsQueryResponse>> GetAllByPatientIdAsync(int patientId)
+    {
+        var response = await _sender.Send(new GetAllLabReportsByPatientIdQuery(patientId));
+        return Ok(response);
+    }
 }

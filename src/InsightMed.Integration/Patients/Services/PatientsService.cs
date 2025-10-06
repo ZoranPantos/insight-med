@@ -20,13 +20,13 @@ public class PatientsService : IPatientsService
             .ConfigureAwait(false);
     }
 
-    public async Task<Patient?> GetByIdAsync(long id)
+    public async Task<Patient?> GetByIdAsync(int id)
     {
         return await _context.Patients
             .AsNoTracking()
             .Include(patient => patient.LabReports)
             .Include(patient => patient.LabRequests)
-            .FirstOrDefaultAsync(patient => patient.Id == Convert.ToInt32(id))
+            .FirstOrDefaultAsync(patient => patient.Id == id)
             .ConfigureAwait(false);
     }
 }

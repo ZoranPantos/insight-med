@@ -5,24 +5,25 @@ using MediatR;
 
 namespace InsightMed.Application.LabReports.Queries;
 
-public record GetAllLabReportsQuery : IRequest<GetAllLabReportsQueryResponse>;
+public record class GetAllLabReportsByPatientIdQuery(int PatientId) : IRequest<GetAllLabReportsQueryResponse>;
 
-public sealed class GetAllLabReportsQueryHandler : IRequestHandler<GetAllLabReportsQuery, GetAllLabReportsQueryResponse>
+public sealed class GetAllLabReportsByPatientIdQueryHandler
+    : IRequestHandler<GetAllLabReportsByPatientIdQuery, GetAllLabReportsQueryResponse>
 {
     private readonly IMapper _mapper;
     private readonly ILabReportsService _labReportsService;
 
-    public GetAllLabReportsQueryHandler(IMapper mapper, ILabReportsService labReportsService)
+    public GetAllLabReportsByPatientIdQueryHandler(IMapper mapper, ILabReportsService labReportsService)
     {
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _labReportsService = labReportsService ?? throw new ArgumentNullException(nameof(labReportsService));
     }
 
     public async Task<GetAllLabReportsQueryResponse> Handle(
-        GetAllLabReportsQuery request,
+        GetAllLabReportsByPatientIdQuery request,
         CancellationToken cancellationToken)
     {
-        var labReports = await _labReportsService.GetAllAsync();
+        var labReports = await _labReportsService.GetAllByPatientIdAsync(request.PatientId);
 
         var response = new GetAllLabReportsQueryResponse
         {
@@ -32,4 +33,3 @@ public sealed class GetAllLabReportsQueryHandler : IRequestHandler<GetAllLabRepo
         return response;
     }
 }
-

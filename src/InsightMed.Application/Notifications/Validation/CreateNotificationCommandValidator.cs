@@ -17,10 +17,10 @@ public sealed class CreateNotificationCommandValidator : AbstractValidator<Creat
 
         RuleFor(command => command.LabReportId)
             .GreaterThan(0)
-            .MustAsync(LabReportExists)
+            .MustAsync(LabReportExistsAsync)
             .WithMessage("Lab Report with ID {PropertyValue} not found");
     }
 
-    private async Task<bool> LabReportExists(int labReportId, CancellationToken cancellationToken) =>
+    private async Task<bool> LabReportExistsAsync(int labReportId, CancellationToken cancellationToken) =>
         await _context.LabReports.AnyAsync(labReport => labReport.Id == labReportId, cancellationToken);
 }

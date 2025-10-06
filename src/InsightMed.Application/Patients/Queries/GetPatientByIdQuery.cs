@@ -6,7 +6,7 @@ using MediatR;
 
 namespace InsightMed.Application.Patients.Queries;
 
-public record GetPatientByIdQuery(long Id) : IRequest<GetPatientByIdQueryResponse>;
+public record GetPatientByIdQuery(int Id) : IRequest<GetPatientByIdQueryResponse>;
 
 public sealed class GetPatientByIdQueryHandler : IRequestHandler<GetPatientByIdQuery, GetPatientByIdQueryResponse>
 {
