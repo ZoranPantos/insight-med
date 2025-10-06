@@ -12,5 +12,5 @@ public class LabRequest
     public int PatientId { get; set; }
     public Patient Patient { get; set; }
 
-    public List<LabParameter> LabParameters { get; set; } = [];
+    public List<int> LabParameterIds { get; set; } = [];
 }

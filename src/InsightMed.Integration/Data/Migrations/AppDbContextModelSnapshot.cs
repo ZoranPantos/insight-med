@@ -30,16 +30,11 @@ namespace InsightMed.Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("LabRequestId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LabRequestId");
 
                     b.ToTable("LabParameters");
                 });
@@ -86,6 +81,10 @@ namespace InsightMed.Infrastructure.Data.Migrations
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
+
+                    b.PrimitiveCollection<string>("LabParameterIds")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("LabRequestState")
                         .HasColumnType("int");
@@ -164,14 +163,6 @@ namespace InsightMed.Infrastructure.Data.Migrations
                     b.ToTable("Patients");
                 });
 
-            modelBuilder.Entity("InsightMed.Domain.Entities.LabParameter", b =>
-                {
-                    b.HasOne("InsightMed.Domain.Entities.LabRequest", null)
-                        .WithMany("LabParameters")
-                        .HasForeignKey("LabRequestId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("InsightMed.Domain.Entities.LabReport", b =>
                 {
                     b.HasOne("InsightMed.Domain.Entities.LabRequest", "LabRequest")
@@ -214,8 +205,6 @@ namespace InsightMed.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("InsightMed.Domain.Entities.LabRequest", b =>
                 {
-                    b.Navigation("LabParameters");
-
                     b.Navigation("LabReport");
                 });
 

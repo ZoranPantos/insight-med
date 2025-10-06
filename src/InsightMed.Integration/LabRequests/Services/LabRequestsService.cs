@@ -18,7 +18,6 @@ public sealed class LabRequestsService : ILabRequestsService
             .AsNoTracking()
             .Include(labRequest => labRequest.Patient)
             .Include(labRequest => labRequest.LabReport)
-            .Include(labRequest => labRequest.LabParameters)
             .ToListAsync()
             .ConfigureAwait(false);
     }
