@@ -7,10 +7,10 @@ Functionalities DONE:
 - delete all notifications (with endpoint)
 - get all reports (with endpoint)
 - get all reports by patient ID (with endpoint)
+- get report by ID (with endpoint)
 
 Functionalities TODO:  
-- get report by ID (with endpoint)
-- order a report from external service (with endpoint)
+- order a report from external service (with endpoint) // this is essentially creating a lab request and then waiting for response
 - save report from external service (with endpoint to test)
 
 Functionalities TO CONSIDER:

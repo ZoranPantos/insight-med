@@ -6,4 +6,5 @@ public interface ILabReportsService
 {
     Task<List<LabReport>> GetAllAsync();
     Task<List<LabReport>> GetAllByPatientIdAsync(int patientId);
+    Task<LabReport?> GetByIdAsync(int id);
 }

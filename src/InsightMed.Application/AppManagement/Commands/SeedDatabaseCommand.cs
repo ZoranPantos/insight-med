@@ -3,7 +3,7 @@ using MediatR;
 
 namespace InsightMed.Application.AppManagement.Commands;
 
-public record SeedDatabaseCommand : IRequest;
+public sealed record SeedDatabaseCommand : IRequest;
 
 public sealed class SeedDatabaseCommandHandler : IRequestHandler<SeedDatabaseCommand>
 {

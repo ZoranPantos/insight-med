@@ -6,7 +6,7 @@ using MediatR;
 
 namespace InsightMed.Application.Patients.Queries;
 
-public record GetPatientByIdQuery(int Id) : IRequest<GetPatientByIdQueryResponse>;
+public sealed record GetPatientByIdQuery(int Id) : IRequest<GetPatientByIdQueryResponse>;
 
 public sealed class GetPatientByIdQueryHandler : IRequestHandler<GetPatientByIdQuery, GetPatientByIdQueryResponse>
 {
@@ -16,7 +16,7 @@ public sealed class GetPatientByIdQueryHandler : IRequestHandler<GetPatientByIdQ
     public GetPatientByIdQueryHandler(IMapper mapper, IPatientsService patientsService)
     {
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        _patientsService = patientsService ?? throw new ArgumentException(nameof(patientsService));
+        _patientsService = patientsService ?? throw new ArgumentNullException(nameof(patientsService));
     }
 
     public async Task<GetPatientByIdQueryResponse> Handle(GetPatientByIdQuery request, CancellationToken cancellationToken)

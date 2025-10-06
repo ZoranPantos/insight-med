@@ -5,7 +5,7 @@ using MediatR;
 
 namespace InsightMed.Application.Notifications.Queries;
 
-public record GetAllNotificationsQuery : IRequest<GetAllNotificationsQueryResponse>;
+public sealed record GetAllNotificationsQuery : IRequest<GetAllNotificationsQueryResponse>;
 
 public sealed class GetAllNotificationsQueryHandler : IRequestHandler<GetAllNotificationsQuery, GetAllNotificationsQueryResponse>
 {

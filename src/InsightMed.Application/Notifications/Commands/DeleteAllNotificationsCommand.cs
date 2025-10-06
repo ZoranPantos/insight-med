@@ -3,7 +3,7 @@ using MediatR;
 
 namespace InsightMed.Application.Notifications.Commands;
 
-public record DeleteAllNotificationsCommand : IRequest;
+public sealed record DeleteAllNotificationsCommand : IRequest;
 
 public sealed class DeleteAllNotificationsCommandHandler : IRequestHandler<DeleteAllNotificationsCommand>
 {

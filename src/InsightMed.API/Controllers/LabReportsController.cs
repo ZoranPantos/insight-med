@@ -22,10 +22,10 @@ public sealed class LabReportsController : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("{patientId:int}")]
-    public async Task<ActionResult<GetAllLabReportsQueryResponse>> GetAllByPatientIdAsync(int patientId)
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<GetLabReportByIdQueryResponse>> GetByIdAsync(int id)
     {
-        var response = await _sender.Send(new GetAllLabReportsByPatientIdQuery(patientId));
+        var response = await _sender.Send(new GetLabReportByIdQuery(id));
         return Ok(response);
     }
 }

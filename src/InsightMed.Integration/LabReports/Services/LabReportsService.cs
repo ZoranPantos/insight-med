@@ -30,4 +30,13 @@ public sealed class LabReportsService : ILabReportsService
             .ToListAsync()
             .ConfigureAwait(false);
     }
+
+    public async Task<LabReport?> GetByIdAsync(int id)
+    {
+        return await _context.LabReports
+            .AsNoTracking()
+            .Include(labReport => labReport.Patient)
+            .FirstOrDefaultAsync(labReport => labReport.Id == id)
+            .ConfigureAwait(false);
+    }
 }

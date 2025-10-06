@@ -3,7 +3,7 @@ using MediatR;
 
 namespace InsightMed.Application.AppManagement.Commands;
 
-public record TruncateDatabaseCommand : IRequest;
+public sealed record TruncateDatabaseCommand : IRequest;
 
 public sealed class TruncateDatabaseCommandHandler : IRequestHandler<TruncateDatabaseCommand>
 {

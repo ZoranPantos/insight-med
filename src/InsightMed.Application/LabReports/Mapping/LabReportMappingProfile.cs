@@ -15,5 +15,13 @@ public sealed class LabReportMappingProfile : Profile
             .ForMember(
                 dest => dest.PatientUid,
                 opt => opt.MapFrom(src => src.Patient.Uid));
+
+        CreateMap<LabReport, GetLabReportByIdQueryResponse>()
+            .ForMember(
+                dest => dest.PatientFullName,
+                opt => opt.MapFrom(src => $"{src.Patient.FirstName} {src.Patient.LastName}"))
+            .ForMember(
+                dest => dest.PatientUid,
+                opt => opt.MapFrom(src => src.Patient.Uid));
     }
 }

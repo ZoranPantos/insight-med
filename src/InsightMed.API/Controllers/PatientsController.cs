@@ -1,4 +1,6 @@
-﻿using InsightMed.Application.Patients.Models;
+﻿using InsightMed.Application.LabReports.Models;
+using InsightMed.Application.LabReports.Queries;
+using InsightMed.Application.Patients.Models;
 using InsightMed.Application.Patients.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +28,13 @@ public sealed class PatientsController : ControllerBase
     public async Task<ActionResult<GetPatientByIdQueryResponse>> GetByIdAsync(int id)
     {
         var response = await _sender.Send(new GetPatientByIdQuery(id));
+        return Ok(response);
+    }
+
+    [HttpGet("{id:int}/labReports")]
+    public async Task<ActionResult<GetAllLabReportsQueryResponse>> GetLabReportsByPatientIdAsync(int id)
+    {
+        var response = await _sender.Send(new GetAllLabReportsByPatientIdQuery(id));
         return Ok(response);
     }
 }

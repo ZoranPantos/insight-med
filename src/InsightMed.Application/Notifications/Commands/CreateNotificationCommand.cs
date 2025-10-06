@@ -4,7 +4,7 @@ using MediatR;
 
 namespace InsightMed.Application.Notifications.Commands;
 
-public record CreateNotificationCommand(string Message, int LabReportId) : IRequest;
+public sealed record CreateNotificationCommand(string Message, int LabReportId) : IRequest;
 
 public sealed class CreateNotificationCommandHandler : IRequestHandler<CreateNotificationCommand>
 {

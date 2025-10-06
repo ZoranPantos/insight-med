@@ -5,7 +5,7 @@ using MediatR;
 
 namespace InsightMed.Application.LabReports.Queries;
 
-public record class GetAllLabReportsByPatientIdQuery(int PatientId) : IRequest<GetAllLabReportsQueryResponse>;
+public sealed record class GetAllLabReportsByPatientIdQuery(int PatientId) : IRequest<GetAllLabReportsQueryResponse>;
 
 public sealed class GetAllLabReportsByPatientIdQueryHandler
     : IRequestHandler<GetAllLabReportsByPatientIdQuery, GetAllLabReportsQueryResponse>
