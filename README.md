@@ -8,8 +8,10 @@ Functionalities DONE:
 - get all reports (with endpoint)
 - get all reports by patient ID (with endpoint)
 - get report by ID (with endpoint)
+- add get all parameters (with endpoint)
 
 Functionalities TODO:  
+- update seed data for parameters
 - get all lab requests (with endpoint)
 - order a report from external service (with endpoint) // this is essentially creating a lab request and then waiting for response
 - save report from external service (with endpoint to test)

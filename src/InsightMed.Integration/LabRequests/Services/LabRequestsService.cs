@@ -16,6 +16,7 @@ public sealed class LabRequestsService : ILabRequestsService
     {
         return await _context.LabRequests
             .AsNoTracking()
+            .Include(labRequest => labRequest.Patient)
             .Include(labRequest => labRequest.LabReport)
             .Include(labRequest => labRequest.LabParameters)
             .ToListAsync()
