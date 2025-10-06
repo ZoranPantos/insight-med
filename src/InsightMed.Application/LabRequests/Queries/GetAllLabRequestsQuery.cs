@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using InsightMed.Application.LabParameters.Services.Abstractions;
 using InsightMed.Application.LabRequests.Models;
 using InsightMed.Application.LabRequests.Services.Abstractions;
 using MediatR;
@@ -12,10 +13,15 @@ public sealed class GetAllLabRequestsQueryHandler
 {
     private readonly IMapper _mapper;
     private readonly ILabRequestsService _labRequestsService;
+    private readonly ILabParametersService _labParametersService;
 
-    public GetAllLabRequestsQueryHandler(IMapper mapper, ILabRequestsService labRequestsService)
+    public GetAllLabRequestsQueryHandler(
+        IMapper mapper,
+        ILabRequestsService labRequestsService,
+        ILabParametersService labParametersService)
     {
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _labParametersService = labParametersService ?? throw new ArgumentNullException(nameof(labParametersService));
         _labRequestsService = labRequestsService ?? throw new ArgumentNullException(nameof(labRequestsService));
     }
 
@@ -23,12 +29,28 @@ public sealed class GetAllLabRequestsQueryHandler
         GetAllLabRequestsQuery request,
         CancellationToken cancellationToken)
     {
-        var labRequests = await _labRequestsService.GetAllAsync();
+        var response = new GetAllLabRequestsQueryResponse();
 
-        var response = new GetAllLabRequestsQueryResponse
+        var labRequests = await _labRequestsService.GetAllAsync();
+        var labParameters = await _labParametersService.GetAllAsync();
+
+        foreach (var labRequest in labRequests)
         {
-            LabRequests = _mapper.Map<List<LabRequestLiteResponse>>(labRequests)
-        };
+            var labRequestLiteResponse = _mapper.Map<LabRequestLiteResponse>(labRequest);
+
+            foreach (var labParameterId in labRequest.LabParameterIds)
+            {
+                var labParameter = labParameters.FirstOrDefault(labParameter => labParameter.Id == labParameterId);
+
+                if (labParameter is null) continue;
+
+                var labRequestLabParameterLiteResponse = _mapper.Map<LabRequestLabParameterLiteResponse>(labParameter);
+
+                labRequestLiteResponse.LabParameters.Add(labRequestLabParameterLiteResponse);
+            }
+
+            response.LabRequests.Add(labRequestLiteResponse);
+        }
 
         return response;
     }

@@ -3,18 +3,20 @@ ALTER TABLE [LabRequests] NOCHECK CONSTRAINT ALL;
 ALTER TABLE [LabReports] NOCHECK CONSTRAINT ALL;
 ALTER TABLE [Notifications] NOCHECK CONSTRAINT ALL;
 
-INSERT INTO [LabParameters] ([Name])
+SET IDENTITY_INSERT LabParameters ON;
+INSERT INTO [LabParameters] ([Id], [Name])
 VALUES
-    ('Hemoglobin'),
-    ('White Blood Cell Count'),
-    ('Glucose'),
-    ('Cholesterol'),
-    ('Creatinine'),
-    ('Urine pH'),
-    ('Bilirubin'),
-    ('Platelet Count'),
-    ('Thyroid Stimulating Hormone (TSH)'),
-    ('Vitamin D');
+    (1, 'Hemoglobin'),
+    (2, 'White Blood Cell Count'),
+    (3, 'Glucose'),
+    (4, 'Cholesterol'),
+    (5, 'Creatinine'),
+    (6, 'Urine pH'),
+    (7, 'Bilirubin'),
+    (8, 'Platelet Count'),
+    (9, 'Thyroid Stimulating Hormone (TSH)'),
+    (10, 'Vitamin D');
+SET IDENTITY_INSERT LabParameters OFF;
 
 INSERT INTO [Patients] ([Uid], [FirstName], [LastName], [DateOfBirth], [Gender], [BloodGroup], [Email], [Phone])
 VALUES
@@ -29,18 +31,18 @@ VALUES
     ('UID-1009', 'James', 'Thomas', '1982-09-22', 0, 0, 'james.thomas@example.com', '+38766123123'),
     ('UID-1010', 'Patricia', 'Hernandez', '1993-01-08', 1, 2, 'patricia.hernandez@example.com', '+38766123123');
 
-INSERT INTO [LabRequests] ([Created], [LabRequestState], [PatientId])
+INSERT INTO [LabRequests] ([Created], [LabRequestState], [PatientId], [LabParameterIds])
 VALUES
-    ('2023-01-10 09:00:00', 1, 1),
-    ('2023-02-15 10:30:00', 0, 2),
-    ('2023-03-20 11:45:00', 1, 3),
-    ('2023-04-25 14:00:00', 0, 4),
-    ('2023-05-30 15:15:00', 1, 5),
-    ('2023-06-05 08:45:00', 0, 6),
-    ('2023-07-10 12:00:00', 1, 7),
-    ('2023-08-15 13:30:00', 0, 8),
-    ('2023-09-20 16:00:00', 1, 9),
-    ('2023-10-25 17:45:00', 0, 10);
+    ('2023-01-10 09:00:00', 1, 1, '[1,2,3]'),
+    ('2023-02-15 10:30:00', 0, 2, '[4,5]'),
+    ('2023-03-20 11:45:00', 1, 3, '[2,3,6]'),
+    ('2023-04-25 14:00:00', 0, 4, '[1,7]'),
+    ('2023-05-30 15:15:00', 1, 5, '[3,8,9]'),
+    ('2023-06-05 08:45:00', 0, 6, '[2,5]'),
+    ('2023-07-10 12:00:00', 1, 7, '[4,6,7]'),
+    ('2023-08-15 13:30:00', 0, 8, '[1,3,5]'),
+    ('2023-09-20 16:00:00', 1, 9, '[8,9]'),
+    ('2023-10-25 17:45:00', 0, 10, '[2,4,6]');
 
 INSERT INTO [LabReports] ([Content], [Created], [LabRequestId], [PatientId])
 VALUES
