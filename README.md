@@ -6,9 +6,9 @@ Functionalities DONE:
 - get all notifications (with endpoint)
 - delete all notifications (with endpoint)
 - get all reports (with endpoint)
+- get all reports by patient ID (with endpoint)
 
 Functionalities TODO:  
-- get all reports by patient ID (with endpoint)
 - get report by ID (with endpoint)
 - order a report from external service (with endpoint)
 - save report from external service (with endpoint to test)
