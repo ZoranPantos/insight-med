@@ -10,6 +10,7 @@ Functionalities DONE:
 - get report by ID (with endpoint)
 
 Functionalities TODO:  
+- get all lab requests (with endpoint)
 - order a report from external service (with endpoint) // this is essentially creating a lab request and then waiting for response
 - save report from external service (with endpoint to test)
 

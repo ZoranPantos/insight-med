@@ -11,5 +11,6 @@ public class LabRequest
 
     public int PatientId { get; set; }
     public Patient Patient { get; set; }
-    // TODO: Add requester property (identity account maybe)
+
+    public List<LabParameter> LabParameters { get; set; } = [];
 }
