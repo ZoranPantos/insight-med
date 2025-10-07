@@ -13,7 +13,7 @@ Functionalities DONE:
 
 Functionalities TODO:  
 - update seed data with no mistakes for lab requests - lab reports - parameters (with proper json)
-- order a report from external service (with endpoint) // this is essentially creating a lab request and then waiting for response
+- after created lab request, order a report from external service (executes after create request endpoint) // this is essentially creating a lab request and then waiting for response
 - save report from external service (with endpoint to test)
 
 Functionalities TO CONSIDER:

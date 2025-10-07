@@ -13,7 +13,11 @@ public sealed class CreateNotificationCommandValidator : AbstractValidator<Creat
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
 
-        RuleFor(command => command.Message).NotEmpty();
+        RuleFor(command => command)
+            .NotEmpty();
+
+        RuleFor(command => command.Message)
+            .NotEmpty();
 
         RuleFor(command => command.LabReportId)
             .GreaterThan(0)

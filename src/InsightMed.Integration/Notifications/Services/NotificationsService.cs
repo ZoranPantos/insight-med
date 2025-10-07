@@ -23,7 +23,10 @@ public sealed class NotificationsService : INotificationsService
     public async Task AddAsync(Notification notification)
     {
         _context.Notifications.Add(notification);
-        await _context.SaveChangesAsync();
+
+        await _context
+            .SaveChangesAsync()
+            .ConfigureAwait(false);
     }
 
     public async Task DeleteAllAsync()

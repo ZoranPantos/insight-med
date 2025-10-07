@@ -19,7 +19,7 @@ public sealed class TestController : ControllerBase
     {
         var command = new CreateNotificationCommand(input.Message, input.LabReportId);
         await _sender.Send(command);
-        return Ok();
+        return NoContent();
     }
 }
 

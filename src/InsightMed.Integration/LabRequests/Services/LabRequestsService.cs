@@ -21,4 +21,13 @@ public sealed class LabRequestsService : ILabRequestsService
             .ToListAsync()
             .ConfigureAwait(false);
     }
+
+    public async Task AddAsync(LabRequest labRequest)
+    {
+        _context.LabRequests.Add(labRequest);
+
+        await _context
+            .SaveChangesAsync()
+            .ConfigureAwait(false);
+    }
 }

@@ -1,4 +1,6 @@
-﻿using InsightMed.Application.LabRequests.Models;
+﻿using InsightMed.API.DTOs;
+using InsightMed.Application.LabRequests.Commands;
+using InsightMed.Application.LabRequests.Models;
 using InsightMed.Application.LabRequests.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -20,5 +22,13 @@ public sealed class LabRequestsController : ControllerBase
     {
         var response = await _sender.Send(new GetAllLabRequestsQuery());
         return Ok(response);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult> CreateAsync(LabRequestInputDTO input)
+    {
+        var command = new CreateLabRequestCommand(input.PatientId, input.LabParameterIds);
+        await _sender.Send(command);
+        return NoContent();
     }
 }
