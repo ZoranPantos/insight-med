@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace InsightMed.Application.Common.Abstractions;
+namespace InsightMed.Application.Common.Abstractions.Data;
 
 public interface IAppDbContext
 {

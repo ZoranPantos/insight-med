@@ -1,5 +1,5 @@
 ﻿using InsightMed.Application.AppManagement.Services.Abstractions;
-using InsightMed.Application.Common.Abstractions;
+using InsightMed.Application.Common.Abstractions.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace InsightMed.Infrastructure.AppManagement.Services;

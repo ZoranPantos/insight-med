@@ -1,5 +1,5 @@
 ﻿using InsightMed.Application.AppManagement.Services.Abstractions;
-using InsightMed.Application.Common.Abstractions;
+using InsightMed.Application.Common.Abstractions.Data;
 using InsightMed.Application.LabParameters.Services.Abstractions;
 using InsightMed.Application.LabReports.Services.Abstactions;
 using InsightMed.Application.LabRequests.Services.Abstractions;

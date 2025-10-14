@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using InsightMed.Application.Common.Abstractions;
+using InsightMed.Application.Common.Abstractions.Data;
 using InsightMed.Application.LabReports.Queries;
 using Microsoft.EntityFrameworkCore;
 
