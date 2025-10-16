@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.ConfigureApi();
 builder.Services.ConfigureApplication();
-builder.Services.ConfigureInfrastructure();
+builder.Services.ConfigureInfrastructure(builder.Configuration);
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
@@ -20,10 +20,7 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.Elasticsearch(
         [new Uri("http://localhost:9200")],
-        opts =>
-        {
-            opts.DataStream = new DataStreamName("logs", "insightmed", "development");
-        }
+        opts => { opts.DataStream = new DataStreamName("logs", "insightmed", "development"); }
     )
     .CreateLogger();
 
@@ -34,10 +31,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/openapi/v1.json", "Open Api V1");
-    });
+    app.UseSwaggerUI(options => { options.SwaggerEndpoint("/openapi/v1.json", "Open Api V1"); });
 }
 
 app.UseExceptionHandler();

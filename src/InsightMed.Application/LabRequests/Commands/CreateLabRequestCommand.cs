@@ -1,4 +1,5 @@
-﻿using InsightMed.Application.LabRequests.Services.Abstractions;
+﻿using InsightMed.Application.Common.Abstractions.Messaging;
+using InsightMed.Application.LabRequests.Services.Abstractions;
 using InsightMed.Domain.Entities;
 using InsightMed.Domain.Enums;
 using MediatR;
@@ -10,9 +11,13 @@ public sealed record CreateLabRequestCommand(int PatientId, List<int> LabParamet
 public sealed class CreateLabRequestCommandHandler : IRequestHandler<CreateLabRequestCommand>
 {
     private readonly ILabRequestsService _labRequestsService;
+    private readonly ILabRpcClient _labRpcClient;
 
-    public CreateLabRequestCommandHandler(ILabRequestsService labRequestsService) =>
+    public CreateLabRequestCommandHandler(ILabRequestsService labRequestsService, ILabRpcClient labRpcClient)
+    {
         _labRequestsService = labRequestsService ?? throw new ArgumentNullException(nameof(labRequestsService));
+        _labRpcClient = labRpcClient ?? throw new ArgumentNullException(nameof(labRpcClient));
+    }
 
     public async Task Handle(CreateLabRequestCommand request, CancellationToken cancellationToken)
     {
@@ -27,5 +32,6 @@ public sealed class CreateLabRequestCommandHandler : IRequestHandler<CreateLabRe
         await _labRequestsService.AddAsync(labRequest);
 
         // TODO: Add functionality and logic for sending this request to the Lab RPC Server via RabbitMQ
+        string rpcResponse = await _labRpcClient.CallAsync("test payload", cancellationToken);
     }
 }

@@ -9,6 +9,7 @@
     <Project Path="src/InsightMed.Application/InsightMed.Application.csproj" Id="1d9ad8be-5f64-42c7-b4b0-7cd9fc1b646f" />
     <Project Path="src/InsightMed.Domain/InsightMed.Domain.csproj" Id="ba064760-efed-4cec-ae26-457931ee49b0" />
     <Project Path="src/InsightMed.Integration/InsightMed.Infrastructure.csproj" Id="613e3b08-c193-43fe-a713-5cb1a6f98c62" />
+    <Project Path="src/InsightMed.LabRpcServer/InsightMed.LabRpcServer.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/InsightMed.IntegrationTests/InsightMed.IntegrationTests.csproj" Id="856ad4f6-5bc0-4bb5-8d8b-76d0274b885b" />
