@@ -15,31 +15,38 @@ internal sealed class RpcServerWorker : BackgroundService
 {
     private readonly ILogger<RpcServerWorker> _logger;
     private readonly RabbitMqOptions _options;
+    private readonly ILabDbService _labDbService;
 
     private IConnectionFactory? _factory;
     private IConnection? _connection;
     private IChannel? _channel;
 
-    public RpcServerWorker(ILogger<RpcServerWorker> logger, IOptions<RabbitMqOptions> options)
+    public RpcServerWorker(
+        ILogger<RpcServerWorker> logger,
+        IOptions<RabbitMqOptions> options,
+        ILabDbService labDbService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _options = options.Value ?? throw new ArgumentNullException(nameof(options));
+        _labDbService = labDbService ?? throw new ArgumentNullException(nameof(labDbService));
     }
 
-    protected async override Task ExecuteAsync(CancellationToken stoppingToken)
+    protected async override Task ExecuteAsync(CancellationToken cancellationToken)
     {
+        await _labDbService.EnsureInitializedAsync(cancellationToken);
+
         _factory = new ConnectionFactory { HostName = _options.HostName };
 
-        while (!stoppingToken.IsCancellationRequested)
+        while (!cancellationToken.IsCancellationRequested)
         {
             try
             {
-                await StartConsumingAsync(stoppingToken);
+                await StartConsumingAsync(cancellationToken);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "RPC server error. Retrying in 3s ...");
-                await Task.Delay(3000, stoppingToken);
+                await Task.Delay(3000, cancellationToken);
             }
             finally
             {
@@ -57,7 +64,7 @@ internal sealed class RpcServerWorker : BackgroundService
         _connection = null;
     }
 
-    private async Task StartConsumingAsync(CancellationToken stoppingToken)
+    private async Task StartConsumingAsync(CancellationToken cancellationToken)
     {
         _connection = await _factory!.CreateConnectionAsync();
         _channel = await _connection.CreateChannelAsync();
@@ -75,8 +82,8 @@ internal sealed class RpcServerWorker : BackgroundService
 
         _logger.LogInformation("RPC Server started. Listening on {Queue}", _options.QueueName);
 
-        while (!stoppingToken.IsCancellationRequested && _connection.IsOpen)
-            await Task.Delay(500, stoppingToken);
+        while (!cancellationToken.IsCancellationRequested && _connection.IsOpen)
+            await Task.Delay(500, cancellationToken);
     }
 
     private async Task OnReceivedAsync(object? sender, BasicDeliverEventArgs ea)
@@ -97,8 +104,11 @@ internal sealed class RpcServerWorker : BackgroundService
         try
         {
             // TODO: here do business logic
-            string message = Encoding.UTF8.GetString(body);
-            response = $"Response for message {message}";
+            var rows = await _labDbService.GetAllAsync();
+            response = rows.Count == 0 ? "No lab parameters" : string.Join(", ", rows.Select(r => $"{r.Id}:{r.Name}"));
+
+            //string message = Encoding.UTF8.GetString(body);
+            //response = $"Response for message {message}";
         }
         catch (Exception ex)
         {

@@ -33,5 +33,8 @@ public sealed class CreateLabRequestCommandHandler : IRequestHandler<CreateLabRe
 
         // TODO: Add functionality and logic for sending this request to the Lab RPC Server via RabbitMQ
         string rpcResponse = await _labRpcClient.CallAsync("test payload", cancellationToken);
+
+        // TODO: For testing only
+        Console.WriteLine(rpcResponse);
     }
 }
