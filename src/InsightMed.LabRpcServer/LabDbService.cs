@@ -1,16 +1,17 @@
 ﻿using Microsoft.Data.SqlClient;
 using System.Data;
+using System.Text.Json;
 
 namespace InsightMed.LabRpcServer;
 
 internal sealed class LabDbService : ILabDbService
 {
-    private readonly string _connString;
+    private readonly string _connectionString;
     private readonly ILogger<LabDbService> _logger;
 
     public LabDbService(IConfiguration config, ILogger<LabDbService> logger)
     {
-        _connString = config.GetConnectionString("LabDb")
+        _connectionString = config.GetConnectionString("LabDb")
             ?? throw new InvalidOperationException("Connection string 'LabDb' is missing.");
 
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -26,11 +27,11 @@ internal sealed class LabDbService : ILabDbService
     {
         var result = new List<LabParameter>();
 
-        await using var connection = new SqlConnection(_connString);
+        await using var connection = new SqlConnection(_connectionString);
         await connection.OpenAsync(cancellationToken);
 
         await using var command = connection.CreateCommand();
-        command.CommandText = "SELECT Id, Name FROM dbo.LabParameters ORDER BY Id";
+        command.CommandText = "SELECT Id, Name, LabParameterReferenceJson FROM dbo.LabParameters ORDER BY Id";
 
         await using var reader = await command.ExecuteReaderAsync(cancellationToken);
 
@@ -38,7 +39,28 @@ internal sealed class LabDbService : ILabDbService
         {
             var id = reader.GetInt32(0);
             var name = reader.GetString(1);
-            result.Add(new LabParameter(id, name));
+            var referenceJson = reader.GetString(2);
+
+            LabParameterReference? reference = null;
+
+            try
+            {
+                reference = JsonSerializer.Deserialize<LabParameterReference>(referenceJson);
+
+                if (reference is null || !reference.IsModelValid())
+                {
+                    _logger.LogError("Invalid or null LabParameterReference for Id {Id}. JSON: {Json}", id, referenceJson);
+
+                    throw new InvalidOperationException($"Invalid LabParameterReference data for LabParameter Id {id}");
+                }
+            }
+            catch (JsonException ex)
+            {
+                _logger.LogError(ex, "Failed to deserialize LabParameterReference for Id {Id}. JSON: {Json}", id, referenceJson);
+                throw;
+            }
+
+            result.Add(new LabParameter(id, name, reference));
         }
 
         return result;
@@ -48,10 +70,10 @@ internal sealed class LabDbService : ILabDbService
     {
         try
         {
-            var connectionStringBuilder = new SqlConnectionStringBuilder(_connString);
+            var connectionStringBuilder = new SqlConnectionStringBuilder(_connectionString);
             var dbName = connectionStringBuilder.InitialCatalog;
 
-            var masterCsb = new SqlConnectionStringBuilder(_connString)
+            var masterCsb = new SqlConnectionStringBuilder(_connectionString)
             {
                 InitialCatalog = "master"
             };
@@ -84,7 +106,7 @@ internal sealed class LabDbService : ILabDbService
     {
         try
         {
-            await using var connection = new SqlConnection(_connString);
+            await using var connection = new SqlConnection(_connectionString);
             await connection.OpenAsync(cancellationToken);
 
             var sql =
@@ -94,14 +116,19 @@ internal sealed class LabDbService : ILabDbService
                   CREATE TABLE dbo.LabParameters
                   (
                     Id   INT NOT NULL PRIMARY KEY,
-                    Name NVARCHAR(200) NOT NULL
+                    Name NVARCHAR(200) NOT NULL,
+                    LabParameterReferenceJson NVARCHAR(MAX)
                   );
                 END
 
                 IF NOT EXISTS (SELECT 1 FROM dbo.LabParameters)
                 BEGIN
-                  INSERT INTO dbo.LabParameters (Id, Name)
-                  VALUES (1, N'test_name');
+                  INSERT INTO dbo.LabParameters (Id, Name, LabParameterReferenceJson)
+                  VALUES (
+                    1, 
+                    N'test_name',
+                    N'{""MinThreshold"":10.0,""MaxThreshold"":100.0,""Positive"":null}'
+                  );
                 END
                 ";
 

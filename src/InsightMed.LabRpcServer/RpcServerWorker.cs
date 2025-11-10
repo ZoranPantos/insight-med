@@ -2,14 +2,13 @@
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
+using System.Text.Json;
 
 namespace InsightMed.LabRpcServer;
 
 // TODO: Configure logs to go to elastic search with Serilog
 
 // TODO: Implement actual business logic instead of test response
-
-// TODO: Connect to database
 
 internal sealed class RpcServerWorker : BackgroundService
 {
@@ -105,7 +104,8 @@ internal sealed class RpcServerWorker : BackgroundService
         {
             // TODO: here do business logic
             var rows = await _labDbService.GetAllAsync();
-            response = rows.Count == 0 ? "No lab parameters" : string.Join(", ", rows.Select(r => $"{r.Id}:{r.Name}"));
+            //response = rows.Count == 0 ? "No lab parameters" : string.Join(", ", rows.Select(r => $"{r.Id}:{r.Name}"));
+            response = rows.Count == 0 ? "No lab parameters" : JsonSerializer.Serialize(rows);
 
             //string message = Encoding.UTF8.GetString(body);
             //response = $"Response for message {message}";

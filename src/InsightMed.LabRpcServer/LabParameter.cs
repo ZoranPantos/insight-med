@@ -1,3 +1,3 @@
 ﻿namespace InsightMed.LabRpcServer;
 
-internal sealed record LabParameter(int Id, string Name);
+internal sealed record LabParameter(int Id, string Name, LabParameterReference Reference);
