@@ -1,4 +1,7 @@
 using InsightMed.LabRpcServer;
+using InsightMed.LabRpcServer.Options;
+using InsightMed.LabRpcServer.Services;
+using InsightMed.LabRpcServer.Services.Abstractions;
 
 var builder = Host.CreateApplicationBuilder(args);
 

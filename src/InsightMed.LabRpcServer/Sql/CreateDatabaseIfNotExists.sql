@@ -1,0 +1,4 @@
+﻿IF DB_ID(@db) IS NULL
+BEGIN
+    EXEC('CREATE DATABASE [' + @db + ']');
+END

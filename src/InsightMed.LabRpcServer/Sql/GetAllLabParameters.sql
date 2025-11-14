@@ -1,0 +1,1 @@
+﻿SELECT Id, Name, LabParameterReferenceJson FROM dbo.LabParameters ORDER BY Id;

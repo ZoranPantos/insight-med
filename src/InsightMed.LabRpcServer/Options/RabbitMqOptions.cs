@@ -1,4 +1,4 @@
-﻿namespace InsightMed.LabRpcServer;
+﻿namespace InsightMed.LabRpcServer.Options;
 
 internal sealed class RabbitMqOptions
 {

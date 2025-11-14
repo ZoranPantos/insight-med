@@ -1,4 +1,4 @@
-﻿namespace InsightMed.LabRpcServer;
+﻿namespace InsightMed.LabRpcServer.Models;
 
 internal sealed class LabParameterReference
 {

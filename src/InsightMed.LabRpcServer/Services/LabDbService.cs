@@ -1,8 +1,10 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using InsightMed.LabRpcServer.Models;
+using InsightMed.LabRpcServer.Services.Abstractions;
+using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Text.Json;
 
-namespace InsightMed.LabRpcServer;
+namespace InsightMed.LabRpcServer.Services;
 
 internal sealed class LabDbService : ILabDbService
 {
@@ -31,7 +33,7 @@ internal sealed class LabDbService : ILabDbService
         await connection.OpenAsync(cancellationToken);
 
         await using var command = connection.CreateCommand();
-        command.CommandText = "SELECT Id, Name, LabParameterReferenceJson FROM dbo.LabParameters ORDER BY Id";
+        command.CommandText = await File.ReadAllTextAsync("Sql/GetAllLabParameters.sql", cancellationToken);
 
         await using var reader = await command.ExecuteReaderAsync(cancellationToken);
 
@@ -82,13 +84,7 @@ internal sealed class LabDbService : ILabDbService
             await connection.OpenAsync(cancellationToken);
 
             await using var command = connection.CreateCommand();
-            command.CommandText =
-              @"
-                IF DB_ID(@db) IS NULL
-                BEGIN
-                  EXEC('CREATE DATABASE [' + @db + ']');
-                END
-                ";
+            command.CommandText = await File.ReadAllTextAsync("Sql/CreateDatabaseIfNotExists.sql", cancellationToken);
 
             command.Parameters.Add(new SqlParameter("@db", SqlDbType.NVarChar, 128) { Value = dbName });
 
@@ -109,31 +105,9 @@ internal sealed class LabDbService : ILabDbService
             await using var connection = new SqlConnection(_connectionString);
             await connection.OpenAsync(cancellationToken);
 
-            var sql =
-              @"
-                IF OBJECT_ID(N'dbo.LabParameters', N'U') IS NULL
-                BEGIN
-                  CREATE TABLE dbo.LabParameters
-                  (
-                    Id   INT NOT NULL PRIMARY KEY,
-                    Name NVARCHAR(200) NOT NULL,
-                    LabParameterReferenceJson NVARCHAR(MAX)
-                  );
-                END
-
-                IF NOT EXISTS (SELECT 1 FROM dbo.LabParameters)
-                BEGIN
-                  INSERT INTO dbo.LabParameters (Id, Name, LabParameterReferenceJson)
-                  VALUES (
-                    1, 
-                    N'test_name',
-                    N'{""MinThreshold"":10.0,""MaxThreshold"":100.0,""Positive"":null}'
-                  );
-                END
-                ";
-
             await using var command = connection.CreateCommand();
-            command.CommandText = sql;
+            command.CommandText = await File.ReadAllTextAsync("Sql/CreateTableAndSeed.sql", cancellationToken);
+
             await command.ExecuteNonQueryAsync(cancellationToken);
 
             _logger.LogInformation("Table dbo.LabParameters ensured and seeded if empty.");

@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Options;
+﻿using InsightMed.LabRpcServer.Options;
+using InsightMed.LabRpcServer.Services.Abstractions;
+using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
@@ -65,19 +67,19 @@ internal sealed class RpcServerWorker : BackgroundService
 
     private async Task StartConsumingAsync(CancellationToken cancellationToken)
     {
-        _connection = await _factory!.CreateConnectionAsync();
-        _channel = await _connection.CreateChannelAsync();
+        _connection = await _factory!.CreateConnectionAsync(cancellationToken);
+        _channel = await _connection.CreateChannelAsync(cancellationToken: cancellationToken);
 
         await _channel.QueueDeclareAsync(
-            queue: _options.QueueName, durable: false, exclusive: false,
-            autoDelete: false, arguments: null);
+            queue: _options.QueueName, durable: false, exclusive: false, autoDelete: false,
+            arguments: null, cancellationToken: cancellationToken);
 
-        await _channel.BasicQosAsync(prefetchSize: 0, prefetchCount: 1, global: false);
+        await _channel.BasicQosAsync(prefetchSize: 0, prefetchCount: 1, global: false, cancellationToken: cancellationToken);
 
         var consumer = new AsyncEventingBasicConsumer(_channel);
         consumer.ReceivedAsync += OnReceivedAsync;
 
-        await _channel.BasicConsumeAsync(_options.QueueName, false, consumer);
+        await _channel.BasicConsumeAsync(_options.QueueName, false, consumer, cancellationToken: cancellationToken);
 
         _logger.LogInformation("RPC Server started. Listening on {Queue}", _options.QueueName);
 
