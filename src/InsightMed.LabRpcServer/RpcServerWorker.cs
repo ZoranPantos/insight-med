@@ -139,7 +139,7 @@ internal sealed class RpcServerWorker : BackgroundService
         finally
         {
             // Simulate measurements delay
-            await Task.Delay(3000);
+            await Task.Delay(15000);
 
             byte[] responseBytes = Encoding.UTF8.GetBytes(response);
 
