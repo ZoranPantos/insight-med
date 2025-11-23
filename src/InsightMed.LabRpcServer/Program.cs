@@ -8,6 +8,7 @@ var builder = Host.CreateApplicationBuilder(args);
 builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection("RabbitMq"));
 
 builder.Services.AddSingleton<ILabDbService, LabDbService>();
+builder.Services.AddTransient<IParameterValueRandomizerService, ParameterValueRandomizerService>();
 
 builder.Services.AddHostedService<RpcServerWorker>();
 

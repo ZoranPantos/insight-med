@@ -3,6 +3,7 @@ using InsightMed.Application.LabRequests.Services.Abstractions;
 using InsightMed.Domain.Entities;
 using InsightMed.Domain.Enums;
 using MediatR;
+using System.Text.Json;
 
 namespace InsightMed.Application.LabRequests.Commands;
 
@@ -29,10 +30,11 @@ public sealed class CreateLabRequestCommandHandler : IRequestHandler<CreateLabRe
             LabRequestState = LabRequestState.Pending
         };
 
+        string labRequestJson = JsonSerializer.Serialize(labRequest);
+
         await _labRequestsService.AddAsync(labRequest);
 
-        // TODO: Add functionality and logic for sending this request to the Lab RPC Server via RabbitMQ
-        string rpcResponse = await _labRpcClient.CallAsync("test payload", cancellationToken);
+        string rpcResponse = await _labRpcClient.CallAsync(labRequestJson, cancellationToken);
 
         // TODO: For testing only
         Console.WriteLine(rpcResponse);

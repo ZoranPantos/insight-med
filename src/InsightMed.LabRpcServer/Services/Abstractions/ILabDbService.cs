@@ -6,4 +6,5 @@ internal interface ILabDbService
 {
     Task EnsureInitializedAsync(CancellationToken cancellationToken = default);
     Task<IReadOnlyList<LabParameter>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<LabParameter>> GetByIdsAsync(IEnumerable<int> ids, CancellationToken cancellationToken = default);
 }

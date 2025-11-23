@@ -1,4 +1,5 @@
-﻿using InsightMed.LabRpcServer.Options;
+﻿using InsightMed.LabRpcServer.Models;
+using InsightMed.LabRpcServer.Options;
 using InsightMed.LabRpcServer.Services.Abstractions;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
@@ -8,8 +9,6 @@ using System.Text.Json;
 
 namespace InsightMed.LabRpcServer;
 
-// TODO: Configure logs to go to elastic search with Serilog
-
 // TODO: Implement actual business logic instead of test response
 
 internal sealed class RpcServerWorker : BackgroundService
@@ -17,6 +16,7 @@ internal sealed class RpcServerWorker : BackgroundService
     private readonly ILogger<RpcServerWorker> _logger;
     private readonly RabbitMqOptions _options;
     private readonly ILabDbService _labDbService;
+    private readonly IParameterValueRandomizerService _randomizerService;
 
     private IConnectionFactory? _factory;
     private IConnection? _connection;
@@ -25,11 +25,13 @@ internal sealed class RpcServerWorker : BackgroundService
     public RpcServerWorker(
         ILogger<RpcServerWorker> logger,
         IOptions<RabbitMqOptions> options,
-        ILabDbService labDbService)
+        ILabDbService labDbService,
+        IParameterValueRandomizerService randomizerService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _options = options.Value ?? throw new ArgumentNullException(nameof(options));
         _labDbService = labDbService ?? throw new ArgumentNullException(nameof(labDbService));
+        _randomizerService = randomizerService ?? throw new ArgumentNullException(nameof(randomizerService));
     }
 
     protected async override Task ExecuteAsync(CancellationToken cancellationToken)
@@ -104,13 +106,31 @@ internal sealed class RpcServerWorker : BackgroundService
 
         try
         {
-            // TODO: here do business logic
-            var rows = await _labDbService.GetAllAsync();
-            //response = rows.Count == 0 ? "No lab parameters" : string.Join(", ", rows.Select(r => $"{r.Id}:{r.Name}"));
-            response = rows.Count == 0 ? "No lab parameters" : JsonSerializer.Serialize(rows);
+            string labRequestJson = Encoding.UTF8.GetString(body);
 
-            //string message = Encoding.UTF8.GetString(body);
-            //response = $"Response for message {message}";
+            var labRequest = JsonSerializer.Deserialize<LabRequestDto>(labRequestJson) ??
+                throw new InvalidOperationException("Deserialization of lab request failed");
+
+            var labParameters = await _labDbService.GetByIdsAsync(labRequest.LabParameterIds);
+
+            var labResponse = new LabResponseDto();
+
+            foreach (var labParameter in labParameters)
+            {
+                var randomizerResult = _randomizerService.Randomize(labParameter.Reference);
+
+                var labParameterValueResponseDto = new LabParameterValueResponseDto
+                {
+                    Id = labParameter.Id,
+                    Name = labParameter.Name,
+                    IsPositive = randomizerResult.IsPositive,
+                    Measurement = randomizerResult.Value
+                };
+
+                labResponse.LabParameterValueResponseDtos.Add(labParameterValueResponseDto);
+            }
+
+            response = JsonSerializer.Serialize(labResponse);
         }
         catch (Exception ex)
         {
@@ -118,6 +138,9 @@ internal sealed class RpcServerWorker : BackgroundService
         }
         finally
         {
+            // Simulate measurements delay
+            await Task.Delay(3000);
+
             byte[] responseBytes = Encoding.UTF8.GetBytes(response);
 
             await ch.BasicPublishAsync(
