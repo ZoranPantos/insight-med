@@ -11,9 +11,9 @@ internal sealed class LabDbService : ILabDbService
     private readonly string _connectionString;
     private readonly ILogger<LabDbService> _logger;
 
-    public LabDbService(IConfiguration config, ILogger<LabDbService> logger)
+    public LabDbService(IConfiguration configuration, ILogger<LabDbService> logger)
     {
-        _connectionString = config.GetConnectionString("LabDb")
+        _connectionString = configuration.GetConnectionString("LabDb")
             ?? throw new InvalidOperationException("Connection string 'LabDb' is missing.");
 
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));

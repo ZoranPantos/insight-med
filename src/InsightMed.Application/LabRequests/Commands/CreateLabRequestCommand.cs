@@ -1,8 +1,11 @@
 ﻿using InsightMed.Application.Common.Abstractions.Messaging;
+using InsightMed.Application.LabReports.Models;
+using InsightMed.Application.LabReports.Services.Abstactions;
 using InsightMed.Application.LabRequests.Services.Abstractions;
 using InsightMed.Domain.Entities;
 using InsightMed.Domain.Enums;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
@@ -15,17 +18,27 @@ public sealed class CreateLabRequestCommandHandler : IRequestHandler<CreateLabRe
     private readonly ILogger<CreateLabRequestCommandHandler> _logger;
     private readonly ILabRequestsService _labRequestsService;
     private readonly ILabRpcClient _labRpcClient;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
 
     public CreateLabRequestCommandHandler(
         ILogger<CreateLabRequestCommandHandler> logger,
         ILabRequestsService labRequestsService,
-        ILabRpcClient labRpcClient)
+        ILabRpcClient labRpcClient,
+        IServiceScopeFactory serviceScopeFactory)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _labRequestsService = labRequestsService ?? throw new ArgumentNullException(nameof(labRequestsService));
         _labRpcClient = labRpcClient ?? throw new ArgumentNullException(nameof(labRpcClient));
+        _serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
     }
 
+    /// <summary>
+    /// Besides creating and storing a lab request object, handler initiates fire-and-forget background task for processing RPC response asynchronously
+    /// with ProcessLabRpcResponseAsync method, and completes without waiting on it.
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     public async Task Handle(CreateLabRequestCommand request, CancellationToken cancellationToken)
     {
         var labRequest = new LabRequest
@@ -40,37 +53,61 @@ public sealed class CreateLabRequestCommandHandler : IRequestHandler<CreateLabRe
 
         await _labRequestsService.AddAsync(labRequest);
 
-        // This is a detached background task, exceptions need to be handled here because
-        // global exception handler will not catch them
+        _ = Task.Run(() => ProcessLabRpcResponseAsync(labRequestJson, labRequest), CancellationToken.None);
+    }
 
-        // TODO: Performance of this probably cannot be measured and logged along with correlation ID thorugh the
-        // pipeline behavior. Review and analyze this
-        _ = Task.Run(async () =>
+    /// <summary>
+    /// Fire-and-forget background task that processes the RPC response asynchronously.
+    /// Exceptions must be handled here as they won't be caught by global exception handlers or middleware since the request has already completed.
+    /// </summary>
+    /// <param name="labRequestJson"></param>
+    /// <param name="labRequest"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    private async Task ProcessLabRpcResponseAsync(string labRequestJson, LabRequest labRequest)
+    {
+        try
         {
-            try
+            string rpcResponse = await _labRpcClient
+                .CallAsync(labRequestJson, CancellationToken.None)
+                .ConfigureAwait(false);
+
+            string rpcResponseTransformed = rpcResponse.Replace("{\"LabParameterValueResponseDtos\":", string.Empty);
+            rpcResponseTransformed = rpcResponseTransformed[..^1];
+
+            var labReportRpcResponse = JsonSerializer.Deserialize<LabReportRpcServerResponse>(rpcResponse) ??
+                throw new InvalidOperationException("Failed to deserialize Lab Report RPC Server response");
+
+            using (var scope = _serviceScopeFactory.CreateScope())
             {
-                string rpcResponse = await _labRpcClient
-                    .CallAsync(labRequestJson, CancellationToken.None)
-                    .ConfigureAwait(false);
+                var labReportsService = scope.ServiceProvider.GetRequiredService<ILabReportsService>();
 
-                Console.WriteLine(rpcResponse);
+                var labReport = new LabReport
+                {
+                    Content = rpcResponseTransformed,
+                    Created = DateTime.UtcNow,
+                    LabRequestId = labRequest.Id,
+                    PatientId = labRequest.PatientId
+                };
 
-                _logger.LogInformation(
-                    "Background RPC response for {RequestName} (LabRequestId={LabRequestId}): {RpcResponse}",
-                    nameof(CreateLabRequestCommand),
-                    labRequest.Id,
-                    rpcResponse);
+                await labReportsService.AddAsync(labReport);
+                // TODO: Update lab request state
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(
-                    ex,
-                    "Background RPC error for {RequestName} (LabRequestId={LabRequestId})",
-                    nameof(CreateLabRequestCommand),
-                    labRequest.Id);
 
-                Console.WriteLine($"Background RPC error: {ex}");
-            }
-        }, CancellationToken.None);
+            Console.WriteLine(rpcResponse);
+
+            _logger.LogInformation("Background RPC response for {RequestName} (LabRequestId={LabRequestId}): {RpcResponse}",
+                nameof(CreateLabRequestCommand),
+                labRequest.Id,
+                rpcResponse);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Background RPC error for {RequestName} (LabRequestId={LabRequestId})",
+                nameof(CreateLabRequestCommand),
+                labRequest.Id);
+
+            Console.WriteLine($"Background RPC error: {ex}");
+        }
     }
 }

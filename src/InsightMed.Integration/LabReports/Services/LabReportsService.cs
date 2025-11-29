@@ -39,4 +39,13 @@ public sealed class LabReportsService : ILabReportsService
             .FirstOrDefaultAsync(labReport => labReport.Id == id)
             .ConfigureAwait(false);
     }
+
+    public async Task AddAsync(LabReport labReport)
+    {
+        _context.LabReports.Add(labReport);
+
+        await _context
+            .SaveChangesAsync()
+            .ConfigureAwait(false);
+    }
 }

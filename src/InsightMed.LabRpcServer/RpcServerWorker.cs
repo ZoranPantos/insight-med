@@ -9,14 +9,13 @@ using System.Text.Json;
 
 namespace InsightMed.LabRpcServer;
 
-// TODO: Implement actual business logic instead of test response
-
 internal sealed class RpcServerWorker : BackgroundService
 {
     private readonly ILogger<RpcServerWorker> _logger;
     private readonly RabbitMqOptions _options;
     private readonly ILabDbService _labDbService;
     private readonly IParameterValueRandomizerService _randomizerService;
+    private readonly IConfiguration _configuration;
 
     private IConnectionFactory? _factory;
     private IConnection? _connection;
@@ -26,12 +25,14 @@ internal sealed class RpcServerWorker : BackgroundService
         ILogger<RpcServerWorker> logger,
         IOptions<RabbitMqOptions> options,
         ILabDbService labDbService,
-        IParameterValueRandomizerService randomizerService)
+        IParameterValueRandomizerService randomizerService,
+        IConfiguration configuration)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _options = options.Value ?? throw new ArgumentNullException(nameof(options));
         _labDbService = labDbService ?? throw new ArgumentNullException(nameof(labDbService));
         _randomizerService = randomizerService ?? throw new ArgumentNullException(nameof(randomizerService));
+        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
     }
 
     protected async override Task ExecuteAsync(CancellationToken cancellationToken)
@@ -138,8 +139,8 @@ internal sealed class RpcServerWorker : BackgroundService
         }
         finally
         {
-            // Simulate measurements delay
-            await Task.Delay(15000);
+            int randomDelayMs = GetRandomDelayMilliseconds();
+            await Task.Delay(randomDelayMs);
 
             byte[] responseBytes = Encoding.UTF8.GetBytes(response);
 
@@ -149,5 +150,23 @@ internal sealed class RpcServerWorker : BackgroundService
 
             await ch.BasicAckAsync(deliveryTag: ea.DeliveryTag, multiple: false);
         }
+    }
+
+    private int GetRandomDelayMilliseconds()
+    {
+        int defaultMin = 5;
+        int defaultMax = 10;
+
+        int min = _configuration
+            .GetSection("LabResultsDelaySimulationParameters")
+            .GetValue<int?>("MinSeconds") ?? defaultMin;
+
+        int max = _configuration
+            .GetSection("LabResultsDelaySimulationParameters")
+            .GetValue<int?>("MaxSeconds") ?? defaultMax;
+
+        int randomDelayMs = new Random().Next(min, max) * 1000;
+
+        return randomDelayMs;
     }
 }
