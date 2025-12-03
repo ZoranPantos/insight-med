@@ -786,3 +786,74 @@ fabric.properties
 # Additional files built by Visual Studio
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio,visualstudiocode,csharp,angular,rider,webstorm
+
+###############################################################################
+# Angular / Node client (src/InsightMed.Web)
+###############################################################################
+
+# Dependencies
+/src/InsightMed.Web/node_modules/
+/src/InsightMed.Web/bower_components/
+
+# Angular / build output
+/src/InsightMed.Web/dist/
+/src/InsightMed.Web/.angular/
+/src/InsightMed.Web/tmp/
+/src/InsightMed.Web/.cache/
+/src/InsightMed.Web/coverage/
+/src/InsightMed.Web/.nyc_output
+
+# Logs
+/src/InsightMed.Web/logs
+/src/InsightMed.Web/*.log
+/src/InsightMed.Web/npm-debug.log*
+/src/InsightMed.Web/yarn-debug.log*
+/src/InsightMed.Web/yarn-error.log*
+/src/InsightMed.Web/lerna-debug.log*
+/src/InsightMed.Web/.pnpm-debug.log*
+
+# Package manager caches
+/src/InsightMed.Web/.npm
+/src/InsightMed.Web/.pnpm
+/src/InsightMed.Web/.yarn-cache/
+/src/InsightMed.Web/.yarn/*
+!/src/InsightMed.Web/.yarn/releases
+!/src/InsightMed.Web/.yarn/plugins
+!/src/InsightMed.Web/.yarn/sdks
+!/src/InsightMed.Web/.yarn/versions
+
+# Tooling caches
+/src/InsightMed.Web/.eslintcache
+/src/InsightMed.Web/.stylelintcache
+/src/InsightMed.Web/.rpt2_cache/
+/src/InsightMed.Web/.rts2_cache_cjs/
+/src/InsightMed.Web/.rts2_cache_es/
+/src/InsightMed.Web/.rts2_cache_umd/
+/src/InsightMed.Web/.parcel-cache
+/src/InsightMed.Web/.vite
+/src/InsightMed.Web/.turbo
+/src/InsightMed.Web/.sass-cache/
+/src/InsightMed.Web/.vscode-test
+
+# TypeScript incremental build info
+/src/InsightMed.Web/*.tsbuildinfo
+
+# Output of `npm pack`, etc.
+/src/InsightMed.Web/*.tgz
+
+# Local environment files (keep secrets out of git)
+/src/InsightMed.Web/.env
+/src/InsightMed.Web/.env.local
+/src/InsightMed.Web/.env.*.local
+/src/InsightMed.Web/.env.development
+/src/InsightMed.Web/.env.production
+/src/InsightMed.Web/.env.test
+
+# OS / editor cruft (scoped to web project)
+/src/InsightMed.Web/.DS_Store
+/src/InsightMed.Web/Thumbs.db
+/src/InsightMed.Web/.idea/
+/src/InsightMed.Web/.vscode/*
+!/src/InsightMed.Web/.vscode/settings.json
+!/src/InsightMed.Web/.vscode/extensions.json
+!/src/InsightMed.Web/.vscode/launch.json
