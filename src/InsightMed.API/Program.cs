@@ -3,6 +3,8 @@ using Elastic.Serilog.Sinks;
 using InsightMed.API;
 using InsightMed.Application;
 using InsightMed.Infrastructure;
+using InsightMed.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
 
@@ -27,6 +29,12 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await dbContext.Database.MigrateAsync();
+}
 
 if (app.Environment.IsDevelopment())
 {
