@@ -1,0 +1,126 @@
+services:
+
+  # Infrastructure
+  rabbitmq:
+    image: rabbitmq:4.0-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"   # AMQP
+      - "15672:15672" # management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Password1!"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+
+  sqlserver-lab:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver-lab
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Password2!"
+    ports:
+      - "1434:1433"
+    volumes:
+      - sqlserver-lab-data:/var/opt/mssql
+
+  elastic:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.2
+    container_name: elastic
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.15.2
+    container_name: kibana
+    environment:
+      ELASTICSEARCH_HOSTS: "http://elastic:9200"
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elastic
+
+  # Application services
+  api:
+    container_name: insightmed-api
+    build:
+      context: .
+      dockerfile: src/InsightMed.API/Dockerfile
+    depends_on:
+      - sqlserver
+      - rabbitmq
+      - elastic
+    ports:
+      - "5000:8080" # host:container
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+
+      ConnectionStrings__DefaultConnection: >
+        Server=sqlserver,1433;
+        Database=InsightMedDb;
+        User Id=sa;
+        Password=Password1!;
+        TrustServerCertificate=True;
+
+      RabbitMQ__HostName: "rabbitmq"
+      RabbitMQ__Port: "5672"
+      RabbitMQ__UserName: "guest"
+      RabbitMQ__Password: "guest"
+
+      Serilog__WriteTo__0__Args__nodeUris: "http://elastic:9200"
+
+  labrpcserver:
+    container_name: insightmed-labrpcserver
+    build:
+      context: .
+      dockerfile: src/InsightMed.LabRpcServer/Dockerfile
+    depends_on:
+      - sqlserver-lab
+      - rabbitmq
+    environment:
+      DOTNET_ENVIRONMENT: "Development"
+
+      ConnectionStrings__LabDb: >
+        Server=sqlserver-lab,1433;
+        Database=LabDb;
+        User Id=sa;
+        Password=Password2!;
+        TrustServerCertificate=True;
+
+      RabbitMQ__HostName: "rabbitmq"
+      RabbitMQ__Port: "5672"
+      RabbitMQ__UserName: "guest"
+      RabbitMQ__Password: "guest"
+
+  web:
+    container_name: insightmed-web
+    build:
+      context: ./src/InsightMed.Web
+      dockerfile: Dockerfile
+    depends_on:
+      - api
+    ports:
+      - "4200:80" # host:container
+
+    environment:
+      API_BASE_URL: "http://localhost:5000"
+
+volumes:
+  sqlserver-data:
+  sqlserver-lab-data:
+  esdata:

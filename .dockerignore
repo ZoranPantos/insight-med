@@ -1,0 +1,22 @@
+# Git
+.git
+.gitignore
+
+# VS / Rider / IDE
+.vs
+*.user
+*.suo
+
+# Build outputs (for all .NET projects)
+**/bin/
+**/obj/
+**/out/
+
+# Logs
+*.log
+
+# Node / frontend artefacts (from Angular app under src/InsightMed.Web)
+src/InsightMed.Web/node_modules/
+src/InsightMed.Web/dist/
+src/InsightMed.Web/.angular/
+src/InsightMed.Web/.cache/

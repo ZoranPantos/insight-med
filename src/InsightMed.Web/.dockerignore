@@ -1,0 +1,19 @@
+# Node dependencies
+node_modules/
+
+# Angular build output
+dist/
+.angular/
+
+# Logs and temp
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+.temp/
+.cache/
+
+# Git & IDE
+.git
+.gitignore
+.vscode
