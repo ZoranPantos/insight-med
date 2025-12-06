@@ -4,6 +4,7 @@ using InsightMed.API;
 using InsightMed.Application;
 using InsightMed.Infrastructure;
 using InsightMed.Infrastructure.Data;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
@@ -30,11 +31,7 @@ builder.Host.UseSerilog();
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    await dbContext.Database.MigrateAsync();
-}
+await ApplyMigrationsAsync(app);
 
 if (app.Environment.IsDevelopment())
 {
@@ -47,3 +44,26 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
+
+static async Task ApplyMigrationsAsync(WebApplication app)
+{
+    using var scope = app.Services.CreateScope();
+
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+
+    try
+    {
+        await dbContext.Database.MigrateAsync();
+        logger.LogInformation("Database migration completed successfully.");
+    }
+    catch (SqlException ex) when (ex.Number == 1801)
+    {
+        logger.LogWarning(ex, "Database {Database} already exists; skipping creation.", dbContext.Database.GetDbConnection().Database);
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Unexpected error while applying database migrations.");
+        throw;
+    }
+}
