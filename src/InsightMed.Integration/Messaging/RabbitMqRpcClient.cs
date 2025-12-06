@@ -3,6 +3,7 @@ using InsightMed.Infrastructure.Options;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Exceptions;
 using System.Collections.Concurrent;
 using System.Text;
 
@@ -30,34 +31,53 @@ public sealed class RabbitMqRpcClient : ILabRpcClient, IAsyncDisposable
     {
         if (_started) return;
 
-        _connection = await _connectionFactory.CreateConnectionAsync();
-        _channel = await _connection.CreateChannelAsync();
+        const int maxRetries = 3;
 
-        var queueDeclareResult = await _channel.QueueDeclareAsync();
-        _replyQueueName = queueDeclareResult.QueueName;
-
-        var consumer = new AsyncEventingBasicConsumer(_channel);
-        consumer.ReceivedAsync += (model, ea) =>
+        for (int attempt = 1; attempt <= maxRetries; attempt++)
         {
-            string? correlationId = ea.BasicProperties.CorrelationId;
-
-            if (!string.IsNullOrEmpty(correlationId))
+            try
             {
-                if (_callbackMapper.TryRemove(correlationId, out var tcs))
+                _connection = await _connectionFactory.CreateConnectionAsync();
+                _channel = await _connection.CreateChannelAsync();
+
+                var queueDeclareResult = await _channel.QueueDeclareAsync();
+                _replyQueueName = queueDeclareResult.QueueName;
+
+                var consumer = new AsyncEventingBasicConsumer(_channel);
+                consumer.ReceivedAsync += (model, ea) =>
                 {
-                    byte[] body = ea.Body.ToArray();
-                    string response = Encoding.UTF8.GetString(body);
+                    string? correlationId = ea.BasicProperties.CorrelationId;
 
-                    tcs.TrySetResult(response);
-                }
+                    if (!string.IsNullOrEmpty(correlationId))
+                    {
+                        if (_callbackMapper.TryRemove(correlationId, out var tcs))
+                        {
+                            byte[] body = ea.Body.ToArray();
+                            string response = Encoding.UTF8.GetString(body);
+
+                            tcs.TrySetResult(response);
+                        }
+                    }
+
+                    return Task.CompletedTask;
+                };
+
+                await _channel.BasicConsumeAsync(_replyQueueName, true, consumer);
+
+                _started = true;
+
+                return;
             }
+            catch (BrokerUnreachableException)
+            {
+                if (attempt == maxRetries)
+                {
+                    throw; 
+                }
 
-            return Task.CompletedTask;
-        };
-
-        await _channel.BasicConsumeAsync(_replyQueueName, true, consumer);
-
-        _started = true;
+                await Task.Delay(2000);
+            }
+        }
     }
 
     public async Task<string> CallAsync(string message, CancellationToken cancellationToken = default)
