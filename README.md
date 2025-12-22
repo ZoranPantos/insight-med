@@ -1,4 +1,10 @@
 # insight-med
+
+## Table of contents
+- [Overview](docs/Overview.md)
+- [Setup](docs/Setup.md)
+- [Technical](docs/Technical.md)
+
 Functionalities DONE:  
 - get all patients (with endpoint)
 - get patient by ID (with endpoint)

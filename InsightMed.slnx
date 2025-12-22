@@ -5,11 +5,16 @@
     <File Path="LICENSE" />
     <File Path="README.md" />
   </Folder>
+  <Folder Name="/Solution Items/Docs/">
+    <File Path="docs/Overview.md" />
+    <File Path="docs/Setup.md" />
+    <File Path="docs/Technical.md" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="src/InsightMed.API/InsightMed.API.csproj" Id="91eb8734-3072-4624-ac8a-03830e33f445" />
     <Project Path="src/InsightMed.Application/InsightMed.Application.csproj" Id="1d9ad8be-5f64-42c7-b4b0-7cd9fc1b646f" />
     <Project Path="src/InsightMed.Domain/InsightMed.Domain.csproj" Id="ba064760-efed-4cec-ae26-457931ee49b0" />
-    <Project Path="src/InsightMed.Integration/InsightMed.Infrastructure.csproj" Id="613e3b08-c193-43fe-a713-5cb1a6f98c62" />
+    <Project Path="src/InsightMed.Infrastructure/InsightMed.Infrastructure.csproj" />
     <Project Path="src/InsightMed.LabRpcServer/InsightMed.LabRpcServer.csproj" />
   </Folder>
   <Folder Name="/tests/">
