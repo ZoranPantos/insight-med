@@ -1,4 +1,5 @@
 ﻿using InsightMed.Application.Common.Abstractions.Messaging;
+using InsightMed.Application.Common.Exceptions;
 using InsightMed.Application.LabReports.Models;
 using InsightMed.Application.LabReports.Services.Abstactions;
 using InsightMed.Application.LabRequests.Services.Abstractions;
@@ -53,7 +54,7 @@ public sealed class CreateLabRequestCommandHandler : IRequestHandler<CreateLabRe
 
         await _labRequestsService.AddAsync(labRequest);
 
-        _ = Task.Run(() => ProcessLabRpcResponseAsync(labRequestJson, labRequest), CancellationToken.None);
+        _ = Task.Run(() => ProcessLabRpcResponseAsync(labRequestJson, labRequest.Id, labRequest.PatientId), CancellationToken.None);
     }
 
     /// <summary>
@@ -64,7 +65,7 @@ public sealed class CreateLabRequestCommandHandler : IRequestHandler<CreateLabRe
     /// <param name="labRequest"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    private async Task ProcessLabRpcResponseAsync(string labRequestJson, LabRequest labRequest)
+    private async Task ProcessLabRpcResponseAsync(string labRequestJson, int labRequestId, int patientId)
     {
         try
         {
@@ -81,31 +82,34 @@ public sealed class CreateLabRequestCommandHandler : IRequestHandler<CreateLabRe
             using (var scope = _serviceScopeFactory.CreateScope())
             {
                 var labReportsService = scope.ServiceProvider.GetRequiredService<ILabReportsService>();
+                var labRequestsService = scope.ServiceProvider.GetRequiredService<ILabRequestsService>();
 
                 var labReport = new LabReport
                 {
                     Content = rpcResponseTransformed,
                     Created = DateTime.UtcNow,
-                    LabRequestId = labRequest.Id,
-                    PatientId = labRequest.PatientId
+                    LabRequestId = labRequestId,
+                    PatientId = patientId
                 };
 
                 await labReportsService.AddAsync(labReport);
-                // TODO: Update lab request state
+
+                int? result = await labRequestsService.SetStateAsync(labReport.LabRequestId.Value, LabRequestState.Completed)
+                    ?? throw new ResourceNotFoundException($"Lab request with ID {labReport.LabRequestId.Value} not found");
             }
 
             Console.WriteLine(rpcResponse);
 
             _logger.LogInformation("Background RPC response for {RequestName} (LabRequestId={LabRequestId}): {RpcResponse}",
                 nameof(CreateLabRequestCommand),
-                labRequest.Id,
+                labRequestId,
                 rpcResponse);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Background RPC error for {RequestName} (LabRequestId={LabRequestId})",
                 nameof(CreateLabRequestCommand),
-                labRequest.Id);
+                labRequestId);
 
             Console.WriteLine($"Background RPC error: {ex}");
         }
