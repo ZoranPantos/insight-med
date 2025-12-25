@@ -55,7 +55,7 @@ static async Task ApplyMigrationsAsync(WebApplication app)
     try
     {
         await dbContext.Database.MigrateAsync();
-        logger.LogInformation("Database migration completed successfully.");
+        logger.LogInformation("Database migration step completed.");
     }
     catch (SqlException ex) when (ex.Number == 1801)
     {
@@ -63,7 +63,7 @@ static async Task ApplyMigrationsAsync(WebApplication app)
     }
     catch (Exception ex)
     {
-        logger.LogError(ex, "Unexpected error while applying database migrations.");
+        logger.LogError(ex, "Errors in database migration step.");
         throw;
     }
 }

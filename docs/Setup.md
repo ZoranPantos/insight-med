@@ -21,7 +21,17 @@ This should spin up the following containers:
 - kibana
 - insightmed-web
 
+<br />
 
+If containers and volumes need to be removed, use
+```sh
+docker compose down -v
+```
+If cache needs to be removed, use
+```sh
+docker system prune
+```
+<br />
 
 To access the required services, the following URLs are available. Host name and port numbers might vary depending on your configuration.
 - InsightMed API Swagger UI: http://localhost:5000/swagger/index.html
@@ -58,6 +68,8 @@ We are connecting to two SQL Server instances in order to manage the **InsightMe
 | Username                 | sa                        |
 | Password                 | Password2!                |
 | Trust server certificate | Yes                       |
+
+<br />
 
 When running the applications for the first time, all databases will be created automatically if they don't exist. Tables in **InsightMedDb** will be created empty by automatic execution of migration scripts. To populate them with seed data, we can execute the _[GET] api/AppManagement/SeedData endpoint_.
 
