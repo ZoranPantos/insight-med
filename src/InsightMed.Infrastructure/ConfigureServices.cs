@@ -35,12 +35,12 @@ public static class ConfigureServices
         services.AddScoped<ILabRequestsService, LabRequestsService>();
         services.AddScoped<ILabParametersService, LabParametersService>();
 
-        services.Configure<RabbitMqOptions>(configuration.GetSection("RabbitMq"));
-
         services.AddSingleton<RabbitMqRpcClient>();
         services.AddSingleton<ILabRpcClient>(sp => sp.GetRequiredService<RabbitMqRpcClient>());
 
         services.AddHostedService<RabbitMqRpcClientHostedService>();
+
+        services.Configure<RabbitMqOptions>(configuration.GetSection("RabbitMq"));
 
         return services;
     }

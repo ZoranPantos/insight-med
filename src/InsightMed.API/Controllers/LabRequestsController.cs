@@ -25,7 +25,7 @@ public sealed class LabRequestsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> CreateAsync(LabRequestInputDTO input)
+    public async Task<ActionResult> CreateAsync(LabRequestInputModel input)
     {
         var command = new CreateLabRequestCommand(input.PatientId, input.LabParameterIds);
         await _sender.Send(command);

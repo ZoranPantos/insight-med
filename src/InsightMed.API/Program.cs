@@ -12,7 +12,7 @@ using Serilog.Events;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.ConfigureApi();
-builder.Services.ConfigureApplication();
+builder.Services.ConfigureApplication(builder.Configuration);
 builder.Services.ConfigureInfrastructure(builder.Configuration);
 
 Log.Logger = new LoggerConfiguration()

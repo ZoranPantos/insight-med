@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using InsightMed.Application.LabParameters.Models;
 using InsightMed.Application.LabParameters.Services.Abstractions;
+using InsightMed.Application.Options;
 using MediatR;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 
 namespace InsightMed.Application.LabParameters.Queries;
 
@@ -14,16 +16,19 @@ public sealed class GetAllLabParametersQueryHandler
     private readonly IMapper _mapper;
     private readonly ILabParametersService _labParametersService;
     private readonly IMemoryCache _memoryCache;
+    private readonly Options.MemoryCacheOptions _memoryCacheOptions;
     private const string CacheKey = nameof(GetAllLabParametersQuery);
 
     public GetAllLabParametersQueryHandler(
         IMapper mapper,
         ILabParametersService labParametersService,
-        IMemoryCache memoryCache)
+        IMemoryCache memoryCache,
+        IOptions<Options.MemoryCacheOptions> memoryCacheOptions)
     {
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _labParametersService = labParametersService ?? throw new ArgumentNullException(nameof(labParametersService));
         _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
+        _memoryCacheOptions = memoryCacheOptions.Value ?? throw new ArgumentNullException(nameof(memoryCacheOptions));
     }
 
     public async Task<GetAllLabParametersQueryResponse> Handle(
@@ -44,7 +49,7 @@ public sealed class GetAllLabParametersQueryHandler
 
         var cacheOptions = new MemoryCacheEntryOptions
         {
-            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(60 * 24),
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(_memoryCacheOptions.AbsoluteExpirationMinutes),
             Priority = CacheItemPriority.High
         };
 
