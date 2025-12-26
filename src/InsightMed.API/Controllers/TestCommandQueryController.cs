@@ -7,11 +7,11 @@ namespace InsightMed.API.Controllers;
 // Temporary controller for testing queries and commands which are not supposed to expose endpoints
 [ApiController]
 [Route("api/[controller]")]
-public sealed class TestController : ControllerBase
+public sealed class TestCommandQueryController : ControllerBase
 {
     private readonly ISender _sender;
 
-    public TestController(ISender sender) =>
+    public TestCommandQueryController(ISender sender) =>
         _sender = sender ?? throw new ArgumentNullException(nameof(sender));
 
     [HttpPost("createNotification")]

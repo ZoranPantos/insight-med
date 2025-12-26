@@ -10,6 +10,7 @@ public static class ConfigureServices
 {
     public static IServiceCollection ConfigureApplication(this IServiceCollection services)
     {
+        services.AddMemoryCache();
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 

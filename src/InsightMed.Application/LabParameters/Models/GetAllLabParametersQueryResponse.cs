@@ -1,6 +1,8 @@
-﻿namespace InsightMed.Application.LabParameters.Models;
+﻿using InsightMed.Application.Common.Models;
 
-public sealed class GetAllLabParametersQueryResponse
+namespace InsightMed.Application.LabParameters.Models;
+
+public sealed class GetAllLabParametersQueryResponse : BaseResponse
 {
     public List<LabParameterResponse> LabParameters { get; set; } = [];
 }
