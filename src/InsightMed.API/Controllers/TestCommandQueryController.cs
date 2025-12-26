@@ -1,10 +1,12 @@
-﻿using InsightMed.Application.Notifications.Commands;
+﻿using InsightMed.Application.Modules.Notifications.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InsightMed.API.Controllers;
 
-// Temporary controller for testing queries and commands which are not supposed to expose endpoints
+/// <summary>
+/// Temporary controller for testing queries and commands which are not supposed to expose endpoints
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public sealed class TestCommandQueryController : ControllerBase

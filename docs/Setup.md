@@ -71,7 +71,7 @@ We are connecting to two SQL Server instances in order to manage the **InsightMe
 
 <br />
 
-When running the applications for the first time, all databases will be created automatically if they don't exist. Tables in **InsightMedDb** will be created empty by automatic execution of migration scripts. To populate them with seed data, we can execute the _[GET] api/AppManagement/SeedData endpoint_.
+When running the applications for the first time, all databases will be created automatically if they don't exist. Tables in **InsightMedDb** will be created empty by automatic execution of migration scripts. To populate them with seed data, we can execute the _[GET] api/AppManagement/SeedData_ endpoint.
 
 **LabDb** will have only one table, `LabParameters`, which will be populated automatically, and it needs to be synchronized with the same table from **InsightMedDb** by columns `Id` and `Name`.
 

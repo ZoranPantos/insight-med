@@ -9,6 +9,12 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
 
+try
+{
+    Console.Title = "InsightMed.API";
+}
+catch { }
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.ConfigureApi();

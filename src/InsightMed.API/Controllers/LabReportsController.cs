@@ -1,5 +1,5 @@
-﻿using InsightMed.Application.LabReports.Models;
-using InsightMed.Application.LabReports.Queries;
+﻿using InsightMed.Application.Modules.LabReports.Models;
+using InsightMed.Application.Modules.LabReports.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

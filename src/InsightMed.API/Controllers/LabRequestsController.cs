@@ -1,7 +1,7 @@
 ﻿using InsightMed.API.DTOs;
-using InsightMed.Application.LabRequests.Commands;
-using InsightMed.Application.LabRequests.Models;
-using InsightMed.Application.LabRequests.Queries;
+using InsightMed.Application.Modules.LabRequests.Commands;
+using InsightMed.Application.Modules.LabRequests.Models;
+using InsightMed.Application.Modules.LabRequests.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

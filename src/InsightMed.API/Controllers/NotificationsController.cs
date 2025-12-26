@@ -1,6 +1,6 @@
-﻿using InsightMed.Application.Notifications.Commands;
-using InsightMed.Application.Notifications.Models;
-using InsightMed.Application.Notifications.Queries;
+﻿using InsightMed.Application.Modules.Notifications.Commands;
+using InsightMed.Application.Modules.Notifications.Models;
+using InsightMed.Application.Modules.Notifications.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

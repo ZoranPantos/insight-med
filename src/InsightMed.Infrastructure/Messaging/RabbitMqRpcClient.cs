@@ -70,10 +70,7 @@ public sealed class RabbitMqRpcClient : ILabRpcClient, IAsyncDisposable
             }
             catch (BrokerUnreachableException)
             {
-                if (attempt == maxRetries)
-                {
-                    throw; 
-                }
+                if (attempt == maxRetries) throw; 
 
                 await Task.Delay(2000);
             }
@@ -82,11 +79,8 @@ public sealed class RabbitMqRpcClient : ILabRpcClient, IAsyncDisposable
 
     public async Task<string> CallAsync(string message, CancellationToken cancellationToken = default)
     {
-        if (!_started)
-        {
-            // Lazy-start if the hosted service didn't run yet
-            await StartAsync();
-        }
+        // Lazy-start if the hosted service didn't run yet
+        if (!_started) await StartAsync();
 
         if (_channel is null || _replyQueueName is null)
             throw new InvalidOperationException("RPC client not initialized properly.");

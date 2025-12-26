@@ -3,6 +3,12 @@ using InsightMed.LabRpcServer.Options;
 using InsightMed.LabRpcServer.Services;
 using InsightMed.LabRpcServer.Services.Abstractions;
 
+try
+{
+    Console.Title = "InsightMed.LabRpcServer";
+}
+catch { }
+
 var builder = Host.CreateApplicationBuilder(args);
 
 builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection("RabbitMq"));
