@@ -25,7 +25,7 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
     .MinimumLevel.Information()
     .Enrich.FromLogContext()
-    .Enrich.WithProperty("Application", "InsightMed")
+    .Enrich.WithProperty("Application", "InsightMed.API")
     .WriteTo.Console()
     .WriteTo.Elasticsearch(
         [new Uri("http://localhost:9200")],
@@ -61,15 +61,15 @@ static async Task ApplyMigrationsAsync(WebApplication app)
     try
     {
         await dbContext.Database.MigrateAsync();
-        logger.LogInformation("Database migration step completed.");
+        logger.LogInformation("Database migration step completed");
     }
     catch (SqlException ex) when (ex.Number == 1801)
     {
-        logger.LogWarning(ex, "Database {Database} already exists; skipping creation.", dbContext.Database.GetDbConnection().Database);
+        logger.LogWarning(ex, "Database {Database} already exists. Skipping creation", dbContext.Database.GetDbConnection().Database);
     }
     catch (Exception ex)
     {
-        logger.LogError(ex, "Errors in database migration step.");
+        logger.LogError(ex, "Errors in database migration step");
         throw;
     }
 }

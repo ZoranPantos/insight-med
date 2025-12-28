@@ -155,7 +155,7 @@ internal sealed class LabDbService : ILabDbService
                 .ExecuteNonQueryAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            _logger.LogInformation("Database {Db} ensured.", dbName);
+            _logger.LogInformation("Database {Db} ensured", dbName);
         }
         catch (Exception ex)
         {
@@ -177,7 +177,7 @@ internal sealed class LabDbService : ILabDbService
                 .ExecuteNonQueryAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            _logger.LogInformation("Table dbo.LabParameters ensured and seeded if empty.");
+            _logger.LogInformation("Table dbo.LabParameters ensured and seeded if empty");
         }
         catch (Exception ex)
         {

@@ -175,8 +175,7 @@ To generate some logs beforehand, we can seed or truncate the **InsightMedDb** d
    - `message`
    - `labels.RequestName`
    - `metadata.CorrelationId`
-   - `error.message`
-   - `event.duration`
+   - `labels.Application`
 
 5. Remove the `_source` column:
    - In the table header, hover `_source` and click the **−** icon.

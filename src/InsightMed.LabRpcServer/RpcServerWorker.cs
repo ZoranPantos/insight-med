@@ -37,6 +37,8 @@ internal sealed class RpcServerWorker : BackgroundService
 
     protected async override Task ExecuteAsync(CancellationToken cancellationToken)
     {
+        _logger.LogInformation("RPC Server started");
+
         await _labDbService.EnsureInitializedAsync(cancellationToken);
 
         _factory = new ConnectionFactory { HostName = _options.HostName };
@@ -84,7 +86,7 @@ internal sealed class RpcServerWorker : BackgroundService
 
         await _channel.BasicConsumeAsync(_options.QueueName, false, consumer, cancellationToken: cancellationToken);
 
-        _logger.LogInformation("RPC Server started. Listening on {Queue}", _options.QueueName);
+        _logger.LogInformation("Message consumption started. Listening on {Queue}", _options.QueueName);
 
         while (!cancellationToken.IsCancellationRequested && _connection.IsOpen)
             await Task.Delay(500, cancellationToken);

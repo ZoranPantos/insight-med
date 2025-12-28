@@ -98,8 +98,6 @@ public sealed class CreateLabRequestCommandHandler : IRequestHandler<CreateLabRe
                     ?? throw new ResourceNotFoundException($"Lab request with ID {labReport.LabRequestId.Value} not found");
             }
 
-            Console.WriteLine(rpcResponse);
-
             _logger.LogInformation("Background RPC response for {RequestName} (LabRequestId={LabRequestId}): {RpcResponse}",
                 nameof(CreateLabRequestCommand),
                 labRequestId,
@@ -110,8 +108,6 @@ public sealed class CreateLabRequestCommandHandler : IRequestHandler<CreateLabRe
             _logger.LogError(ex, "Background RPC error for {RequestName} (LabRequestId={LabRequestId})",
                 nameof(CreateLabRequestCommand),
                 labRequestId);
-
-            Console.WriteLine($"Background RPC error: {ex}");
         }
     }
 }
