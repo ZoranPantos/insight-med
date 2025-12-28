@@ -94,7 +94,7 @@ public sealed class CreateLabRequestCommandHandler : IRequestHandler<CreateLabRe
 
                 await labReportsService.AddAsync(labReport);
 
-                int? result = await labRequestsService.SetStateAsync(labReport.LabRequestId.Value, LabRequestState.Completed)
+                _ = await labRequestsService.SetStateAsync(labReport.LabRequestId.Value, LabRequestState.Completed)
                     ?? throw new ResourceNotFoundException($"Lab request with ID {labReport.LabRequestId.Value} not found");
             }
 
