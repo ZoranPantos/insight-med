@@ -1,5 +1,6 @@
 ﻿using InsightMed.Application.Common.Abstractions.Messaging;
 using InsightMed.Infrastructure.Options;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -12,6 +13,7 @@ namespace InsightMed.Infrastructure.Messaging;
 public sealed class RabbitMqRpcClient : ILabRpcClient, IAsyncDisposable
 {
     private readonly RabbitMqOptions _options;
+    private readonly ILogger<RabbitMqRpcClient> _logger;
     private readonly IConnectionFactory _connectionFactory;
     private readonly ConcurrentDictionary<string, TaskCompletionSource<string>>_callbackMapper = [];
 
@@ -20,9 +22,11 @@ public sealed class RabbitMqRpcClient : ILabRpcClient, IAsyncDisposable
     private string? _replyQueueName;
     private bool _started;
 
-    public RabbitMqRpcClient(IOptions<RabbitMqOptions> rabbitMqOptions)
+    public RabbitMqRpcClient(IOptions<RabbitMqOptions> rabbitMqOptions, ILogger<RabbitMqRpcClient> logger)
     {
         _options = rabbitMqOptions.Value ?? throw new ArgumentNullException(nameof(rabbitMqOptions));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
         _connectionFactory = new ConnectionFactory() { HostName = _options.HostName };
     }
 
@@ -66,13 +70,33 @@ public sealed class RabbitMqRpcClient : ILabRpcClient, IAsyncDisposable
 
                 _started = true;
 
+                _logger.LogInformation("RPC Client started");
+
                 return;
             }
-            catch (BrokerUnreachableException)
+            catch (BrokerUnreachableException ex)
             {
-                if (attempt == maxRetries) throw; 
+                int delaySeconds = 2;
 
-                await Task.Delay(2000);
+                if (attempt == maxRetries)
+                {
+                    _logger.LogError(
+                        ex,
+                        "Failed to start RabbitMQ RPC client after {Attempt}/{MaxRetries} attempts",
+                        attempt,
+                        maxRetries);
+
+                    throw;
+                }
+
+                _logger.LogWarning(
+                    ex,
+                    "RabbitMQ broker unreachable when starting RPC client (attempt {Attempt}/{MaxRetries}). Retrying in {Delay}s",
+                    attempt,
+                    maxRetries,
+                    delaySeconds);
+
+                await Task.Delay(delaySeconds * 1000);
             }
         }
     }
@@ -103,7 +127,7 @@ public sealed class RabbitMqRpcClient : ILabRpcClient, IAsyncDisposable
         await _channel.BasicPublishAsync(
             exchange: string.Empty,
             routingKey: _options.QueueName,
-            mandatory: true,
+            mandatory: _options.Publishing.Mandatory,
             basicProperties: props,
             body: messageBytes
         );

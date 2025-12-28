@@ -76,15 +76,27 @@ internal sealed class RpcServerWorker : BackgroundService
         _channel = await _connection.CreateChannelAsync(cancellationToken: cancellationToken);
 
         await _channel.QueueDeclareAsync(
-            queue: _options.QueueName, durable: false, exclusive: false, autoDelete: false,
-            arguments: null, cancellationToken: cancellationToken);
+            queue: _options.QueueName,
+            durable: _options.AdditionalQueueOptions.Durable,
+            exclusive: _options.AdditionalQueueOptions.Exclusive,
+            autoDelete: _options.AdditionalQueueOptions.AutoDelete,
+            arguments: null,
+            cancellationToken: cancellationToken);
 
-        await _channel.BasicQosAsync(prefetchSize: 0, prefetchCount: 1, global: false, cancellationToken: cancellationToken);
+        await _channel.BasicQosAsync(
+            prefetchSize: _options.Qos.PrefetchSize,
+            prefetchCount: _options.Qos.PrefetchCount,
+            global: _options.Qos.Global,
+            cancellationToken: cancellationToken);
 
         var consumer = new AsyncEventingBasicConsumer(_channel);
         consumer.ReceivedAsync += OnReceivedAsync;
 
-        await _channel.BasicConsumeAsync(_options.QueueName, false, consumer, cancellationToken: cancellationToken);
+        await _channel.BasicConsumeAsync(
+            _options.QueueName,
+            _options.AutoAck,
+            consumer,
+            cancellationToken: cancellationToken);
 
         _logger.LogInformation("Message consumption started. Listening on {Queue}", _options.QueueName);
 
