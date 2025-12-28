@@ -21,7 +21,7 @@ This should spin up the following containers:
 - kibana
 - insightmed-web
 
-<br />
+<br>
 
 If containers and volumes need to be removed, use
 ```sh
@@ -31,7 +31,7 @@ If cache needs to be removed, use
 ```sh
 docker system prune
 ```
-<br />
+<br>
 
 To access the required services, the following URLs are available. Host name and port numbers might vary depending on your configuration.
 - InsightMed API Swagger UI: http://localhost:5000/swagger/index.html
@@ -69,7 +69,7 @@ We are connecting to two SQL Server instances in order to manage the **InsightMe
 | Password                 | Password2!                |
 | Trust server certificate | Yes                       |
 
-<br />
+<br>
 
 When running the applications for the first time, all databases will be created automatically if they don't exist. Tables in **InsightMedDb** will be created empty by automatic execution of migration scripts. To populate them with seed data, we can execute the _[GET] api/AppManagement/SeedData_ endpoint.
 
@@ -119,6 +119,13 @@ docker run -d --name elastic -p 9200:9200 -e "discovery.type=single-node" -e "xp
 Kibana  
 ```sh
 docker run -d --name kibana -p 5601:5601 -e "ELASTICSEARCH_HOSTS=http://host.docker.internal:9200" docker.elastic.co/kibana/kibana:8.15.2
+```
+
+<br>
+
+To run the frontend app, open terminal in _InsightMed.Web_ folder and execute the following command
+```sh
+ng serve
 ```
 
 <br>

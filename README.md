@@ -21,11 +21,9 @@ Functionalities DONE:
 
 Functionalities TODO:  
 - update seed data with no mistakes for lab requests - lab reports - parameters (with proper json)
-- after created lab request, order a report from external service (executes after create request endpoint) // this is essentially creating a lab request and then waiting for response
-- save report from external service (with endpoint to test)
 
 Functionalities TO CONSIDER:
-- save patient
+- add patient
 - edit patient
 - delete patient by ID
 - delete all patients
