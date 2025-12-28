@@ -1,6 +1,6 @@
 ﻿using InsightMed.API.ErrorHandling;
 
-namespace InsightMed.API;
+namespace InsightMed.API.Configurations;
 
 public static class ConfigureServices
 {
