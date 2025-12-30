@@ -1,1 +1,12 @@
-/* You can add global styles to this file, and also import other style files */
+/* This applies to the entire document */
+body {
+  margin: 0; /* Remove default browser margin */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: medium;
+}
+
+/* Force form elements to use the global font */
+input, button, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
