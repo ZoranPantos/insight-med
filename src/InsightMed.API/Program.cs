@@ -21,6 +21,8 @@ builder.Host.UseSerilog();
 
 var app = builder.Build();
 
+app.LogListeningPort();
+
 await app.ApplyMigrationsAsync();
 
 if (app.Environment.IsDevelopment())
@@ -30,7 +32,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseExceptionHandler();
-app.UseHttpsRedirection();
+
+if (!app.Environment.IsDevelopment())
+    app.UseHttpsRedirection();
+
 app.UseAuthorization();
 app.MapControllers();
+
 app.Run();
