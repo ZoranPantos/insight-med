@@ -31,4 +31,11 @@ public sealed class NotificationsController : ControllerBase
         await _sender.Send(new DeleteAllNotificationsCommand());
         return NoContent();
     }
+
+    [HttpPut("seen")]
+    public async Task<ActionResult> MarkAsSeenAsync([FromBody] List<int> ids)
+    {
+        await _sender.Send(new MarkNotificationsAsSeenCommand(ids));
+        return NoContent();
+    }
 }

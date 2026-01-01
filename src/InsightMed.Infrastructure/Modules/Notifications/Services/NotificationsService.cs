@@ -44,4 +44,12 @@ public sealed class NotificationsService : INotificationsService
             .ExecuteDeleteAsync()
             .ConfigureAwait(false);
     }
+
+    public async Task MarkAsSeenAsync(List<int> ids)
+    {
+        await _context.Notifications
+            .Where(notification => ids.Contains(notification.Id))
+            .ExecuteUpdateAsync(x => x.SetProperty(notification => notification.Seen, true))
+            .ConfigureAwait(false);
+    }
 }

@@ -8,4 +8,5 @@ public interface INotificationsService
     Task<List<Notification>> GetAllAsync(NotificationFilter filter);
     Task AddAsync(Notification notification);
     Task DeleteAllAsync();
+    Task MarkAsSeenAsync(List<int> ids);
 }
