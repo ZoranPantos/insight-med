@@ -9,4 +9,5 @@ public interface INotificationsService
     Task AddAsync(Notification notification);
     Task DeleteAllAsync();
     Task MarkAsSeenAsync(List<int> ids);
+    Task<bool> HasUnseenAsync();
 }

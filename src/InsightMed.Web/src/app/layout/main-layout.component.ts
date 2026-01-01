@@ -1,7 +1,8 @@
-import { Component, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, ChangeDetectorRef, OnInit, OnDestroy, effect } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common'; // Needed for *ngIf and *ngFor
 import { HttpClient } from '@angular/common/http';
+import { SignalrService } from '../signalr.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -26,7 +27,7 @@ import { HttpClient } from '@angular/common/http';
           <div class="notification-wrapper">
             <span (click)="toggleNotifications()" class="notification-trigger">
               Notifications
-              <span *ngIf="notifications.length > 0" class="badge"></span>
+              <span *ngIf="signalrService.hasUnseenNotifications()" class="badge"></span>
             </span>
 
             <div *ngIf="isNotificationsOpen" class="dropdown">
@@ -112,50 +113,76 @@ import { HttpClient } from '@angular/common/http';
 export class MainLayoutComponent {
   http = inject(HttpClient);
   cdr = inject(ChangeDetectorRef);
+  signalrService = inject(SignalrService);
   
   isNotificationsOpen = false;
   isLoading = false;
   notifications: any[] = [];
 
+  // 2. Add the Constructor with the Effect
+  constructor() {
+    // This effect runs automatically whenever 'hasUnseenNotifications' changes
+    effect(() => {
+      // We just "read" the signal to register the dependency
+      const hasUnseen = this.signalrService.hasUnseenNotifications();
+      
+      // We force the view to check itself
+      this.cdr.detectChanges(); 
+      
+      // Optional: Debug log to prove it's firing
+      console.log('Effect triggered! Red Dot should be:', hasUnseen ? 'VISIBLE' : 'HIDDEN');
+    });
+  }
+
+  ngOnInit() {
+    this.signalrService.startConnection();
+  }
+
+  ngOnDestroy() {
+    this.signalrService.stopConnection();
+  }
+
   toggleNotifications() {
     this.isNotificationsOpen = !this.isNotificationsOpen;
-    
-    // Fetch only if opening and empty
     if (this.isNotificationsOpen && this.notifications.length === 0) {
       this.fetchNotifications();
     }
   }
 
   fetchNotifications() {
-    this.isLoading = true; // Start loading
+    this.isLoading = true;
     this.http.get<any>('http://localhost:5000/api/Notifications', {
       params: { filter: 'Unseen' }
     }).subscribe({
       next: (data) => {
         this.notifications = data.notifications;
-        this.isLoading = false; // Stop loading
-        this.cdr.detectChanges(); // <-- FORCE UPDATE UI
+        this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
-        console.error('Failed to load notifications', err);
+        console.error(err);
         this.isLoading = false;
-        this.cdr.detectChanges(); // <-- Force update even on error
+        this.cdr.detectChanges();
       }
     });
   }
 
   clearAll() {
     if (this.notifications.length === 0) return;
-
     const ids = this.notifications.map(n => n.id);
 
     this.http.put('http://localhost:5000/api/Notifications/seen', ids)
-      .subscribe({
-        next: () => {
-          this.notifications = []; // Clear the array
-          this.cdr.detectChanges(); // <-- FORCE UPDATE UI IMMEDIATELY
-        },
-        error: (err) => console.error('Failed to mark as seen', err)
-      });
-  }
+        .subscribe({
+          next: () => {
+            this.notifications = [];
+            
+            // IMPORTANT: Update the Red Dot manually via the service
+            // because we know we just cleared them!
+            this.signalrService.hasUnseenNotifications.set(false);
+            
+            this.cdr.detectChanges();
+          },
+          error: (err) => console.error(err)
+        });
+    }
 }

@@ -1,5 +1,6 @@
 using InsightMed.API.Configurations;
 using InsightMed.API.Extensions;
+using InsightMed.API.Hubs;
 using InsightMed.Application;
 using InsightMed.Infrastructure;
 using Serilog;
@@ -39,5 +40,6 @@ if (!app.Environment.IsDevelopment())
 app.UseCors("AllowAll");
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<NotificationHub>("/notifications");
 
 app.Run();

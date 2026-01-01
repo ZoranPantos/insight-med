@@ -11,17 +11,18 @@ public static class ConfigureServices
             options.AddPolicy("AllowAll", policy =>
             {
                 policy
-                    .AllowAnyOrigin()
+                    .WithOrigins("http://localhost:4200")
                     .AllowAnyMethod()
-                    .AllowAnyHeader();
+                    .AllowAnyHeader()
+                    .AllowCredentials();
             });
         });
 
         services.AddControllers();
         services.AddOpenApi();
-
         services.AddProblemDetails();
         services.AddExceptionHandler<GlobalExceptionHandler>();
+        services.AddSignalR();
 
         return services;
     }

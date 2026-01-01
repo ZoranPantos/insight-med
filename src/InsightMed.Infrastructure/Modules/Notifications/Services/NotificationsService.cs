@@ -52,4 +52,11 @@ public sealed class NotificationsService : INotificationsService
             .ExecuteUpdateAsync(x => x.SetProperty(notification => notification.Seen, true))
             .ConfigureAwait(false);
     }
+
+    public async Task<bool> HasUnseenAsync()
+    {
+        return await _context.Notifications
+            .AnyAsync(notification => !notification.Seen)
+            .ConfigureAwait(false);
+    }
 }
