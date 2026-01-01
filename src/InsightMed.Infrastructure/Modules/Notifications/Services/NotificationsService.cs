@@ -1,4 +1,5 @@
 ﻿using InsightMed.Application.Common.Abstractions.Data;
+using InsightMed.Application.Modules.Notifications.Enums;
 using InsightMed.Application.Modules.Notifications.Services.Abstractions;
 using InsightMed.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +13,18 @@ public sealed class NotificationsService : INotificationsService
     public NotificationsService(IAppDbContext context) =>
         _context = context ?? throw new ArgumentNullException(nameof(context));
 
-    public async Task<List<Notification>> GetAllAsync()
+    public async Task<List<Notification>> GetAllAsync(NotificationFilter filter)
     {
-        return await _context.Notifications
-            .AsNoTracking()
+        var query = _context.Notifications.AsNoTracking();
+
+        query = filter switch
+        {
+            NotificationFilter.Seen => query.Where(notification => notification.Seen),
+            NotificationFilter.Unseen => query.Where(notification => !notification.Seen),
+            _ => query
+        };
+
+        return await query
             .ToListAsync()
             .ConfigureAwait(false);
     }

@@ -57,18 +57,18 @@ VALUES
     ('Platelet Count: 250,000 /µL (normal)', '2023-09-22 15:15:00', 9, 9),
     ('White Blood Cell Count: 7,000 /µL (normal)', '2023-10-27 16:30:00', 10, 10);
 
-INSERT INTO [Notifications] ([Message], [LabReportId])
+INSERT INTO [Notifications] ([Message], [LabReportId], [Seen])
 VALUES
-    ('Lab report ready for review: Hemoglobin results available.', 1),
-    ('Notification: Glucose test completed.', 2),
-    ('Alert: Cholesterol levels updated.', 3),
-    ('New results: Creatinine test processed.', 4),
-    ('Urine pH report is now available.', 5),
-    ('TSH results ready - please check.', 6),
-    ('Vitamin D deficiency check completed.', 7),
-    ('Bilirubin test results uploaded.', 8),
-    ('Platelet count report available.', 9),
-    ('White blood cell count results ready for review.', 10);
+    ('Lab report ready for review: Hemoglobin results available.', 1, 0),
+    ('Notification: Glucose test completed.', 2, 0),
+    ('Alert: Cholesterol levels updated.', 3, 0),
+    ('New results: Creatinine test processed.', 4, 0),
+    ('Urine pH report is now available.', 5, 0),
+    ('TSH results ready - please check.', 6, 0),
+    ('Vitamin D deficiency check completed.', 7, 0),
+    ('Bilirubin test results uploaded.', 8, 0),
+    ('Platelet count report available.', 9, 0),
+    ('White blood cell count results ready for review.', 10, 0);
 
 ALTER TABLE [LabRequests] CHECK CONSTRAINT ALL;
 ALTER TABLE [LabReports] CHECK CONSTRAINT ALL;

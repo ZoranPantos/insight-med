@@ -1,4 +1,5 @@
 ﻿using InsightMed.Application.Modules.Notifications.Commands;
+using InsightMed.Application.Modules.Notifications.Enums;
 using InsightMed.Application.Modules.Notifications.Models;
 using InsightMed.Application.Modules.Notifications.Queries;
 using MediatR;
@@ -17,9 +18,10 @@ public sealed class NotificationsController : ControllerBase
         _sender = sender ?? throw new ArgumentNullException(nameof(sender));
 
     [HttpGet]
-    public async Task<ActionResult<GetAllNotificationsQueryResponse>> GetAllAsync()
+    public async Task<ActionResult<GetAllNotificationsQueryResponse>> GetAllAsync(
+        [FromQuery] NotificationFilter filter = NotificationFilter.All)
     {
-        var response = await _sender.Send(new GetAllNotificationsQuery());
+        var response = await _sender.Send(new GetAllNotificationsQuery(filter));
         return Ok(response);
     }
 

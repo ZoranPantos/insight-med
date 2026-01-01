@@ -125,9 +125,11 @@ export class MainLayoutComponent {
   }
 
   fetchNotifications() {
-    this.http.get<any>('http://localhost:5000/api/Notifications').subscribe({
+  // We pass the parameters as a second argument to .get()
+  this.http.get<any>('http://localhost:5000/api/Notifications', {
+      params: { filter: 'Unseen' }
+    }).subscribe({
       next: (data) => {
-        // The API wraps the list in "notifications" property
         this.notifications = data.notifications; 
       },
       error: (err) => console.error('Failed to load notifications', err)
