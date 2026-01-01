@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common'; // Needed for *ngIf and *ngFor
 import { HttpClient } from '@angular/common/http';
@@ -111,8 +111,10 @@ import { HttpClient } from '@angular/common/http';
 })
 export class MainLayoutComponent {
   http = inject(HttpClient);
+  cdr = inject(ChangeDetectorRef);
   
   isNotificationsOpen = false;
+  isLoading = false;
   notifications: any[] = [];
 
   toggleNotifications() {
@@ -125,20 +127,35 @@ export class MainLayoutComponent {
   }
 
   fetchNotifications() {
-  // We pass the parameters as a second argument to .get()
-  this.http.get<any>('http://localhost:5000/api/Notifications', {
+    this.isLoading = true; // Start loading
+    this.http.get<any>('http://localhost:5000/api/Notifications', {
       params: { filter: 'Unseen' }
     }).subscribe({
       next: (data) => {
-        this.notifications = data.notifications; 
+        this.notifications = data.notifications;
+        this.isLoading = false; // Stop loading
+        this.cdr.detectChanges(); // <-- FORCE UPDATE UI
       },
-      error: (err) => console.error('Failed to load notifications', err)
+      error: (err) => {
+        console.error('Failed to load notifications', err);
+        this.isLoading = false;
+        this.cdr.detectChanges(); // <-- Force update even on error
+      }
     });
   }
 
   clearAll() {
-    this.notifications = [];
-    // Optional: Close dropdown automatically
-    // this.isNotificationsOpen = false; 
+    if (this.notifications.length === 0) return;
+
+    const ids = this.notifications.map(n => n.id);
+
+    this.http.put('http://localhost:5000/api/Notifications/seen', ids)
+      .subscribe({
+        next: () => {
+          this.notifications = []; // Clear the array
+          this.cdr.detectChanges(); // <-- FORCE UPDATE UI IMMEDIATELY
+        },
+        error: (err) => console.error('Failed to mark as seen', err)
+      });
   }
 }
