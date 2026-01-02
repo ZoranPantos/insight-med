@@ -7,11 +7,7 @@ using InsightMed.LabRpcServer.Services.Abstractions;
 using Serilog;
 using Serilog.Events;
 
-try
-{
-    Console.Title = "InsightMed.LabRpcServer";
-}
-catch { }
+Console.Title = "InsightMed.LabRpcServer";
 
 Log.Logger = new LoggerConfiguration()
   .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)

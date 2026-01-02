@@ -1,4 +1,6 @@
 ﻿using InsightMed.API.ErrorHandling;
+using InsightMed.API.Services;
+using InsightMed.Application.Modules.Notifications.Services.Abstractions;
 
 namespace InsightMed.API.Configurations;
 
@@ -23,6 +25,8 @@ public static class ConfigureServices
         services.AddProblemDetails();
         services.AddExceptionHandler<GlobalExceptionHandler>();
         services.AddSignalR();
+
+        services.AddScoped<INotificationsNotifierService, NotificationsNotifierService>();
 
         return services;
     }

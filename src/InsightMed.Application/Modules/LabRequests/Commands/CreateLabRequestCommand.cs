@@ -3,6 +3,8 @@ using InsightMed.Application.Common.Exceptions;
 using InsightMed.Application.Modules.LabReports.Models;
 using InsightMed.Application.Modules.LabReports.Services.Abstactions;
 using InsightMed.Application.Modules.LabRequests.Services.Abstractions;
+using InsightMed.Application.Modules.Notifications.Services.Abstractions;
+using InsightMed.Application.Modules.Patients.Services.Abstractions;
 using InsightMed.Domain.Entities;
 using InsightMed.Domain.Enums;
 using MediatR;
@@ -83,6 +85,9 @@ public sealed class CreateLabRequestCommandHandler : IRequestHandler<CreateLabRe
             {
                 var labReportsService = scope.ServiceProvider.GetRequiredService<ILabReportsService>();
                 var labRequestsService = scope.ServiceProvider.GetRequiredService<ILabRequestsService>();
+                var notificationsService = scope.ServiceProvider.GetRequiredService<INotificationsService>();
+                var notifierService = scope.ServiceProvider.GetRequiredService<INotificationsNotifierService>();
+                var patientsService = scope.ServiceProvider.GetRequiredService<IPatientsService>();
 
                 var labReport = new LabReport
                 {
@@ -93,6 +98,18 @@ public sealed class CreateLabRequestCommandHandler : IRequestHandler<CreateLabRe
                 };
 
                 await labReportsService.AddAsync(labReport);
+
+                var patient = await patientsService.GetByIdAsync(patientId)
+                    ?? throw new ResourceNotFoundException($"Patient with ID {patientId} not found");
+
+                var notification = new Notification
+                {
+                    LabReportId = labReport.Id,
+                    Message = $"Report for patient {patient.FirstName} {patient.LastName} {patient.Uid} is available. Date created UTC: {labReport.Created}"
+                };
+
+                await notificationsService.AddAsync(notification);
+                await notifierService.NotifyUnseenStatusAsync(true);
 
                 _ = await labRequestsService.SetStateAsync(labReport.LabRequestId.Value, LabRequestState.Completed)
                     ?? throw new ResourceNotFoundException($"Lab request with ID {labReport.LabRequestId.Value} not found");

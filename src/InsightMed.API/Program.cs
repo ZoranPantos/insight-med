@@ -5,11 +5,7 @@ using InsightMed.Application;
 using InsightMed.Infrastructure;
 using Serilog;
 
-try
-{
-    Console.Title = "InsightMed.API";
-}
-catch { }
+Console.Title = "InsightMed.API";
 
 var builder = WebApplication.CreateBuilder(args);
 
