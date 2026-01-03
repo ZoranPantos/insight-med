@@ -1,8 +1,8 @@
 import { Component, inject, ChangeDetectorRef, OnInit, OnDestroy, effect } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
-import { CommonModule } from '@angular/common'; // Needed for *ngIf and *ngFor
+import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { SignalrService } from '../signalr.service';
+import { SignalrService } from '../services/signalr.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -85,12 +85,12 @@ import { SignalrService } from '../signalr.service';
       background: white; border: 1px solid #ccc;
       box-shadow: 0 4px 8px rgba(0,0,0,0.15);
       border-radius: 6px; z-index: 1000;
-      overflow: hidden; /* Ensures footer corners are clipped */
+      overflow: hidden;
     }
 
     /* Scrollable Area */
     .dropdown-content {
-      max-height: 200px; /* Limits height to allow scrolling */
+      max-height: 200px;
       overflow-y: auto;
     }
 
@@ -119,18 +119,9 @@ export class MainLayoutComponent {
   isLoading = false;
   notifications: any[] = [];
 
-  // 2. Add the Constructor with the Effect
   constructor() {
-    // This effect runs automatically whenever 'hasUnseenNotifications' changes
     effect(() => {
-      // We just "read" the signal to register the dependency
-      const hasUnseen = this.signalrService.hasUnseenNotifications();
-      
-      // We force the view to check itself
       this.cdr.detectChanges(); 
-      
-      // Optional: Debug log to prove it's firing
-      console.log('Effect triggered! Red Dot should be:', hasUnseen ? 'VISIBLE' : 'HIDDEN');
     });
   }
 
@@ -175,11 +166,7 @@ export class MainLayoutComponent {
         .subscribe({
           next: () => {
             this.notifications = [];
-            
-            // IMPORTANT: Update the Red Dot manually via the service
-            // because we know we just cleared them!
             this.signalrService.hasUnseenNotifications.set(false);
-            
             this.cdr.detectChanges();
           },
           error: (err) => console.error(err)

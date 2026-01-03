@@ -1,4 +1,4 @@
-import { Injectable, signal, NgZone, inject } from '@angular/core'; // <-- 1. Import NgZone & inject
+import { Injectable, signal, NgZone, inject } from '@angular/core';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 
 @Injectable({
@@ -6,7 +6,7 @@ import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 })
 export class SignalrService {
   private hubConnection: HubConnection | undefined;
-  private ngZone = inject(NgZone); // <-- 2. Inject it here
+  private ngZone = inject(NgZone);
   
   public hasUnseenNotifications = signal<boolean>(false);
 
@@ -21,17 +21,12 @@ export class SignalrService {
     this.hubConnection
       .start()
       .then(() => {
-        console.log('SignalR Connection Established. ID: ' + this.hubConnection?.connectionId);
+        console.log('SignalR Connection Established with ID: ' + this.hubConnection?.connectionId);
         this.askServerForStatus();
       })
       .catch(err => console.error('Error while starting SignalR connection: ' + err));
 
-    // LISTENER
     this.hubConnection.on('ReceiveUnseenStatus', (hasUnseen: boolean) => {
-      console.log('Server says Unseen Status is:', hasUnseen);
-      
-      // <-- 3. WRAP THIS IN NGZONE -->
-      // This tells Angular: "Hey! Something changed, update the UI now!"
       this.ngZone.run(() => {
         this.hasUnseenNotifications.set(hasUnseen);
       });
