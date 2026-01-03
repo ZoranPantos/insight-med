@@ -1,4 +1,5 @@
 ﻿using InsightMed.Application.AppManagement.Services.Abstractions;
+using InsightMed.Application.Auth.Services.Abstractions;
 using InsightMed.Application.Common.Abstractions.Data;
 using InsightMed.Application.Common.Abstractions.Messaging;
 using InsightMed.Application.Modules.LabParameters.Services.Abstractions;
@@ -7,6 +8,7 @@ using InsightMed.Application.Modules.LabRequests.Services.Abstractions;
 using InsightMed.Application.Modules.Notifications.Services.Abstractions;
 using InsightMed.Application.Modules.Patients.Services.Abstractions;
 using InsightMed.Infrastructure.AppManagement.Services;
+using InsightMed.Infrastructure.Auth.Services;
 using InsightMed.Infrastructure.Data;
 using InsightMed.Infrastructure.HostedServices;
 using InsightMed.Infrastructure.Messaging;
@@ -34,6 +36,7 @@ public static class ConfigureServices
         services.AddScoped<ILabReportsService, LabReportsService>();
         services.AddScoped<ILabRequestsService, LabRequestsService>();
         services.AddScoped<ILabParametersService, LabParametersService>();
+        services.AddScoped<IAuthService, AuthService>();
 
         services.AddSingleton<RabbitMqRpcClient>();
         services.AddSingleton<ILabRpcClient>(sp => sp.GetRequiredService<RabbitMqRpcClient>());

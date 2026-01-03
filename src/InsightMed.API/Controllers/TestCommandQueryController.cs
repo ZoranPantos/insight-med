@@ -1,5 +1,6 @@
 ﻿using InsightMed.Application.Modules.Notifications.Commands;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InsightMed.API.Controllers;

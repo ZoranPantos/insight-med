@@ -1,11 +1,13 @@
 ﻿using InsightMed.Application.Common.Abstractions.Data;
 using InsightMed.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace InsightMed.Infrastructure.Data;
 
-public sealed class AppDbContext : DbContext, IAppDbContext
+public sealed class AppDbContext : IdentityDbContext<IdentityUser>, IAppDbContext
 {
     private readonly IConfiguration _configuration;
 
@@ -29,6 +31,8 @@ public sealed class AppDbContext : DbContext, IAppDbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<LabReport>()
             .HasOne(lr => lr.LabRequest)
             .WithOne(lrq => lrq.LabReport)

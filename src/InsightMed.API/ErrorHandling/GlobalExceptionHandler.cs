@@ -24,6 +24,10 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
             {
                 typeof(InvalidClientDataException),
                 (ctx, ex) => HandleInvalidClientDataException(ctx, (InvalidClientDataException)ex)
+            },
+            {
+                typeof(UnauthorizedException),
+                (ctx, ex) => HandleUnauthorizedException(ctx, (UnauthorizedException)ex)
             }
         };
     }
@@ -90,6 +94,22 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
         {
             Status = StatusCodes.Status400BadRequest,
             Title = "Bad Request",
+            Detail = ex.Message,
+            Instance = ctx.Request.Path
+        };
+
+        return problemDetails;
+    }
+
+    private ProblemDetails HandleUnauthorizedException(HttpContext ctx, UnauthorizedException ex)
+    {
+        string logMessage = $"Unauthorized access: {ex.Message}";
+        _logger.LogWarning(ex, logMessage);
+
+        var problemDetails = new ProblemDetails
+        {
+            Status = StatusCodes.Status401Unauthorized,
+            Title = "Unauthorized Access",
             Detail = ex.Message,
             Instance = ctx.Request.Path
         };

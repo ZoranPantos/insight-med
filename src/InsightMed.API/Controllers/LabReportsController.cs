@@ -1,10 +1,12 @@
 ﻿using InsightMed.Application.Modules.LabReports.Models;
 using InsightMed.Application.Modules.LabReports.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InsightMed.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json", "application/problem+json")]

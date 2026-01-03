@@ -9,7 +9,7 @@ Console.Title = "InsightMed.API";
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.ConfigureApi();
+builder.Services.ConfigureApi(builder.Configuration);
 builder.Services.ConfigureApplication(builder.Configuration);
 builder.Services.ConfigureInfrastructure(builder.Configuration);
 
@@ -34,6 +34,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.MapHub<NotificationHub>("/notifications");

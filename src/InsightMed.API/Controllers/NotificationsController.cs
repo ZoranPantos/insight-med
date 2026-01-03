@@ -3,10 +3,12 @@ using InsightMed.Application.Modules.Notifications.Enums;
 using InsightMed.Application.Modules.Notifications.Models;
 using InsightMed.Application.Modules.Notifications.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InsightMed.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json", "application/problem+json")]

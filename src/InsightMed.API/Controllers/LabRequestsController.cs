@@ -3,10 +3,12 @@ using InsightMed.Application.Modules.LabRequests.Commands;
 using InsightMed.Application.Modules.LabRequests.Models;
 using InsightMed.Application.Modules.LabRequests.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InsightMed.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json", "application/problem+json")]
@@ -29,6 +31,7 @@ public sealed class LabRequestsController : ControllerBase
     {
         var command = new CreateLabRequestCommand(input.PatientId, input.LabParameterIds);
         await _sender.Send(command);
+
         return NoContent();
     }
 }

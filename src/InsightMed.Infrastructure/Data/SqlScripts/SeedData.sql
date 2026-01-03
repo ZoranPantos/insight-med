@@ -1,7 +1,30 @@
 ﻿SET NOCOUNT ON;
+
+ALTER TABLE [AspNetUsers] NOCHECK CONSTRAINT ALL;
 ALTER TABLE [LabRequests] NOCHECK CONSTRAINT ALL;
 ALTER TABLE [LabReports] NOCHECK CONSTRAINT ALL;
 ALTER TABLE [Notifications] NOCHECK CONSTRAINT ALL;
+
+INSERT INTO [dbo].[AspNetUsers]
+(
+    [Id], [UserName], [NormalizedUserName], [Email], [NormalizedEmail], 
+    [EmailConfirmed], [PasswordHash], [SecurityStamp], [ConcurrencyStamp], 
+    [PhoneNumber], [PhoneNumberConfirmed], [TwoFactorEnabled], 
+    [LockoutEnd], [LockoutEnabled], [AccessFailedCount]
+)
+VALUES
+(
+    N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa',
+    N'default',
+    N'DEFAULT',
+    N'default@test.com',
+    N'DEFAULT@TEST.COM',
+    1,
+    N'AQAAAAIAAYagAAAAEPcKVF7pt3eA9QAb1gQByK444/GC7JS2DlpnYz88IUhte1lwsZz/xHbn8Wg7ViC+bA==',
+    N'KJ2J76RSCOFHROXOYUTETXOZZF63VZO7',
+    N'9584048b-3405-4a4d-805d-e590921a9b79',
+    NULL, 0, 0, NULL, 1, 0
+);
 
 SET IDENTITY_INSERT LabParameters ON;
 INSERT INTO [LabParameters] ([Id], [Name])
@@ -70,6 +93,7 @@ VALUES
     ('Platelet count report available.', 9, 0),
     ('White blood cell count results ready for review.', 10, 0);
 
+ALTER TABLE [AspNetUsers] CHECK CONSTRAINT ALL;
 ALTER TABLE [LabRequests] CHECK CONSTRAINT ALL;
 ALTER TABLE [LabReports] CHECK CONSTRAINT ALL;
 ALTER TABLE [Notifications] CHECK CONSTRAINT ALL;
