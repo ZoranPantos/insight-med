@@ -13,7 +13,11 @@ public sealed class NotificationHub : Hub<INotificationClient>
 
     public async Task CheckUnseen()
     {
-        bool hasUnseen = await _sender.Send(new HasUnseenNotificationsQuery());
+        // TODO: Consider throwing exception if userId is null or empty instead of returning, and not use default value
+        string? userId = Context.UserIdentifier ?? string.Empty;
+        if (string.IsNullOrEmpty(userId)) return;
+
+        bool hasUnseen = await _sender.Send(new HasUnseenNotificationsQuery(userId));
         await Clients.Caller.ReceiveUnseenStatus(hasUnseen);
     }
 }

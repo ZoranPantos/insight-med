@@ -27,6 +27,8 @@ public static class ConfigureServices
 {
     public static IServiceCollection ConfigureInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddHttpContextAccessor();
+
         services.AddDbContext<AppDbContext>();
         services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
 
@@ -37,6 +39,7 @@ public static class ConfigureServices
         services.AddScoped<ILabRequestsService, LabRequestsService>();
         services.AddScoped<ILabParametersService, LabParametersService>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
 
         services.AddSingleton<RabbitMqRpcClient>();
         services.AddSingleton<ILabRpcClient>(sp => sp.GetRequiredService<RabbitMqRpcClient>());

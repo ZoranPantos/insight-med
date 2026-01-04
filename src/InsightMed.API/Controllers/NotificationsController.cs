@@ -5,6 +5,7 @@ using InsightMed.Application.Modules.Notifications.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace InsightMed.API.Controllers;
 
@@ -15,6 +16,7 @@ namespace InsightMed.API.Controllers;
 public sealed class NotificationsController : ControllerBase
 {
     private readonly ISender _sender;
+    private string UserId => User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
     public NotificationsController(ISender sender) =>
         _sender = sender ?? throw new ArgumentNullException(nameof(sender));
@@ -23,7 +25,7 @@ public sealed class NotificationsController : ControllerBase
     public async Task<ActionResult<GetAllNotificationsQueryResponse>> GetAllAsync(
         [FromQuery] NotificationFilter filter = NotificationFilter.All)
     {
-        var response = await _sender.Send(new GetAllNotificationsQuery(filter));
+        var response = await _sender.Send(new GetAllNotificationsQuery(UserId, filter));
         return Ok(response);
     }
 
@@ -37,7 +39,7 @@ public sealed class NotificationsController : ControllerBase
     [HttpPut("seen")]
     public async Task<ActionResult> MarkAsSeenAsync([FromBody] List<int> ids)
     {
-        await _sender.Send(new MarkNotificationsAsSeenCommand(ids));
+        await _sender.Send(new MarkNotificationsAsSeenCommand(UserId, ids));
         return NoContent();
     }
 }

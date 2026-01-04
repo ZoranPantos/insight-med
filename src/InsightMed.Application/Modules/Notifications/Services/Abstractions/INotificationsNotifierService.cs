@@ -2,5 +2,5 @@
 
 public interface INotificationsNotifierService
 {
-    Task NotifyUnseenStatusAsync(bool hasUnseen);
+    Task NotifyUnseenStatusAsync(string userId, bool hasUnseen);
 }

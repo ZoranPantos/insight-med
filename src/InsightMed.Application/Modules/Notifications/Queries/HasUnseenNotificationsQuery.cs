@@ -3,7 +3,7 @@ using MediatR;
 
 namespace InsightMed.Application.Modules.Notifications.Queries;
 
-public sealed record HasUnseenNotificationsQuery : IRequest<bool>;
+public sealed record HasUnseenNotificationsQuery(string UserId) : IRequest<bool>;
 
 public sealed class HasUnseenNotificationsQueryHandler : IRequestHandler<HasUnseenNotificationsQuery, bool>
 {
@@ -13,5 +13,5 @@ public sealed class HasUnseenNotificationsQueryHandler : IRequestHandler<HasUnse
         _notificationsService = notificationsService ?? throw new ArgumentNullException(nameof(notificationsService));
 
     public async Task<bool> Handle(HasUnseenNotificationsQuery request, CancellationToken cancellationToken) =>
-        await _notificationsService.HasUnseenAsync();
+        await _notificationsService.HasUnseenAsync(request.UserId);
 }

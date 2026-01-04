@@ -13,9 +13,11 @@ public sealed class NotificationsService : INotificationsService
     public NotificationsService(IAppDbContext context) =>
         _context = context ?? throw new ArgumentNullException(nameof(context));
 
-    public async Task<List<Notification>> GetAllAsync(NotificationFilter filter)
+    public async Task<List<Notification>> GetAllAsync(string userId, NotificationFilter filter)
     {
-        var query = _context.Notifications.AsNoTracking();
+        var query = _context.Notifications
+            .AsNoTracking()
+            .Where(notification => notification.RequesterId.Equals(userId));
 
         query = filter switch
         {
@@ -25,6 +27,7 @@ public sealed class NotificationsService : INotificationsService
         };
 
         return await query
+            .OrderByDescending(notification => notification.Id)
             .ToListAsync()
             .ConfigureAwait(false);
     }
@@ -45,17 +48,18 @@ public sealed class NotificationsService : INotificationsService
             .ConfigureAwait(false);
     }
 
-    public async Task MarkAsSeenAsync(List<int> ids)
+    public async Task MarkAsSeenAsync(string userId, List<int> ids)
     {
         await _context.Notifications
-            .Where(notification => ids.Contains(notification.Id))
+            .Where(notification => ids.Contains(notification.Id) && notification.RequesterId.Equals(userId))
             .ExecuteUpdateAsync(x => x.SetProperty(notification => notification.Seen, true))
             .ConfigureAwait(false);
     }
 
-    public async Task<bool> HasUnseenAsync()
+    public async Task<bool> HasUnseenAsync(string userId)
     {
         return await _context.Notifications
+            .Where(n => n.RequesterId.Equals(userId))
             .AnyAsync(notification => !notification.Seen)
             .ConfigureAwait(false);
     }

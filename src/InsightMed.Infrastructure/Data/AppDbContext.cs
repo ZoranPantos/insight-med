@@ -56,5 +56,12 @@ public sealed class AppDbContext : IdentityDbContext<IdentityUser>, IAppDbContex
             .WithMany()
             .HasForeignKey(n => n.LabReportId)
             .OnDelete(DeleteBehavior.ClientCascade);
+
+        modelBuilder.Entity<Notification>()
+            .HasOne<IdentityUser>()
+            .WithMany()
+            .HasForeignKey(n => n.RequesterId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

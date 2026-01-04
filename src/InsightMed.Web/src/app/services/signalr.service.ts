@@ -1,5 +1,6 @@
 import { Injectable, signal, NgZone, inject } from '@angular/core';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -7,14 +8,19 @@ import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 export class SignalrService {
   private hubConnection: HubConnection | undefined;
   private ngZone = inject(NgZone);
+  private authService = inject(AuthService);
   
   public hasUnseenNotifications = signal<boolean>(false);
 
   constructor() { }
 
   public startConnection() {
+    const token = this.authService.getToken();
+
     this.hubConnection = new HubConnectionBuilder()
-      .withUrl('http://localhost:5000/notifications')
+      .withUrl('http://localhost:5000/notifications', {
+        accessTokenFactory: () => token || '' 
+      })
       .withAutomaticReconnect()
       .build();
 

@@ -3,7 +3,7 @@ using MediatR;
 
 namespace InsightMed.Application.Modules.Notifications.Commands;
 
-public sealed record MarkNotificationsAsSeenCommand(List<int> Ids) : IRequest;
+public sealed record MarkNotificationsAsSeenCommand(string UserId, List<int> Ids) : IRequest;
 
 public class MarkNotificationsAsSeenCommandHandler : IRequestHandler<MarkNotificationsAsSeenCommand>
 {
@@ -13,5 +13,5 @@ public class MarkNotificationsAsSeenCommandHandler : IRequestHandler<MarkNotific
         _notificationsService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
 
     public async Task Handle(MarkNotificationsAsSeenCommand request, CancellationToken cancellationToken) =>
-        await _notificationsService.MarkAsSeenAsync(request.Ids);
+        await _notificationsService.MarkAsSeenAsync(request.UserId, request.Ids);
 }

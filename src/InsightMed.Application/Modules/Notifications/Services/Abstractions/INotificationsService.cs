@@ -5,9 +5,9 @@ namespace InsightMed.Application.Modules.Notifications.Services.Abstractions;
 
 public interface INotificationsService
 {
-    Task<List<Notification>> GetAllAsync(NotificationFilter filter);
+    Task<List<Notification>> GetAllAsync(string userId, NotificationFilter filter);
     Task AddAsync(Notification notification);
     Task DeleteAllAsync();
-    Task MarkAsSeenAsync(List<int> ids);
-    Task<bool> HasUnseenAsync();
+    Task MarkAsSeenAsync(string userId, List<int> ids);
+    Task<bool> HasUnseenAsync(string userId);
 }

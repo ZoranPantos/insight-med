@@ -4,6 +4,7 @@ using InsightMed.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InsightMed.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260104122856_AddNotificationRequesterId")]
+    partial class AddNotificationRequesterId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -114,9 +117,8 @@ namespace InsightMed.Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RequesterId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("RequesterId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("Seen")
                         .HasColumnType("bit");
@@ -124,8 +126,6 @@ namespace InsightMed.Infrastructure.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("LabReportId");
-
-                    b.HasIndex("RequesterId");
 
                     b.ToTable("Notifications");
                 });
@@ -405,12 +405,6 @@ namespace InsightMed.Infrastructure.Data.Migrations
                         .WithMany()
                         .HasForeignKey("LabReportId")
                         .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
-                        .WithMany()
-                        .HasForeignKey("RequesterId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("LabReport");

@@ -80,18 +80,18 @@ VALUES
     ('Platelet Count: 250,000 /µL (normal)', '2023-09-22 15:15:00', 9, 9),
     ('White Blood Cell Count: 7,000 /µL (normal)', '2023-10-27 16:30:00', 10, 10);
 
-INSERT INTO [Notifications] ([Message], [LabReportId], [Seen])
+INSERT INTO [Notifications] ([Message], [LabReportId], [Seen], [RequesterId])
 VALUES
-    ('Lab report ready for review: Hemoglobin results available.', 1, 0),
-    ('Notification: Glucose test completed.', 2, 0),
-    ('Alert: Cholesterol levels updated.', 3, 0),
-    ('New results: Creatinine test processed.', 4, 0),
-    ('Urine pH report is now available.', 5, 0),
-    ('TSH results ready - please check.', 6, 0),
-    ('Vitamin D deficiency check completed.', 7, 0),
-    ('Bilirubin test results uploaded.', 8, 0),
-    ('Platelet count report available.', 9, 0),
-    ('White blood cell count results ready for review.', 10, 0);
+    ('Lab report ready for review: Hemoglobin results available.', 1, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
+    ('Notification: Glucose test completed.', 2, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
+    ('Alert: Cholesterol levels updated.', 3, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
+    ('New results: Creatinine test processed.', 4, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
+    ('Urine pH report is now available.', 5, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
+    ('TSH results ready - please check.', 6, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
+    ('Vitamin D deficiency check completed.', 7, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
+    ('Bilirubin test results uploaded.', 8, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
+    ('Platelet count report available.', 9, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
+    ('White blood cell count results ready for review.', 10, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa');
 
 ALTER TABLE [AspNetUsers] CHECK CONSTRAINT ALL;
 ALTER TABLE [LabRequests] CHECK CONSTRAINT ALL;

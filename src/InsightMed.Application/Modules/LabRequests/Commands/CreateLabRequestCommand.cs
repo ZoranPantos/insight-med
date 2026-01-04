@@ -1,4 +1,5 @@
-﻿using InsightMed.Application.Common.Abstractions.Messaging;
+﻿using InsightMed.Application.Auth.Services.Abstractions;
+using InsightMed.Application.Common.Abstractions.Messaging;
 using InsightMed.Application.Common.Exceptions;
 using InsightMed.Application.Modules.LabReports.Models;
 using InsightMed.Application.Modules.LabReports.Services.Abstactions;
@@ -10,6 +11,7 @@ using InsightMed.Domain.Enums;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 using System.Text.Json;
 
 namespace InsightMed.Application.Modules.LabRequests.Commands;
@@ -20,17 +22,20 @@ public sealed class CreateLabRequestCommandHandler : IRequestHandler<CreateLabRe
 {
     private readonly ILogger<CreateLabRequestCommandHandler> _logger;
     private readonly ILabRequestsService _labRequestsService;
+    private readonly ICurrentUserService _currentUserService;
     private readonly ILabRpcClient _labRpcClient;
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
     public CreateLabRequestCommandHandler(
         ILogger<CreateLabRequestCommandHandler> logger,
         ILabRequestsService labRequestsService,
+        ICurrentUserService currentUserService,
         ILabRpcClient labRpcClient,
         IServiceScopeFactory serviceScopeFactory)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _labRequestsService = labRequestsService ?? throw new ArgumentNullException(nameof(labRequestsService));
+        _currentUserService = currentUserService ?? throw new ArgumentNullException(nameof(currentUserService));
         _labRpcClient = labRpcClient ?? throw new ArgumentNullException(nameof(labRpcClient));
         _serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
     }
@@ -44,6 +49,10 @@ public sealed class CreateLabRequestCommandHandler : IRequestHandler<CreateLabRe
     /// <returns></returns>
     public async Task Handle(CreateLabRequestCommand request, CancellationToken cancellationToken)
     {
+        // TODO: Check this
+        string? userId = _currentUserService.GetUserId();
+        if (string.IsNullOrEmpty(userId)) throw new UnauthorizedException("User not found");
+
         var labRequest = new LabRequest
         {
             PatientId = request.PatientId,
@@ -56,7 +65,7 @@ public sealed class CreateLabRequestCommandHandler : IRequestHandler<CreateLabRe
 
         await _labRequestsService.AddAsync(labRequest);
 
-        _ = Task.Run(() => ProcessLabRpcResponseAsync(labRequestJson, labRequest.Id, labRequest.PatientId), CancellationToken.None);
+        _ = Task.Run(() => ProcessLabRpcResponseAsync(labRequestJson, labRequest.Id, labRequest.PatientId, userId), CancellationToken.None);
     }
 
     /// <summary>
@@ -67,7 +76,7 @@ public sealed class CreateLabRequestCommandHandler : IRequestHandler<CreateLabRe
     /// <param name="labRequest"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    private async Task ProcessLabRpcResponseAsync(string labRequestJson, int labRequestId, int patientId)
+    private async Task ProcessLabRpcResponseAsync(string labRequestJson, int labRequestId, int patientId, string userId)
     {
         try
         {
@@ -105,11 +114,12 @@ public sealed class CreateLabRequestCommandHandler : IRequestHandler<CreateLabRe
                 var notification = new Notification
                 {
                     LabReportId = labReport.Id,
+                    RequesterId = userId,
                     Message = $"Report for patient {patient.FirstName} {patient.LastName} {patient.Uid} is available. Date created UTC: {labReport.Created}"
                 };
 
                 await notificationsService.AddAsync(notification);
-                await notifierService.NotifyUnseenStatusAsync(true);
+                await notifierService.NotifyUnseenStatusAsync(userId, true);
 
                 _ = await labRequestsService.SetStateAsync(labReport.LabRequestId.Value, LabRequestState.Completed)
                     ?? throw new ResourceNotFoundException($"Lab request with ID {labReport.LabRequestId.Value} not found");

@@ -6,7 +6,7 @@ using MediatR;
 
 namespace InsightMed.Application.Modules.Notifications.Queries;
 
-public sealed record GetAllNotificationsQuery(NotificationFilter Filter) : IRequest<GetAllNotificationsQueryResponse>;
+public sealed record GetAllNotificationsQuery(string UserId, NotificationFilter Filter) : IRequest<GetAllNotificationsQueryResponse>;
 
 public sealed class GetAllNotificationsQueryHandler : IRequestHandler<GetAllNotificationsQuery, GetAllNotificationsQueryResponse>
 {
@@ -21,7 +21,7 @@ public sealed class GetAllNotificationsQueryHandler : IRequestHandler<GetAllNoti
 
     public async Task<GetAllNotificationsQueryResponse> Handle(GetAllNotificationsQuery request, CancellationToken cancellationToken)
     {
-        var notifications = await _notificationsService.GetAllAsync(request.Filter);
+        var notifications = await _notificationsService.GetAllAsync(request.UserId, request.Filter);
 
         var response = new GetAllNotificationsQueryResponse
         {
