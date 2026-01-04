@@ -201,5 +201,9 @@ To generate some logs beforehand, we can seed or truncate the **InsightMedDb** d
 
 <br>
 
-## TODO: Authentication (or signing in?)
-TODO: Update this part after auth is included in the solution
+## Authentication
+
+API supports basic authentication. Credentials for default seeded account are
+| Email                    | Password                     |
+| ------------------------ | ---------------------------- |
+| default@test.com         | Default1!                    |
