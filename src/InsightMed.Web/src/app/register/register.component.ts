@@ -1,16 +1,16 @@
 import { Component, ChangeDetectorRef } from '@angular/core';
-import { Router, RouterLink } from '@angular/router'; 
-import { FormsModule } from '@angular/forms'; 
-import { CommonModule } from '@angular/common'; 
+import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { AuthService } from '../services/auth.service';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-register',
   standalone: true,
-  imports: [FormsModule, CommonModule, RouterLink], 
+  imports: [FormsModule, CommonModule, RouterLink],
   template: `
     <div class="login-container">
-      <h1>InsightMed Login</h1>
+      <h1>InsightMed Register</h1>
       
       <input 
         type="text" 
@@ -33,11 +33,17 @@ import { AuthService } from '../services/auth.service';
           </li>
         </ul>
       </div>
+
+      <div *ngIf="successMessage" class="message success-message">
+        {{ successMessage }}
+      </div>
       
-      <button (click)="onLogin()">Login</button>
+      <button (click)="onRegister()" [disabled]="isLoading">
+        {{ isLoading ? 'Registering...' : 'Register' }}
+      </button>
 
       <div class="register-footer">
-        Don't have an account? <a routerLink="/register">Register here</a>
+        Already have an account? <a routerLink="/login">Back to Login</a>
       </div>
     </div>
   `,
@@ -74,6 +80,13 @@ import { AuthService } from '../services/auth.service';
       border: 1px solid #f5c6cb;
     }
 
+    .success-message {
+      color: #155724;
+      background-color: #d4edda;
+      border: 1px solid #c3e6cb;
+      text-align: center;
+    }
+
     .register-footer {
       margin-top: 15px;
       font-size: 0.9em;
@@ -90,28 +103,31 @@ import { AuthService } from '../services/auth.service';
     }
   `]
 })
-export class LoginComponent {
+export class RegisterComponent {
   email = '';
   password = '';
   
   errorMessages: string[] = []; 
+  successMessage = '';
+  isLoading = false;
 
   constructor(
-    private router: Router,
     private authService: AuthService,
     private cd: ChangeDetectorRef
   ) {}
 
   clearMessages() {
     this.errorMessages = [];
+    this.successMessage = '';
   }
 
-  onLogin() {
+  onRegister() {
     if (!this.email || !this.password) {
       this.errorMessages = ['Email or password is missing'];
-      return; 
+      return;
     }
 
+    this.isLoading = true;
     this.clearMessages();
 
     const payload = {
@@ -119,20 +135,27 @@ export class LoginComponent {
       password: this.password
     };
 
-    this.authService.login(payload).subscribe({
+    this.authService.register(payload).subscribe({
       next: () => {
-        this.router.navigate(['/reports']);
+        this.isLoading = false;
+        this.successMessage = 'Registration successful!';
+        this.email = '';
+        this.password = '';
+        this.cd.detectChanges();
       },
       error: (err) => {
-        if (err.error && err.error.detail) {
-           const rawMessages = err.error.detail.split(',');
-           this.errorMessages = rawMessages.map((msg: string) => msg.trim().replace(/\.$/, ''));
-        } else if (err.status === 401) {
-           this.errorMessages = ['Invalid credentials'];
-        } else {
-           this.errorMessages = ['Login failed'];
-        }
+        this.isLoading = false;
+        console.error(err);
 
+        if (err.error && err.error.detail) {
+          const rawMessages = err.error.detail.split(',');
+          this.errorMessages = rawMessages.map((msg: string) => {
+             return msg.trim().replace(/\.$/, '');
+          });
+        } else {
+          this.errorMessages = ['Registration failed'];
+        }
+        
         this.cd.detectChanges();
       }
     });

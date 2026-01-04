@@ -24,6 +24,10 @@ export class AuthService {
     localStorage.removeItem(this.tokenKey);
   }
 
+  register(payload: any) {
+    return this.http.post(`${this.apiUrl}/Auth/register`, payload);
+  }
+
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
   }
