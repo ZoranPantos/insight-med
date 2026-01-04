@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectorRef, OnInit, OnDestroy, effect } from '@angular/core';
+import { Component, inject, ChangeDetectorRef, effect } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -68,7 +68,6 @@ import { SignalrService } from '../services/signalr.service';
     a:hover { background-color: #e6e6e6; }
     .active-link { background-color: #0078d4; color: white !important; }
 
-    /* NOTIFICATION STYLES */
     .notification-wrapper { position: relative; cursor: pointer; }
     .notification-trigger { user-select: none; font-weight: 500; }
     
