@@ -1,4 +1,6 @@
-﻿using InsightMed.Application.Auth.Services.Abstractions;
+﻿using AutoMapper;
+using InsightMed.Application.Auth.Models;
+using InsightMed.Application.Auth.Services.Abstractions;
 using InsightMed.Application.Common.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -11,11 +13,16 @@ namespace InsightMed.Infrastructure.Auth.Services;
 
 public sealed class AuthService : IAuthService
 {
+    private readonly IMapper _mapper;
     private readonly UserManager<IdentityUser> _userManager;
     private readonly IConfiguration _configuration;
 
-    public AuthService(UserManager<IdentityUser> userManager, IConfiguration configuration)
+    public AuthService(
+        IMapper mapper,
+        UserManager<IdentityUser> userManager,
+        IConfiguration configuration)
     {
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
     }
@@ -65,5 +72,12 @@ public sealed class AuthService : IAuthService
             string errors = string.Join(", ", result.Errors.Select(e => e.Description));
             throw new InvalidClientDataException(errors);
         }
+    }
+
+    public async Task<IdentityUserResponse?> GetUserByIdAsync(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        return user is null ? null : _mapper.Map<IdentityUserResponse>(user);
     }
 }

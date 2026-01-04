@@ -20,6 +20,7 @@ using InsightMed.Infrastructure.Modules.Patients.Services;
 using InsightMed.Infrastructure.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace InsightMed.Infrastructure;
 
@@ -28,6 +29,7 @@ public static class ConfigureServices
     public static IServiceCollection ConfigureInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHttpContextAccessor();
+        services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
         services.AddDbContext<AppDbContext>();
         services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());

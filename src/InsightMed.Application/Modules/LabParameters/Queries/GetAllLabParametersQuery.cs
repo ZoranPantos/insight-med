@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using InsightMed.Application.Modules.LabParameters.Models;
 using InsightMed.Application.Modules.LabParameters.Services.Abstractions;
-using InsightMed.Application.Options;
 using MediatR;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;

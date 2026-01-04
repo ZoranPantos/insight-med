@@ -1,7 +1,10 @@
-﻿namespace InsightMed.Application.Auth.Services.Abstractions;
+﻿using InsightMed.Application.Auth.Models;
+
+namespace InsightMed.Application.Auth.Services.Abstractions;
 
 public interface IAuthService
 {
     Task<string> LoginAsync(string email, string password);
     Task RegisterAsync(string email, string password);
+    Task<IdentityUserResponse?> GetUserByIdAsync(string userId);
 }
