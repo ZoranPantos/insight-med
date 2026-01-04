@@ -94,7 +94,7 @@ dotnet ef database update --startup-project ../InsightMed.API
 ## Running from IDE
 
 Set up a new startup profile in the IDE (Visual Studio or Rider) to run both _InsightMed.API_ and _InsightMed.LabRpcServer_ simultaneously.
-SQL Server, Elasticsearch, and Kibana are required. They can either be installed locally or spun up in containers by running the following commands:
+SQL Server, RabbitMQ, Elasticsearch, and Kibana are required. They can either be installed locally or spun up in containers by running the following commands:
 
 RabbitMQ  
 ```sh
