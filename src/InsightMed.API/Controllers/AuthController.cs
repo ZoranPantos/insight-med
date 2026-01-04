@@ -23,4 +23,13 @@ public sealed class AuthController : ControllerBase
 
         return Ok(new { Token = token });
     }
+
+    [HttpPost("register")]
+    public async Task<ActionResult> RegisterAsync(RegisterRequestInputModel input)
+    {
+        var command = new RegisterCommand(input.Email, input.Password);
+        await _sender.Send(command);
+
+        return Ok("Registration successful");
+    }
 }
