@@ -12,7 +12,7 @@ namespace InsightMed.Infrastructure.Messaging;
 
 public sealed class RabbitMqRpcClient : ILabRpcClient, IAsyncDisposable
 {
-    private readonly RabbitMqOptions _options;
+    private readonly RabbitMqOptions _rabbitMqOptions;
     private readonly ILogger<RabbitMqRpcClient> _logger;
     private readonly IConnectionFactory _connectionFactory;
     private readonly ConcurrentDictionary<string, TaskCompletionSource<string>>_callbackMapper = [];
@@ -24,10 +24,10 @@ public sealed class RabbitMqRpcClient : ILabRpcClient, IAsyncDisposable
 
     public RabbitMqRpcClient(IOptions<RabbitMqOptions> rabbitMqOptions, ILogger<RabbitMqRpcClient> logger)
     {
-        _options = rabbitMqOptions.Value ?? throw new ArgumentNullException(nameof(rabbitMqOptions));
+        _rabbitMqOptions = rabbitMqOptions.Value ?? throw new ArgumentNullException(nameof(rabbitMqOptions));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-        _connectionFactory = new ConnectionFactory() { HostName = _options.HostName };
+        _connectionFactory = new ConnectionFactory() { HostName = _rabbitMqOptions.HostName };
     }
 
     // Start once and keep the reply consumer alive
@@ -126,8 +126,8 @@ public sealed class RabbitMqRpcClient : ILabRpcClient, IAsyncDisposable
 
         await _channel.BasicPublishAsync(
             exchange: string.Empty,
-            routingKey: _options.QueueName,
-            mandatory: _options.Publishing.Mandatory,
+            routingKey: _rabbitMqOptions.QueueName,
+            mandatory: _rabbitMqOptions.Publishing.Mandatory,
             basicProperties: props,
             body: messageBytes
         );

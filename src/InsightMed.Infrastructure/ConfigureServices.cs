@@ -49,6 +49,7 @@ public static class ConfigureServices
         services.AddHostedService<RabbitMqRpcClientHostedService>();
 
         services.Configure<RabbitMqOptions>(configuration.GetSection("RabbitMq"));
+        services.Configure<JwtOptions>(configuration.GetSection("Jwt"));
 
         return services;
     }

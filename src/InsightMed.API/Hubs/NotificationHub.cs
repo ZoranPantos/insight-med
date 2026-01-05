@@ -1,9 +1,11 @@
 ﻿using InsightMed.Application.Modules.Notifications.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace InsightMed.API.Hubs;
 
+[Authorize]
 public sealed class NotificationHub : Hub<INotificationClient>
 {
     private readonly ISender _sender;
@@ -13,9 +15,10 @@ public sealed class NotificationHub : Hub<INotificationClient>
 
     public async Task CheckUnseen()
     {
-        // TODO: Consider throwing exception if userId is null or empty instead of returning, and not use default value
-        string? userId = Context.UserIdentifier ?? string.Empty;
-        if (string.IsNullOrEmpty(userId)) return;
+        string? userId = Context.UserIdentifier;
+
+        if (string.IsNullOrEmpty(userId))
+            throw new HubException("Unable to identify user");
 
         bool hasUnseen = await _sender.Send(new HasUnseenNotificationsQuery(userId));
         await Clients.Caller.ReceiveUnseenStatus(hasUnseen);

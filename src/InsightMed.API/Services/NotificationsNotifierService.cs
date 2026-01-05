@@ -13,8 +13,8 @@ public class NotificationsNotifierService : INotificationsNotifierService
 
     public async Task NotifyUnseenStatusAsync(string userId, bool hasUnseen)
     {
-        // TODO: Throw exception here instead of return?
-        if (string.IsNullOrEmpty(userId)) return;
+        if (string.IsNullOrEmpty(userId))
+            throw new ArgumentNullException(nameof(userId), "Cannot notify a user without a valid user ID");
 
         await _hubContext.Clients.User(userId).ReceiveUnseenStatus(hasUnseen);
     }

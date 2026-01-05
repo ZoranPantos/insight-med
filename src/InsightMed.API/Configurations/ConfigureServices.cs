@@ -107,8 +107,6 @@ public static class ConfigureServices
                 ValidateLifetime = true
             };
 
-            // Support SignalR Auth (It sends token in Query String, not Header)
-            // TODO: Inspect this
             options.Events = new JwtBearerEvents
             {
                 OnMessageReceived = context =>

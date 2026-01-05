@@ -11,7 +11,6 @@ using InsightMed.Domain.Enums;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System.Security.Claims;
 using System.Text.Json;
 
 namespace InsightMed.Application.Modules.LabRequests.Commands;
@@ -49,7 +48,6 @@ public sealed class CreateLabRequestCommandHandler : IRequestHandler<CreateLabRe
     /// <returns></returns>
     public async Task Handle(CreateLabRequestCommand request, CancellationToken cancellationToken)
     {
-        // TODO: Check this
         string? userId = _currentUserService.GetUserId();
         if (string.IsNullOrEmpty(userId)) throw new UnauthorizedException("User not found");
 
