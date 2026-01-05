@@ -41,8 +41,9 @@ import { SignalrService } from '../services/signalr.service';
                   No notifications
                 </div>
               </div>
-              <div class="dropdown-footer" (click)="clearAll()">
-                Clear All
+              
+              <div class="dropdown-footer">
+                <button class="clear-btn" (click)="clearAll()">Clear</button>
               </div>
             </div>
           </div>
@@ -141,24 +142,53 @@ import { SignalrService } from '../services/signalr.service';
 
     .dropdown {
       position: absolute;
-      top: 35px; right: 0; width: 300px;
+      top: 35px; right: 0; 
+      width: 400px;
       background: white; border: 1px solid #ccc;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-      border-radius: 6px; z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+      border-radius: 8px; 
+      z-index: 1000;
       overflow: hidden;
     }
 
-    .dropdown-content { max-height: 200px; overflow-y: auto; }
-    .notification-item { padding: 12px; border-bottom: 1px solid #f0f0f0; font-size: 0.9rem; color: #333; }
+    .dropdown-content { max-height: 250px; overflow-y: auto; }
+    
+    .notification-item { 
+      padding: 12px 16px; 
+      border-bottom: 1px solid #f0f0f0; 
+      font-size: 0.9rem; 
+      color: #333; 
+    }
     .notification-item:hover { background-color: #f9f9f9; }
-    .empty-state { padding: 20px; text-align: center; color: #999; font-style: italic; }
+    
+    .empty-state { padding: 30px; text-align: center; color: #999; font-style: italic; }
 
     .dropdown-footer {
-      padding: 10px; text-align: center; background-color: #f5f5f5;
-      color: #d9534f; font-weight: bold; cursor: pointer;
-      border-top: 1px solid #ddd;
+      padding: 15px; 
+      text-align: center; 
+      background-color: white; 
     }
-    .dropdown-footer:hover { background-color: #e8e8e8; }
+
+    .clear-btn {
+      padding: 8px 20px; 
+      font-size: 0.95rem;
+      background-color: #dc3545; 
+      color: white;
+      border: none;
+      border-radius: 25px; 
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .clear-btn:hover {
+      background-color: #bb2d3b; 
+    }
+
+    .clear-btn:active {
+      transform: scale(0.95);
+    }
+    /* ------------------------ */
     
     hr { margin: 0; border: 0; border-top: 1px solid #eee; }
     main { padding-top: 20px; }
