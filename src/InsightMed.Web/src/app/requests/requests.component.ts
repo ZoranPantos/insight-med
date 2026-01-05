@@ -127,7 +127,6 @@ interface LabRequestsResponse {
     .param-list { margin: 0; padding-left: 20px; color: #444; font-size: 0.95em; }
     .param-list li { margin-bottom: 4px; }
 
-    /* New Actions Styles */
     .actions-col { text-align: right; }
     
     .view-report-link {

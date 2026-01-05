@@ -81,7 +81,7 @@ interface PatientsResponse {
 export class PatientsComponent implements OnInit, OnDestroy {
   private http = inject(HttpClient);
   private cd = inject(ChangeDetectorRef);
-  private router = inject(Router); // Inject Router
+  private router = inject(Router);
 
   patients: Patient[] = [];
   isLoading = false;
@@ -89,7 +89,6 @@ export class PatientsComponent implements OnInit, OnDestroy {
   private routerSubscription: Subscription | undefined;
 
   constructor() {
-    // Refresh data when clicking "Patients" link even if already on the page
     this.routerSubscription = this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {

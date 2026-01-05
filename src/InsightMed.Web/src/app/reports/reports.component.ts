@@ -4,7 +4,6 @@ import { HttpClient } from '@angular/common/http';
 import { Router, NavigationEnd, RouterLink } from '@angular/router'; 
 import { Subscription, filter } from 'rxjs';
 
-// 1. Define Interfaces based on your JSON response
 interface LabReport {
   id: number;
   created: string;
@@ -88,7 +87,6 @@ interface LabReportsResponse {
     .patient-name { font-weight: 500; }
     .patient-uid { font-size: 0.8em; color: #888; margin-top: 2px; }
 
-    /* Actions Styles */
     .actions { text-align: right; }
     
     .view-link {
@@ -123,7 +121,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
   private routerSubscription: Subscription | undefined;
 
   constructor() {
-    // Listen for navigation events to trigger refresh
     this.routerSubscription = this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
@@ -149,13 +146,13 @@ export class ReportsComponent implements OnInit, OnDestroy {
         next: (response) => {
           this.reports = response.labReports;
           this.isLoading = false;
-          this.cd.detectChanges(); // Update UI
+          this.cd.detectChanges();
         },
         error: (err) => {
           console.error('Error fetching reports:', err);
           this.errorMessage = 'Failed to load lab reports.';
           this.isLoading = false;
-          this.cd.detectChanges(); // Update UI
+          this.cd.detectChanges();
         }
       });
   }

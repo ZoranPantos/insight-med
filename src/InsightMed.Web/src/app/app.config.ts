@@ -8,14 +8,7 @@ import { routes } from './app.routes';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    
-    // 2. Add withRouterConfig to enable reloading on same URL
-    provideRouter(
-      routes, 
-      withRouterConfig({ onSameUrlNavigation: 'reload' })
-    ),
-
-    // 3. Cleaned up: only one provideHttpClient call is needed
+    provideRouter(routes, withRouterConfig({ onSameUrlNavigation: 'reload' })),
     provideHttpClient(withInterceptors([authInterceptor])),
   ]
 };
