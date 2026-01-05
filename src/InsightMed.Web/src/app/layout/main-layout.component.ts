@@ -65,10 +65,9 @@ import { SignalrService } from '../services/signalr.service';
     
     .nav-group.center { flex-grow: 1; justify-content: center; } 
 
-    /* --- UPDATED NAVIGATION LINKS --- */
     a { 
       text-decoration: none; 
-      color: #666; /* Default gray for inactive links */
+      color: #666;
       font-weight: 500; 
       cursor: pointer; 
       padding: 8px 12px; 
@@ -76,23 +75,20 @@ import { SignalrService } from '../services/signalr.service';
       transition: color 0.2s;
     }
 
-    /* Hover Effect: Light Blue Text */
     a:hover { 
       color: #0078d4; 
-      background-color: transparent; /* Removed gray background */
+      background-color: transparent;
     }
 
-    /* Active State: Blue Text + Bottom Border */
     .active-link { 
       color: #0078d4 !important; 
       font-weight: 600;
     }
     
-    /* This creates the underline effect for the active link */
     .active-link::after {
       content: '';
       position: absolute;
-      bottom: -4px; /* Push it down slightly */
+      bottom: -4px;
       left: 0;
       width: 100%;
       height: 2px;
@@ -100,7 +96,6 @@ import { SignalrService } from '../services/signalr.service';
       border-radius: 2px;
     }
 
-    /* --- SEARCH STYLES (Unchanged) --- */
     .search-input {
       width: 300px; 
       padding: 8px 15px;
@@ -129,8 +124,7 @@ import { SignalrService } from '../services/signalr.service';
       background-color: #005a9e; 
     }
 
-    /* NOTIFICATIONS */
-    .notification-wrapper { position: relative; cursor: pointer; margin-right: 15px; } /* Added margin */
+    .notification-wrapper { position: relative; cursor: pointer; margin-right: 15px; }
     .notification-trigger { user-select: none; font-weight: 500; color: #666; transition: color 0.2s; }
     .notification-trigger:hover { color: #0078d4; }
 
@@ -161,7 +155,7 @@ import { SignalrService } from '../services/signalr.service';
     }
     .dropdown-footer:hover { background-color: #e8e8e8; }
     
-    hr { margin: 0; border: 0; border-top: 1px solid #eee; } /* Cleaner line */
+    hr { margin: 0; border: 0; border-top: 1px solid #eee; }
     main { padding-top: 20px; }
   `]
 })

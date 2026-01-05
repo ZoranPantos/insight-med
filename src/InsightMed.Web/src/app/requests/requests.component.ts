@@ -11,7 +11,7 @@ interface LabParameter {
 interface LabRequest {
   id: number;
   created: string;
-  labRequestState: number; // 0 = Pending, 1 = Completed
+  labRequestState: number;
   patientFullName: string;
   patientUid: string;
   labParameters: LabParameter[];
@@ -47,7 +47,7 @@ interface LabRequestsResponse {
               <th>Patient</th>
               <th>Status</th>
               <th>Parameters</th>
-              <th>Actions</th> 
+              <th class="actions-col">Actions</th> 
             </tr>
           </thead>
           <tbody>
@@ -129,20 +129,21 @@ interface LabRequestsResponse {
 
     .actions-col { text-align: right; }
     
+    /* UPDATED: Matches the "View Details" style */
     .view-report-link {
       display: inline-block;
       color: #0078d4;
-      font-weight: 600;
+      font-weight: 500;
       text-decoration: none;
       font-size: 0.9rem;
       padding: 6px 12px;
-      border: 1px solid #0078d4;
+      border: 1px solid transparent;
       border-radius: 4px;
       transition: all 0.2s;
     }
     .view-report-link:hover {
-      background-color: #0078d4;
-      color: white;
+      background-color: #eff6fc;
+      border-color: #c7e0f4;
     }
     
     .no-action { color: #ccc; }
