@@ -76,7 +76,6 @@ interface AccountInfo {
       gap: 30px;
     }
 
-    /* Details Styling */
     .info-row {
       display: flex;
       justify-content: space-between;
@@ -101,7 +100,6 @@ interface AccountInfo {
       font-size: 1rem;
     }
 
-    /* Status Badge */
     .status-badge {
       display: inline-block;
       padding: 4px 12px;
@@ -116,21 +114,18 @@ interface AccountInfo {
       color: #155724;
     }
 
-    /* Actions Styling */
     .actions {
       margin-top: 10px;
       display: flex;
       gap: 15px; 
     }
 
-    /* Shared Button Properties */
     button {
       padding: 10px 24px;
       border: none;
       border-radius: 20px; /* Pill Shape */
       cursor: pointer;
       
-      /* UPDATED: Thicker font weight to match the 'Go' button look */
       font-weight: 600; 
       
       font-size: 0.95rem;
@@ -142,7 +137,6 @@ interface AccountInfo {
       transform: scale(0.98);
     }
 
-    /* Change Password - Secondary Action (Gray) */
     .change-pw-btn {
       background-color: #e0e0e0;
       color: #333;
@@ -151,7 +145,6 @@ interface AccountInfo {
       background-color: #d0d0d0;
     }
 
-    /* Log Out - Destructive Action (Red) */
     .logout-btn {
       background-color: #dc3545;
       color: white;

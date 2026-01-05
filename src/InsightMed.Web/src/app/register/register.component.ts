@@ -9,22 +9,26 @@ import { AuthService } from '../services/auth.service';
   standalone: true,
   imports: [FormsModule, CommonModule, RouterLink],
   template: `
-    <div class="login-container">
+    <div class="register-container">
       <h1>InsightMed Register</h1>
       
-      <input 
-        type="text" 
-        placeholder="Email" 
-        [(ngModel)]="email" 
-        (input)="clearMessages()" 
-      />
-      
-      <input 
-        type="password" 
-        placeholder="Password" 
-        [(ngModel)]="password"
-        (input)="clearMessages()" 
-      />
+      <div class="form-group">
+        <input 
+          type="text" 
+          placeholder="Email" 
+          [(ngModel)]="email" 
+          (input)="clearMessages()" 
+          class="pill-input"
+        />
+        
+        <input 
+          type="password" 
+          placeholder="Password" 
+          [(ngModel)]="password"
+          (input)="clearMessages()" 
+          class="pill-input"
+        />
+      </div>
 
       <div *ngIf="errorMessages.length > 0" class="message error-message">
         <ul>
@@ -38,7 +42,7 @@ import { AuthService } from '../services/auth.service';
         {{ successMessage }}
       </div>
       
-      <button (click)="onRegister()" [disabled]="isLoading">
+      <button class="register-btn" (click)="onRegister()" [disabled]="isLoading">
         {{ isLoading ? 'Registering...' : 'Register' }}
       </button>
 
@@ -48,31 +52,76 @@ import { AuthService } from '../services/auth.service';
     </div>
   `,
   styles: [`
-    .login-container {
-      display: flex; flex-direction: column; gap: 10px;
-      width: 300px; margin: 100px auto; text-align: center;
+    .register-container {
+      display: flex; flex-direction: column; gap: 25px;
+      width: 320px; margin: 100px auto; text-align: center;
       font-family: sans-serif;
     }
-    input, button { padding: 10px; }
+    
+    h1 { margin-bottom: 10px; color: #333; }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .pill-input {
+      width: 100%;
+      padding: 12px 20px; 
+      border: 1px solid #ccc;
+      border-radius: 25px; 
+      outline: none;
+      font-size: 1rem;
+      box-sizing: border-box; 
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    
+    .pill-input:focus {
+      border-color: #0078d4;
+      box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.15);
+    }
+
+    .register-btn {
+      width: auto;
+      align-self: center;
+      min-width: 140px;
+      padding: 10px 24px;
+      
+      background-color: #0078d4;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600; 
+      
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .register-btn:hover:not(:disabled) {
+      background-color: #005a9e;
+    }
+
+    .register-btn:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+
+    .register-btn:disabled {
+      background-color: #a0cce8;
+      cursor: not-allowed;
+    }
     
     .message {
       font-size: 0.9em;
-      margin: 5px 0;
       padding: 10px 15px;
-      border-radius: 4px;
+      border-radius: 12px;
       text-align: left;
     }
 
-    ul {
-      margin: 0;
-      padding-left: 15px;
-    }
-    li {
-      margin-bottom: 3px;
-    }
-    li:last-child {
-      margin-bottom: 0;
-    }
+    ul { margin: 0; padding-left: 15px; }
+    li { margin-bottom: 3px; }
+    li:last-child { margin-bottom: 0; }
 
     .error-message {
       color: #721c24;
@@ -88,7 +137,7 @@ import { AuthService } from '../services/auth.service';
     }
 
     .register-footer {
-      margin-top: 15px;
+      margin-top: 10px;
       font-size: 0.9em;
       color: #666;
     }

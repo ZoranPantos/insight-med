@@ -97,7 +97,6 @@ import { AuthService } from '../services/auth.service';
       background-color: #005a9e;
     }
 
-    /* UPDATED: Changed to 0.98 to match Profile buttons exactly */
     .login-btn:active {
       transform: scale(0.98);
     }

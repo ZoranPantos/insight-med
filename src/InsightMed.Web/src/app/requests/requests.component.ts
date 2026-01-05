@@ -129,7 +129,6 @@ interface LabRequestsResponse {
 
     .actions-col { text-align: right; }
     
-    /* UPDATED: Matches the "View Details" style */
     .view-report-link {
       display: inline-block;
       color: #0078d4;
