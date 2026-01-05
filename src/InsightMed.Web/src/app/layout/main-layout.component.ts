@@ -110,6 +110,7 @@ import { SignalrService } from '../services/signalr.service';
       box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.2);
     }
 
+    /* --- UPDATED BUTTON STYLES --- */
     .search-btn {
       padding: 8px 20px;
       background-color: #0078d4; 
@@ -117,12 +118,20 @@ import { SignalrService } from '../services/signalr.service';
       border: none;
       border-radius: 20px; 
       cursor: pointer;
-      font-weight: 500;
-      transition: background-color 0.2s;
+      font-weight: 600; 
+      /* Added transform to transition */
+      transition: background-color 0.2s, transform 0.1s; 
     }
+
     .search-btn:hover {
       background-color: #005a9e; 
     }
+
+    /* CHANGED: Increased scaling to 0.95 to match the feel of larger buttons */
+    .search-btn:active {
+      transform: scale(0.95);
+    }
+    /* ----------------------------- */
 
     .notification-wrapper { position: relative; cursor: pointer; margin-right: 15px; }
     .notification-trigger { user-select: none; font-weight: 500; color: #666; transition: color 0.2s; }
