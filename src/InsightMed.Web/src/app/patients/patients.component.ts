@@ -1,7 +1,8 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core'; // 1. Import ChangeDetectorRef
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router, NavigationEnd } from '@angular/router';
+import { Subscription, filter } from 'rxjs';
 
 interface Patient {
   id: number;
@@ -22,7 +23,7 @@ interface PatientsResponse {
     <div class="page-container">
       <div class="header">
         <h2>Patients</h2>
-        </div>
+      </div>
 
       <div *ngIf="isLoading" class="loading">
         Loading patients...
@@ -61,96 +62,49 @@ interface PatientsResponse {
     </div>
   `,
   styles: [`
-    .page-container {
-      padding: 20px 0;
-      font-family: sans-serif;
-    }
-
-    .header {
-      margin-bottom: 20px;
-    }
-    
+    .page-container { padding: 20px 0; font-family: sans-serif; }
+    .header { margin-bottom: 20px; }
     h2 { margin: 0; color: #333; }
-
-    .table-container {
-      border: 1px solid #e0e0e0;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-    }
-
-    th, td {
-      padding: 12px 15px;
-      text-align: left;
-      border-bottom: 1px solid #f0f0f0;
-    }
-
-    th {
-      background-color: #fafafa;
-      font-weight: 600;
-      color: #555;
-      font-size: 0.9em;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    tr:hover {
-      background-color: #f9f9f9;
-    }
-
-    .uid-badge {
-      background-color: #eef3fc;
-      color: #3b5998;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 0.85em;
-      font-weight: 500;
-    }
-
-    .actions {
-      text-align: right;
-    }
-
-    .view-link {
-      color: #0078d4;
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 0.9em;
-      padding: 6px 12px;
-      border: 1px solid transparent;
-      border-radius: 4px;
-      transition: all 0.2s;
-    }
-
-    .view-link:hover {
-      background-color: #eff6fc;
-      border-color: #c7e0f4;
-    }
-
-    .loading, .error, .empty-text {
-      padding: 20px;
-      text-align: center;
-      color: #666;
-    }
-    
+    .table-container { border: 1px solid #e0e0e0; border-radius: 4px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; background: white; }
+    th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #f0f0f0; }
+    th { background-color: #fafafa; font-weight: 600; color: #555; font-size: 0.9em; text-transform: uppercase; letter-spacing: 0.5px; }
+    tr:hover { background-color: #f9f9f9; }
+    .uid-badge { background-color: #eef3fc; color: #3b5998; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; font-weight: 500; }
+    .actions { text-align: right; }
+    .view-link { color: #0078d4; text-decoration: none; font-weight: 500; font-size: 0.9em; padding: 6px 12px; border: 1px solid transparent; border-radius: 4px; transition: all 0.2s; }
+    .view-link:hover { background-color: #eff6fc; border-color: #c7e0f4; }
+    .loading, .error, .empty-text { padding: 20px; text-align: center; color: #666; }
     .error { color: #d9534f; }
   `]
 })
-export class PatientsComponent implements OnInit {
+export class PatientsComponent implements OnInit, OnDestroy {
   private http = inject(HttpClient);
-  private cd = inject(ChangeDetectorRef); // 2. Inject ChangeDetectorRef
+  private cd = inject(ChangeDetectorRef);
+  private router = inject(Router); // Inject Router
 
   patients: Patient[] = [];
   isLoading = false;
   errorMessage = '';
+  private routerSubscription: Subscription | undefined;
+
+  constructor() {
+    // Refresh data when clicking "Patients" link even if already on the page
+    this.routerSubscription = this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.fetchPatients();
+    });
+  }
 
   ngOnInit() {
     this.fetchPatients();
+  }
+
+  ngOnDestroy() {
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
   }
 
   fetchPatients() {
@@ -160,13 +114,13 @@ export class PatientsComponent implements OnInit {
         next: (response) => {
           this.patients = response.patients;
           this.isLoading = false;
-          this.cd.detectChanges(); // 3. Manually trigger update
+          this.cd.detectChanges();
         },
         error: (err) => {
           console.error('Error fetching patients:', err);
           this.errorMessage = 'Failed to load patients. Please try again later.';
           this.isLoading = false;
-          this.cd.detectChanges(); // 3. Manually trigger update
+          this.cd.detectChanges();
         }
       });
   }
