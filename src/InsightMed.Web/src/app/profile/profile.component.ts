@@ -16,49 +16,151 @@ interface AccountInfo {
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="profile-container">
-      <h2>My Profile</h2>
-
-      <div *ngIf="isLoading">Loading profile...</div>
-
-      <div *ngIf="!isLoading && accountInfo" class="profile-card">
-        <div class="info-group">
-          <label>Username</label>
-          <div class="value">{{ accountInfo.userName }}</div>
-        </div>
-
-        <div class="info-group">
-          <label>Email</label>
-          <div class="value">{{ accountInfo.email }}</div>
-        </div>
-
-        <div class="info-group">
-          <label>Status</label>
-          <div class="value">
-            <span [class.verified]="accountInfo.emailConfirmed" class="status-badge">
-              {{ accountInfo.emailConfirmed ? 'Verified' : 'Unverified' }}
-            </span>
-          </div>
-        </div>
+    <div class="page-container">
+      <div class="header">
+        <h2>Profile</h2>
       </div>
 
-      <hr />
+      <div *ngIf="isLoading" class="loading">
+        Loading profile...
+      </div>
 
-      <button class="logout-btn" (click)="onLogout()">Log Out</button>
+      <div *ngIf="!isLoading && accountInfo" class="content-wrapper">
+        
+        <div class="details-card">
+          <div class="info-row">
+            <label>Username</label>
+            <div class="value">{{ accountInfo.userName }}</div>
+          </div>
+
+          <div class="info-row">
+            <label>Email Address</label>
+            <div class="value">{{ accountInfo.email }}</div>
+          </div>
+
+          <div class="info-row">
+            <label>Account Status</label>
+            <div class="value">
+              <span [class.verified]="accountInfo.emailConfirmed" class="status-badge">
+                {{ accountInfo.emailConfirmed ? 'Verified' : 'Unverified' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="change-pw-btn" (click)="onChangePassword()">Change Password</button>
+          <button class="logout-btn" (click)="onLogout()">Log Out</button>
+        </div>
+
+      </div>
     </div>
   `,
   styles: [`
-    .profile-container { width: 400px; margin: 0 auto; font-family: sans-serif; }
-    h2 { border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 20px; }
-    .profile-card { background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #ddd; }
-    .info-group { margin-bottom: 15px; }
-    .info-group label { display: block; font-size: 0.85em; color: #666; margin-bottom: 4px; }
-    .info-group .value { font-size: 1.1em; font-weight: 500; }
-    .status-badge { font-size: 0.8em; padding: 4px 8px; border-radius: 4px; background: #eee; color: #555; }
-    .status-badge.verified { background: #d4edda; color: #155724; }
-    hr { margin: 30px 0; border: 0; border-top: 1px solid #eee; }
-    .logout-btn { width: 100%; padding: 12px; background-color: #dc3545; color: white; border: none; border-radius: 4px; font-size: 1rem; cursor: pointer; transition: background 0.2s; }
-    .logout-btn:hover { background-color: #c82333; }
+    .page-container { 
+      padding: 20px 0; 
+      font-family: sans-serif; 
+      max-width: 600px; 
+      margin: 0 auto; 
+    }
+
+    .header { 
+      margin-bottom: 30px; 
+    }
+    
+    h2 { margin: 0; color: #333; }
+
+    .content-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    /* Details Styling */
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid #f5f5f5;
+    }
+    
+    .info-row:last-child {
+      border-bottom: none;
+    }
+
+    .info-row label {
+      color: #666;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .info-row .value {
+      font-weight: 600;
+      color: #333;
+      font-size: 1rem;
+    }
+
+    /* Status Badge */
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.85em;
+      font-weight: 500;
+      background: #eee; 
+      color: #555;
+    }
+    .status-badge.verified {
+      background: #d4edda; 
+      color: #155724;
+    }
+
+    /* Actions Styling */
+    .actions {
+      margin-top: 10px;
+      display: flex;
+      gap: 15px; 
+    }
+
+    /* Shared Button Properties */
+    button {
+      padding: 10px 24px;
+      border: none;
+      border-radius: 20px; /* Pill Shape */
+      cursor: pointer;
+      
+      /* UPDATED: Thicker font weight to match the 'Go' button look */
+      font-weight: 600; 
+      
+      font-size: 0.95rem;
+      transition: background-color 0.2s, transform 0.1s;
+      min-width: 140px;
+    }
+    
+    button:active {
+      transform: scale(0.98);
+    }
+
+    /* Change Password - Secondary Action (Gray) */
+    .change-pw-btn {
+      background-color: #e0e0e0;
+      color: #333;
+    }
+    .change-pw-btn:hover {
+      background-color: #d0d0d0;
+    }
+
+    /* Log Out - Destructive Action (Red) */
+    .logout-btn {
+      background-color: #dc3545;
+      color: white;
+    }
+    .logout-btn:hover {
+      background-color: #bb2d3b;
+    }
+
+    .loading { padding: 20px; text-align: center; color: #666; }
   `]
 })
 export class ProfileComponent implements OnInit, OnDestroy {
@@ -112,6 +214,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
           this.cd.detectChanges();
         }
       });
+  }
+
+  onChangePassword() {
+    console.log('Navigate to change password');
   }
 
   onLogout() {
