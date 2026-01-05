@@ -27,7 +27,9 @@ import { SignalrService } from '../services/signalr.service';
         <div class="nav-group right">
           
           <div class="notification-wrapper">
-            <span (click)="toggleNotifications()" class="notification-trigger">
+            <span (click)="toggleNotifications()" 
+                  class="notification-trigger" 
+                  [class.active-trigger]="isNotificationsOpen">
               Notifications
               <span *ngIf="signalrService.hasUnseenNotifications()" class="badge"></span>
             </span>
@@ -38,7 +40,7 @@ import { SignalrService } from '../services/signalr.service';
                   {{ item.message }}
                 </div>
                 <div *ngIf="notifications.length === 0" class="empty-state">
-                  No notifications
+                  No new notifications
                 </div>
               </div>
               
@@ -131,8 +133,20 @@ import { SignalrService } from '../services/signalr.service';
     }
 
     .notification-wrapper { position: relative; cursor: pointer; margin-right: 15px; }
-    .notification-trigger { user-select: none; font-weight: 500; color: #666; transition: color 0.2s; }
+    
+    .notification-trigger { 
+      user-select: none; 
+      font-weight: 500; 
+      color: #666; 
+      transition: color 0.2s; 
+    }
     .notification-trigger:hover { color: #0078d4; }
+
+    /* UPDATED: Active state for notifications (Blue + Bold, No Underline) */
+    .active-trigger {
+      color: #0078d4;
+      font-weight: 600;
+    }
 
     .badge {
       display: inline-block; width: 8px; height: 8px; 
@@ -188,7 +202,6 @@ import { SignalrService } from '../services/signalr.service';
     .clear-btn:active {
       transform: scale(0.95);
     }
-    /* ------------------------ */
     
     hr { margin: 0; border: 0; border-top: 1px solid #eee; }
     main { padding-top: 20px; }
