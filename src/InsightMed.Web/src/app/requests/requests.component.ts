@@ -11,7 +11,7 @@ interface LabParameter {
 interface LabRequest {
   id: number;
   created: string;
-  labRequestState: number;
+  labRequestState: number; // 0 = Pending, 1 = Completed
   patientFullName: string;
   patientUid: string;
   labParameters: LabParameter[];
@@ -29,6 +29,7 @@ interface LabRequestsResponse {
     <div class="page-container">
       <div class="header">
         <h2>Lab Requests</h2>
+        <button class="create-btn">Create Request</button>
       </div>
 
       <div *ngIf="isLoading" class="loading">
@@ -83,10 +84,6 @@ interface LabRequestsResponse {
                    class="view-report-link">
                    View Report
                 </a>
-                
-                <span *ngIf="req.labRequestState === 0" class="no-action">
-                  -
-                </span>
               </td>
             </tr>
 
@@ -100,8 +97,34 @@ interface LabRequestsResponse {
   `,
   styles: [`
     .page-container { padding: 20px 0; font-family: sans-serif; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    
+    .header { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      margin-bottom: 20px; 
+    }
+    
     h2 { margin: 0; color: #333; }
+
+    .create-btn {
+      padding: 8px 20px;
+      background-color: #0078d4; 
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      
+      font-weight: 600; 
+      font-size: 0.95rem;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+    .create-btn:hover {
+      background-color: #005a9e; 
+    }
+    .create-btn:active {
+      transform: scale(0.98);
+    }
 
     .table-container { border: 1px solid #e0e0e0; border-radius: 4px; overflow: hidden; }
     table { width: 100%; border-collapse: collapse; background: white; }
@@ -145,8 +168,6 @@ interface LabRequestsResponse {
       border-color: #c7e0f4;
     }
     
-    .no-action { color: #ccc; }
-
     .loading, .error, .empty-text { padding: 20px; text-align: center; color: #666; }
     .error { color: #d9534f; }
   `]
