@@ -1,5 +1,5 @@
 import { Component, inject, ChangeDetectorRef, effect } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { SignalrService } from '../services/signalr.service';
@@ -17,10 +17,12 @@ import { SignalrService } from '../services/signalr.service';
           <a routerLink="/patients" routerLinkActive="active-link">Patients</a>
         </div>
 
-        <div class="nav-group center">
-          <input type="text" placeholder="Search..." />
-          <button>Go</button>
+        <div class="nav-group center" *ngIf="!isProfilePage">
+          <input type="text" placeholder="Search..." class="search-input" />
+          <button class="search-btn">Go</button>
         </div>
+
+        <div class="nav-group center" *ngIf="isProfilePage"></div>
 
         <div class="nav-group right">
           
@@ -31,17 +33,14 @@ import { SignalrService } from '../services/signalr.service';
             </span>
 
             <div *ngIf="isNotificationsOpen" class="dropdown">
-              
               <div class="dropdown-content">
                 <div *ngFor="let item of notifications" class="notification-item">
                   {{ item.message }}
                 </div>
-                
                 <div *ngIf="notifications.length === 0" class="empty-state">
                   No notifications
                 </div>
               </div>
-
               <div class="dropdown-footer" (click)="clearAll()">
                 Clear All
               </div>
@@ -64,20 +63,83 @@ import { SignalrService } from '../services/signalr.service';
     .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; }
     .nav-group { display: flex; align-items: center; gap: 10px; }
     
-    a { text-decoration: none; color: black; font-weight: 500; cursor: pointer; padding: 8px 16px; border-radius: 4px; transition: all 0.2s; }
-    a:hover { background-color: #e6e6e6; }
-    .active-link { background-color: #0078d4; color: white !important; }
+    .nav-group.center { flex-grow: 1; justify-content: center; } 
 
-    .notification-wrapper { position: relative; cursor: pointer; }
-    .notification-trigger { user-select: none; font-weight: 500; }
+    /* --- UPDATED NAVIGATION LINKS --- */
+    a { 
+      text-decoration: none; 
+      color: #666; /* Default gray for inactive links */
+      font-weight: 500; 
+      cursor: pointer; 
+      padding: 8px 12px; 
+      position: relative;
+      transition: color 0.2s;
+    }
+
+    /* Hover Effect: Light Blue Text */
+    a:hover { 
+      color: #0078d4; 
+      background-color: transparent; /* Removed gray background */
+    }
+
+    /* Active State: Blue Text + Bottom Border */
+    .active-link { 
+      color: #0078d4 !important; 
+      font-weight: 600;
+    }
     
+    /* This creates the underline effect for the active link */
+    .active-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; /* Push it down slightly */
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: #0078d4;
+      border-radius: 2px;
+    }
+
+    /* --- SEARCH STYLES (Unchanged) --- */
+    .search-input {
+      width: 300px; 
+      padding: 8px 15px;
+      border: 1px solid #ccc;
+      border-radius: 20px; 
+      outline: none;
+      font-size: 0.95rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .search-input:focus {
+      border-color: #0078d4;
+      box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.2);
+    }
+
+    .search-btn {
+      padding: 8px 20px;
+      background-color: #0078d4; 
+      color: white;
+      border: none;
+      border-radius: 20px; 
+      cursor: pointer;
+      font-weight: 500;
+      transition: background-color 0.2s;
+    }
+    .search-btn:hover {
+      background-color: #005a9e; 
+    }
+
+    /* NOTIFICATIONS */
+    .notification-wrapper { position: relative; cursor: pointer; margin-right: 15px; } /* Added margin */
+    .notification-trigger { user-select: none; font-weight: 500; color: #666; transition: color 0.2s; }
+    .notification-trigger:hover { color: #0078d4; }
+
     .badge {
       display: inline-block; width: 8px; height: 8px; 
       background-color: red; border-radius: 50%; 
       margin-left: 5px; vertical-align: top;
     }
 
-    /* Floating Dropdown */
     .dropdown {
       position: absolute;
       top: 35px; right: 0; width: 300px;
@@ -87,32 +149,27 @@ import { SignalrService } from '../services/signalr.service';
       overflow: hidden;
     }
 
-    /* Scrollable Area */
-    .dropdown-content {
-      max-height: 200px;
-      overflow-y: auto;
-    }
-
-    .notification-item {
-      padding: 12px; border-bottom: 1px solid #f0f0f0; font-size: 0.9rem;
-    }
+    .dropdown-content { max-height: 200px; overflow-y: auto; }
+    .notification-item { padding: 12px; border-bottom: 1px solid #f0f0f0; font-size: 0.9rem; color: #333; }
     .notification-item:hover { background-color: #f9f9f9; }
-
     .empty-state { padding: 20px; text-align: center; color: #999; font-style: italic; }
 
-    /* Footer */
     .dropdown-footer {
       padding: 10px; text-align: center; background-color: #f5f5f5;
       color: #d9534f; font-weight: bold; cursor: pointer;
       border-top: 1px solid #ddd;
     }
     .dropdown-footer:hover { background-color: #e8e8e8; }
+    
+    hr { margin: 0; border: 0; border-top: 1px solid #eee; } /* Cleaner line */
+    main { padding-top: 20px; }
   `]
 })
 export class MainLayoutComponent {
   http = inject(HttpClient);
   cdr = inject(ChangeDetectorRef);
   signalrService = inject(SignalrService);
+  router = inject(Router);
   
   isNotificationsOpen = false;
   isLoading = false;
@@ -122,6 +179,10 @@ export class MainLayoutComponent {
     effect(() => {
       this.cdr.detectChanges(); 
     });
+  }
+
+  get isProfilePage(): boolean {
+    return this.router.url.startsWith('/profile');
   }
 
   ngOnInit() {
