@@ -1,11 +1,9 @@
 ﻿using InsightMed.Application.Modules.Notifications.Queries;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace InsightMed.API.Hubs;
 
-[Authorize]
 public sealed class NotificationHub : Hub<INotificationClient>
 {
     private readonly ISender _sender;

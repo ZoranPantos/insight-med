@@ -134,7 +134,8 @@ export class MainLayoutComponent {
 
   toggleNotifications() {
     this.isNotificationsOpen = !this.isNotificationsOpen;
-    if (this.isNotificationsOpen && this.notifications.length === 0) {
+
+    if (this.isNotificationsOpen) {
       this.fetchNotifications();
     }
   }

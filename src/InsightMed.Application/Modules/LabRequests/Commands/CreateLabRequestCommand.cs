@@ -49,7 +49,9 @@ public sealed class CreateLabRequestCommandHandler : IRequestHandler<CreateLabRe
     public async Task Handle(CreateLabRequestCommand request, CancellationToken cancellationToken)
     {
         string? userId = _currentUserService.GetUserId();
-        if (string.IsNullOrEmpty(userId)) throw new UnauthorizedException("User not found");
+
+        if (string.IsNullOrEmpty(userId))
+            throw new UnauthorizedException("User not found");
 
         var labRequest = new LabRequest
         {
