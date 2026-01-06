@@ -23,6 +23,7 @@ interface PatientsResponse {
     <div class="page-container">
       <div class="header">
         <h2>Patients</h2>
+        <a routerLink="/patients/add" class="create-btn">Add Patient</a>
       </div>
 
       <div *ngIf="isLoading" class="loading">
@@ -63,8 +64,33 @@ interface PatientsResponse {
   `,
   styles: [`
     .page-container { padding: 20px 0; font-family: sans-serif; }
-    .header { margin-bottom: 20px; }
+    
+    /* UPDATED HEADER STYLES TO MATCH REQUESTS COMPONENT */
+    .header { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      margin-bottom: 20px; 
+    }
+    
     h2 { margin: 0; color: #333; }
+
+    /* ADDED BUTTON STYLE */
+    .create-btn {
+      padding: 8px 20px;
+      background-color: #0078d4; 
+      color: white;
+      text-decoration: none; /* Important for <a> tag */
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600; 
+      font-size: 0.95rem;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+    .create-btn:hover { background-color: #005a9e; }
+    .create-btn:active { transform: scale(0.98); }
+
     .table-container { border: 1px solid #e0e0e0; border-radius: 4px; overflow: hidden; }
     table { width: 100%; border-collapse: collapse; background: white; }
     th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #f0f0f0; }
