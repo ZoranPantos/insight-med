@@ -60,8 +60,6 @@ interface AccountInfo {
     .page-container { 
       padding: 20px 0; 
       font-family: sans-serif; 
-      max-width: 600px; 
-      margin: 0 auto; 
     }
 
     .header { 
@@ -76,6 +74,14 @@ interface AccountInfo {
       gap: 30px;
     }
 
+    .details-card {
+      background: white; 
+      border: 1px solid #e0e0e0; 
+      border-radius: 8px; 
+      padding: 20px 25px; 
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
     .info-row {
       display: flex;
       justify-content: space-between;
@@ -86,6 +92,11 @@ interface AccountInfo {
     
     .info-row:last-child {
       border-bottom: none;
+      padding-bottom: 5px; 
+    }
+    
+    .info-row:first-child {
+      padding-top: 5px;
     }
 
     .info-row label {
@@ -123,11 +134,9 @@ interface AccountInfo {
     button {
       padding: 10px 24px;
       border: none;
-      border-radius: 20px; /* Pill Shape */
+      border-radius: 20px; 
       cursor: pointer;
-      
       font-weight: 600; 
-      
       font-size: 0.95rem;
       transition: background-color 0.2s, transform 0.1s;
       min-width: 140px;
