@@ -142,7 +142,6 @@ import { SignalrService } from '../services/signalr.service';
     }
     .notification-trigger:hover { color: #0078d4; }
 
-    /* UPDATED: Active state for notifications (Blue + Bold, No Underline) */
     .active-trigger {
       color: #0078d4;
       font-weight: 600;

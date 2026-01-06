@@ -5,6 +5,7 @@ import { MainLayoutComponent } from './layout/main-layout.component';
 import { ReportsComponent } from './reports/reports.component';
 import { RequestsComponent } from './requests/requests.component';
 import { PatientsComponent } from './patients/patients.component';
+import { PatientDetailsComponent } from './patients/patient-details.component';
 import { ProfileComponent } from './profile/profile.component';
 
 export const routes: Routes = [
@@ -18,6 +19,7 @@ export const routes: Routes = [
       { path: 'reports', component: ReportsComponent },
       { path: 'requests', component: RequestsComponent },
       { path: 'patients', component: PatientsComponent },
+      { path: 'patients/:id', component: PatientDetailsComponent },
       { path: 'profile', component: ProfileComponent }
     ]
   }
