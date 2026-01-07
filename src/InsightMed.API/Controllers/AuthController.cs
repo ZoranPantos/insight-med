@@ -3,6 +3,7 @@ using InsightMed.Application.Auth.Commands;
 using InsightMed.Application.Auth.Models;
 using InsightMed.Application.Auth.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InsightMed.API.Controllers;
@@ -35,10 +36,21 @@ public sealed class AuthController : ControllerBase
         return Ok("Registration successful");
     }
 
+    [Authorize]
     [HttpGet("accountInfo/{id}")]
     public async Task<ActionResult<GetAccountInfoQueryResponse>> GetAccountInfoAsync(string id)
     {
         var response = await _sender.Send(new GetAccountInfoQuery(id));
         return Ok(response);
+    }
+
+    [Authorize]
+    [HttpPost("changePassword")]
+    public async Task<ActionResult> ChangePasswordAsync(ChangePasswordInputModel input)
+    {
+        var command = new ChangePasswordCommand(input.CurrentPassword, input.NewPassword);
+        await _sender.Send(command);
+
+        return Ok("Password change successful");
     }
 }

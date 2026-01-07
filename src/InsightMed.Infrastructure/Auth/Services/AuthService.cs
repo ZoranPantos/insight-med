@@ -4,7 +4,6 @@ using InsightMed.Application.Auth.Services.Abstractions;
 using InsightMed.Application.Common.Exceptions;
 using InsightMed.Infrastructure.Options;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -18,18 +17,15 @@ public sealed class AuthService : IAuthService
     private readonly JwtOptions _jwtOptions;
     private readonly IMapper _mapper;
     private readonly UserManager<IdentityUser> _userManager;
-    private readonly IConfiguration _configuration;
 
     public AuthService(
         IOptions<JwtOptions> jwtOptions,
         IMapper mapper,
-        UserManager<IdentityUser> userManager,
-        IConfiguration configuration)
+        UserManager<IdentityUser> userManager)
     {
         _jwtOptions = jwtOptions.Value ?? throw new ArgumentNullException(nameof(jwtOptions));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
-        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
     }
 
     public async Task<string> LoginAsync(string email, string password)
@@ -83,5 +79,19 @@ public sealed class AuthService : IAuthService
         var user = await _userManager.FindByIdAsync(userId);
 
         return user is null ? null : _mapper.Map<IdentityUserResponse>(user);
+    }
+
+    public async Task ChangePasswordAsync(string userId, string currentPassword, string newPassword)
+    {
+        var user = await _userManager.FindByIdAsync(userId)
+            ?? throw new UnauthorizedException("User does not exist");
+
+        var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+
+        if (!result.Succeeded)
+        {
+            string errors = string.Join(", ", result.Errors.Select(e => e.Description));
+            throw new InvalidClientDataException(errors);
+        }
     }
 }

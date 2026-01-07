@@ -1,0 +1,19 @@
+﻿using FluentValidation;
+using InsightMed.Application.Auth.Commands;
+
+namespace InsightMed.Application.Auth.Validation;
+
+public sealed class ChangePasswordCommandValidator : AbstractValidator<ChangePasswordCommand>
+{
+    public ChangePasswordCommandValidator()
+    {
+        RuleFor(command => command)
+            .NotEmpty();
+
+        RuleFor(command => command.CurrentPassword)
+            .NotEmpty();
+
+        RuleFor(command => command.NewPassword)
+            .NotEmpty();
+    }
+}
