@@ -17,12 +17,12 @@ import { SignalrService } from '../services/signalr.service';
           <a routerLink="/patients" routerLinkActive="active-link">Patients</a>
         </div>
 
-        <div class="nav-group center" *ngIf="!isProfilePage">
+        <div class="nav-group center" *ngIf="!isSearchHidden">
           <input type="text" placeholder="Search..." class="search-input" />
           <button class="search-btn">Go</button>
         </div>
 
-        <div class="nav-group center" *ngIf="isProfilePage"></div>
+        <div class="nav-group center" *ngIf="isSearchHidden"></div>
 
         <div class="nav-group right">
           
@@ -191,7 +191,7 @@ import { SignalrService } from '../services/signalr.service';
       border-radius: 25px; 
       cursor: pointer;
       font-weight: 600;
-      transition: background-color 0.2s, transform 0.1s;
+      transition: background-color 0.2s, transform 0.1s; 
     }
 
     .clear-btn:hover {
@@ -222,8 +222,9 @@ export class MainLayoutComponent {
     });
   }
 
-  get isProfilePage(): boolean {
-    return this.router.url.startsWith('/profile');
+  get isSearchHidden(): boolean {
+    return this.router.url.startsWith('/profile') || 
+           this.router.url.startsWith('/change-password');
   }
 
   ngOnInit() {

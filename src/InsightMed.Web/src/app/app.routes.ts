@@ -8,6 +8,7 @@ import { PatientsComponent } from './patients/patients.component';
 import { AddPatientComponent } from './patients/add-patient.component';
 import { PatientDetailsComponent } from './patients/patient-details.component';
 import { ProfileComponent } from './profile/profile.component';
+import { ChangePasswordComponent } from './profile/change-password.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -22,7 +23,8 @@ export const routes: Routes = [
       { path: 'patients', component: PatientsComponent },
       { path: 'patients/add', component: AddPatientComponent },
       { path: 'patients/:id', component: PatientDetailsComponent },
-      { path: 'profile', component: ProfileComponent }
+      { path: 'profile', component: ProfileComponent },
+      { path: 'change-password', component: ChangePasswordComponent }
     ]
   }
 ];

@@ -219,7 +219,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   onChangePassword() {
-    console.log('Navigate to change password');
+    this.router.navigate(['/change-password']);
   }
 
   onLogout() {
