@@ -1,4 +1,4 @@
-import { Component, inject, ElementRef, HostListener, OnInit } from '@angular/core';
+import { Component, inject, ElementRef, HostListener, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -163,7 +163,7 @@ import { Router } from '@angular/router';
       position: absolute; top: 105%; left: 0; right: 0;
       background: white; border: 1px solid #ddd; border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000;
-      overflow: hidden; max-height: 250px; overflow-y: auto;
+      overflow: hidden; max-height: 320px; overflow-y: auto;
     }
 
     .option-item { padding: 10px 20px; color: #333; transition: background 0.1s; }
@@ -225,6 +225,7 @@ import { Router } from '@angular/router';
 export class AddPatientComponent implements OnInit {
   private http = inject(HttpClient);
   private router = inject(Router);
+  private cd = inject(ChangeDetectorRef);
 
   firstName = '';
   lastName = '';
@@ -308,6 +309,7 @@ export class AddPatientComponent implements OnInit {
     const d = day.toString().padStart(2, '0');
     this.dateOfBirth = `${this.viewYear}-${m}-${d}`;
     this.isDateOpen = false;
+    this.clearMessages();
   }
 
   isSelected(day: number): boolean {
@@ -374,6 +376,15 @@ export class AddPatientComponent implements OnInit {
       return;
     }
 
+    const selectedDate = new Date(this.dateOfBirth);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (selectedDate > today) {
+      this.errorMessages = ['Date of birth cannot be in the future'];
+      return;
+    }
+
     this.isLoading = true;
     this.clearMessages();
 
@@ -393,6 +404,7 @@ export class AddPatientComponent implements OnInit {
         next: () => {
           this.isLoading = false;
           this.router.navigate(['/patients']);
+          this.cd.detectChanges();
         },
         error: (err) => {
           console.error(err);
@@ -401,8 +413,9 @@ export class AddPatientComponent implements OnInit {
             const rawMessages = err.error.detail.split(',');
             this.errorMessages = rawMessages.map((msg: string) => msg.trim().replace(/\.$/, ''));
           } else {
-            this.errorMessages = ['Failed to add patient. Check inputs or try again.'];
+            this.errorMessages = ['Failed to add patient'];
           }
+          this.cd.detectChanges();
         }
       });
   }
