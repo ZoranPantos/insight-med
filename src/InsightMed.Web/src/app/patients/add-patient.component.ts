@@ -370,7 +370,7 @@ export class AddPatientComponent implements OnInit {
 
   onSubmit() {
     if (!this.firstName || !this.lastName || !this.uid || !this.email || !this.dateOfBirth) {
-      this.errorMessages = ['Please fill in all required fields.'];
+      this.errorMessages = ['Please fill in all required fields'];
       return;
     }
 

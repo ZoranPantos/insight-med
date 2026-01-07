@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 using System.Text;
 
 namespace InsightMed.API.Configurations;
@@ -15,6 +16,8 @@ public static class ConfigureServices
 {
     public static IServiceCollection ConfigureApi(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
         services.AddCors(options =>
         {
             options.AddPolicy("AllowAll", policy =>

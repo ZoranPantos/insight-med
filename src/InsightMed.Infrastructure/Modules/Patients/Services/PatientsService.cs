@@ -11,7 +11,7 @@ public class PatientsService : IPatientsService
 
     public PatientsService(IAppDbContext context) =>
         _context = context ?? throw new ArgumentNullException(nameof(context));
-
+    
     public async Task<List<Patient>> GetAllAsync()
     {
         return await _context.Patients
@@ -27,6 +27,17 @@ public class PatientsService : IPatientsService
             .Include(patient => patient.LabReports)
             .Include(patient => patient.LabRequests)
             .FirstOrDefaultAsync(patient => patient.Id == id)
+            .ConfigureAwait(false);
+    }
+
+    public async Task AddAsync(Patient patient)
+    {
+        await _context.Patients
+            .AddAsync(patient)
+            .ConfigureAwait(false);
+
+        await _context
+            .SaveChangesAsync()
             .ConfigureAwait(false);
     }
 }
