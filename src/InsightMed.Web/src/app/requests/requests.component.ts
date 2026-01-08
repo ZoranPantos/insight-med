@@ -11,7 +11,7 @@ interface LabParameter {
 interface LabRequest {
   id: number;
   created: string;
-  labRequestState: number; // 0 = Pending, 1 = Completed
+  labRequestState: number;
   patientFullName: string;
   patientUid: string;
   labParameters: LabParameter[];
@@ -29,7 +29,7 @@ interface LabRequestsResponse {
     <div class="page-container">
       <div class="header">
         <h2>Lab Requests</h2>
-        <button class="create-btn">Create Request</button>
+        <a routerLink="/requests/create" class="create-btn">Create Request</a>
       </div>
 
       <div *ngIf="isLoading" class="loading">
@@ -111,10 +111,10 @@ interface LabRequestsResponse {
       padding: 8px 20px;
       background-color: #0078d4; 
       color: white;
+      text-decoration: none; /* FIXED: Removes the underline */
       border: none;
       border-radius: 20px;
       cursor: pointer;
-      
       font-weight: 600; 
       font-size: 0.95rem;
       transition: background-color 0.2s, transform 0.1s;
