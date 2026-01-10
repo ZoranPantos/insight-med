@@ -6,4 +6,5 @@ internal sealed class LabParameterValueRpcServerResponse
     public string Name { get; set; } = string.Empty;
     public bool? IsPositive { get; set; }
     public double? Measurement { get; set; }
+    public LabParameterReferenceRpcServerResponse Reference { get; set; } = new();
 }

@@ -139,7 +139,13 @@ internal sealed class RpcServerWorker : BackgroundService
                     Id = labParameter.Id,
                     Name = labParameter.Name,
                     IsPositive = randomizerResult.IsPositive,
-                    Measurement = randomizerResult.Value
+                    Measurement = randomizerResult.Value,
+                    Reference = new()
+                    {
+                        MinThreshold = labParameter.Reference.MinThreshold,
+                        MaxThreshold = labParameter.Reference.MaxThreshold,
+                        Positive = labParameter.Reference.Positive
+                    }
                 };
 
                 labResponse.LabParameterValueResponseDtos.Add(labParameterValueResponseDto);
