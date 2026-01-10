@@ -21,5 +21,10 @@ BEGIN
     (7, N'Bilirubin', N'{"MinThreshold":0.1,"MaxThreshold":1.2,"Positive":null}'),
     (8, N'Platelet Count', N'{"MinThreshold":150.0,"MaxThreshold":400.0,"Positive":null}'),
     (9, N'Thyroid Stimulating Hormone (TSH)', N'{"MinThreshold":0.4,"MaxThreshold":4.0,"Positive":null}'),
-    (10, N'Vitamin D', N'{"MinThreshold":30.0,"MaxThreshold":100.0,"Positive":null}');
+    (10, N'Vitamin D', N'{"MinThreshold":30.0,"MaxThreshold":100.0,"Positive":null}'),
+    (11, N'Hepatitis B Surface Antigen', N'{"MinThreshold":null,"MaxThreshold":null,"Positive":false}'),
+    (12, N'HIV I/II Antibody', N'{"MinThreshold":null,"MaxThreshold":null,"Positive":false}'),
+    (13, N'Urine Ketones', N'{"MinThreshold":null,"MaxThreshold":null,"Positive":false}'),
+    (14, N'Fecal Occult Blood', N'{"MinThreshold":null,"MaxThreshold":null,"Positive":false}'),
+    (15, N'COVID-19 Antigen', N'{"MinThreshold":null,"MaxThreshold":null,"Positive":false}');
 END

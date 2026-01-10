@@ -32,6 +32,7 @@ public sealed class DatabaseManagementService : IDatabaseManagementService
         string filePath = Path.Combine(basePath, "Data/SqlScripts", "SeedData.sql");
 
         string sql = await File.ReadAllTextAsync(filePath);
+        sql = sql.Replace("{", "{{").Replace("}", "}}");
 
         await _context.Database.ExecuteSqlRawAsync(sql);
     }
