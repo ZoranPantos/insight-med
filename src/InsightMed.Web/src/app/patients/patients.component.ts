@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { RouterLink, Router, NavigationEnd } from '@angular/router';
-import { Subscription, filter } from 'rxjs';
+import { RouterLink, ActivatedRoute } from '@angular/router'; // 1. Added ActivatedRoute
+import { Subscription } from 'rxjs';
 
 interface Patient {
   id: number;
@@ -65,7 +65,6 @@ interface PatientsResponse {
   styles: [`
     .page-container { padding: 20px 0; font-family: sans-serif; }
     
-    /* UPDATED HEADER STYLES TO MATCH REQUESTS COMPONENT */
     .header { 
       display: flex; 
       justify-content: space-between; 
@@ -75,12 +74,11 @@ interface PatientsResponse {
     
     h2 { margin: 0; color: #333; }
 
-    /* ADDED BUTTON STYLE */
     .create-btn {
       padding: 8px 20px;
       background-color: #0078d4; 
       color: white;
-      text-decoration: none; /* Important for <a> tag */
+      text-decoration: none;
       border: none;
       border-radius: 20px;
       cursor: pointer;
@@ -107,34 +105,34 @@ interface PatientsResponse {
 export class PatientsComponent implements OnInit, OnDestroy {
   private http = inject(HttpClient);
   private cd = inject(ChangeDetectorRef);
-  private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   patients: Patient[] = [];
   isLoading = false;
   errorMessage = '';
-  private routerSubscription: Subscription | undefined;
+  
+  private querySubscription: Subscription | undefined;
 
-  constructor() {
-    this.routerSubscription = this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe(() => {
-      this.fetchPatients();
+  ngOnInit() {
+    this.querySubscription = this.route.queryParams.subscribe(params => {
+      const searchKey = params['searchKey'] || '';
+      this.fetchPatients(searchKey);
     });
   }
 
-  ngOnInit() {
-    this.fetchPatients();
-  }
-
   ngOnDestroy() {
-    if (this.routerSubscription) {
-      this.routerSubscription.unsubscribe();
+    if (this.querySubscription) {
+      this.querySubscription.unsubscribe();
     }
   }
 
-  fetchPatients() {
+  fetchPatients(searchKey: string = '') {
     this.isLoading = true;
-    this.http.get<PatientsResponse>('http://localhost:5000/api/Patients')
+    this.errorMessage = '';
+    
+    this.http.get<PatientsResponse>('http://localhost:5000/api/Patients', {
+      params: { searchKey: searchKey }
+    })
       .subscribe({
         next: (response) => {
           this.patients = response.patients;
