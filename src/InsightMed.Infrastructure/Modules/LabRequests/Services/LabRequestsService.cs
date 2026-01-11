@@ -48,4 +48,27 @@ public sealed class LabRequestsService : ILabRequestsService
 
         return labRequest.Id;
     }
+
+    public async Task<List<LabRequest>> SearchByTokensAsync(string[] tokens)
+    {
+        var query = _context.LabRequests
+            .AsNoTracking()
+            .Include(labRequest => labRequest.Patient)
+            .Include(labRequest => labRequest.LabReport)
+            .AsQueryable();
+
+        foreach (string token in tokens)
+        {
+            string searchTerm = token.Trim().ToLower();
+
+            query = query.Where(r =>
+                r.Patient.FirstName.ToLower().Contains(searchTerm) ||
+                r.Patient.LastName.ToLower().Contains(searchTerm) ||
+                r.Patient.Uid.ToLower().Contains(searchTerm));
+        }
+
+        return await query
+            .ToListAsync()
+            .ConfigureAwait(false);
+    }
 }

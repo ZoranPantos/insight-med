@@ -56,17 +56,18 @@ public sealed class LabReportsService : ILabReportsService
             .Include(r => r.Patient)
             .AsQueryable();
 
-        foreach (var token in tokens)
+        foreach (string token in tokens)
         {
             string searchTerm = token.Trim().ToLower();
 
             query = query.Where(r =>
                 r.Patient.FirstName.ToLower().Contains(searchTerm) ||
                 r.Patient.LastName.ToLower().Contains(searchTerm) ||
-                r.Patient.Uid.ToLower().Contains(searchTerm)
-            );
+                r.Patient.Uid.ToLower().Contains(searchTerm));
         }
 
-        return await query.ToListAsync().ConfigureAwait(false);
+        return await query
+            .ToListAsync()
+            .ConfigureAwait(false);
     }
 }

@@ -2,12 +2,12 @@
 using InsightMed.Application.Modules.LabParameters.Services.Abstractions;
 using InsightMed.Application.Modules.LabRequests.Models;
 using InsightMed.Application.Modules.LabRequests.Services.Abstractions;
-using InsightMed.Domain.Enums;
+using InsightMed.Domain.Entities;
 using MediatR;
 
 namespace InsightMed.Application.Modules.LabRequests.Queries;
 
-public sealed record GetAllLabRequestsQuery : IRequest<GetAllLabRequestsQueryResponse>;
+public sealed record GetAllLabRequestsQuery(string? SearchKey) : IRequest<GetAllLabRequestsQueryResponse>;
 
 public sealed class GetAllLabRequestsQueryHandler
     : IRequestHandler<GetAllLabRequestsQuery, GetAllLabRequestsQueryResponse>
@@ -32,15 +32,21 @@ public sealed class GetAllLabRequestsQueryHandler
     {
         var response = new GetAllLabRequestsQueryResponse();
 
-        var labRequests = await _labRequestsService.GetAllAsync();
+        List<LabRequest> labRequests = [];
+
+        if (string.IsNullOrWhiteSpace(request.SearchKey))
+            labRequests = await _labRequestsService.GetAllAsync();
+        else
+        {
+            string[] tokens = request.SearchKey.Trim().Split();
+            labRequests = await _labRequestsService.SearchByTokensAsync(tokens);
+        }
+
         var labParameters = await _labParametersService.GetAllAsync();
 
         foreach (var labRequest in labRequests)
         {
             var labRequestLiteResponse = _mapper.Map<LabRequestLiteResponse>(labRequest);
-
-            if (labRequest.LabRequestState == LabRequestState.Completed && labRequest.LabReport is not null)
-                labRequestLiteResponse.LabReportId = labRequest.LabReport.Id;
 
             foreach (var labParameterId in labRequest.LabParameterIds)
             {
