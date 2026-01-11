@@ -111,7 +111,7 @@ interface LabRequestsResponse {
       padding: 8px 20px;
       background-color: #0078d4; 
       color: white;
-      text-decoration: none; /* FIXED: Removes the underline */
+      text-decoration: none;
       border: none;
       border-radius: 20px;
       cursor: pointer;

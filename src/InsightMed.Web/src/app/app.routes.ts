@@ -3,6 +3,7 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { MainLayoutComponent } from './layout/main-layout.component';
 import { ReportsComponent } from './reports/reports.component';
+import { ReportDetailsComponent } from './reports/report-details.component';
 import { RequestsComponent } from './requests/requests.component';
 import { PatientsComponent } from './patients/patients.component';
 import { AddPatientComponent } from './patients/add-patient.component';
@@ -20,6 +21,7 @@ export const routes: Routes = [
     component: MainLayoutComponent, 
     children: [
       { path: 'reports', component: ReportsComponent },
+      { path: 'reports/:id', component: ReportDetailsComponent },
       { path: 'requests', component: RequestsComponent },
       { path: 'requests/create', component: CreateRequestComponent },
       { path: 'patients', component: PatientsComponent },
