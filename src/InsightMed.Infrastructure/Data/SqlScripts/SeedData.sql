@@ -5,12 +5,6 @@ ALTER TABLE [LabRequests] NOCHECK CONSTRAINT ALL;
 ALTER TABLE [LabReports] NOCHECK CONSTRAINT ALL;
 ALTER TABLE [Notifications] NOCHECK CONSTRAINT ALL;
 
-DBCC CHECKIDENT ('LabParameters', RESEED, 0); 
-DBCC CHECKIDENT ('Patients', RESEED, 0);
-DBCC CHECKIDENT ('LabRequests', RESEED, 0);
-DBCC CHECKIDENT ('LabReports', RESEED, 0);
-DBCC CHECKIDENT ('Notifications', RESEED, 0);
-
 INSERT INTO [dbo].[AspNetUsers]
 (
     [Id], [UserName], [NormalizedUserName], [Email], [NormalizedEmail], 
