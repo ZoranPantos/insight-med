@@ -11,11 +11,13 @@ interface LabReport {
   patientId: number;
 }
 
+// 1. UPDATE INTERFACE
 interface LabRequest {
   id: number;
   created: string;
-  labRequestState: number; // 0 = Pending, 1 = Completed
+  labRequestState: number; 
   patientId: number;
+  labReportId: number | null; // Added nullable ID
 }
 
 interface PatientDetails {
@@ -100,8 +102,8 @@ interface PatientDetails {
                     </span>
                   </td>
                   <td class="actions-col">
-                    <a *ngIf="req.labRequestState === 1" 
-                       [routerLink]="['/reports', req.id]" 
+                    <a *ngIf="req.labRequestState === 1 && req.labReportId" 
+                       [routerLink]="['/reports', req.labReportId]" 
                        class="view-link">
                        View Report
                     </a>

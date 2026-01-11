@@ -8,4 +8,5 @@ public sealed class PatientLabRequestResponse
     public DateTime Created { get; set; }
     public LabRequestState LabRequestState { get; set; }
     public int PatientId { get; set; }
+    public int? LabReportId { get; set; }
 }

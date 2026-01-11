@@ -26,6 +26,7 @@ public class PatientsService : IPatientsService
             .AsNoTracking()
             .Include(patient => patient.LabReports)
             .Include(patient => patient.LabRequests)
+            .ThenInclude(request => request.LabReport)
             .FirstOrDefaultAsync(patient => patient.Id == id)
             .ConfigureAwait(false);
     }
