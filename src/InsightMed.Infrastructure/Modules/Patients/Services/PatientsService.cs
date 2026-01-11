@@ -41,4 +41,25 @@ public class PatientsService : IPatientsService
             .SaveChangesAsync()
             .ConfigureAwait(false);
     }
+
+    public async Task<List<Patient>> SearchByTokensAsync(string[] tokens)
+    {
+        var query = _context.Patients
+            .AsNoTracking()
+            .AsQueryable();
+
+        foreach (string token in tokens)
+        {
+            string searchTerm = token.Trim().ToLower();
+
+            query = query.Where(p =>
+                p.FirstName.ToLower().Contains(searchTerm) ||
+                p.LastName.ToLower().Contains(searchTerm) ||
+                p.Uid.ToLower().Contains(searchTerm));
+        }
+
+        return await query
+            .ToListAsync()
+            .ConfigureAwait(false);
+    }
 }

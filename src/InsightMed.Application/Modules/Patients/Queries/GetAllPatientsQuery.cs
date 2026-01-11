@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using InsightMed.Application.Modules.Patients.Models;
 using InsightMed.Application.Modules.Patients.Services.Abstractions;
+using InsightMed.Domain.Entities;
 using MediatR;
 
 namespace InsightMed.Application.Modules.Patients.Queries;
 
-public sealed record GetAllPatientsQuery : IRequest<GetAllPatientsQueryResponse>;
+public sealed record GetAllPatientsQuery(string? SearchKey) : IRequest<GetAllPatientsQueryResponse>;
 
 public sealed class GetAllPatientsQueryHanlder : IRequestHandler<GetAllPatientsQuery, GetAllPatientsQueryResponse>
 {
@@ -20,7 +21,15 @@ public sealed class GetAllPatientsQueryHanlder : IRequestHandler<GetAllPatientsQ
 
     public async Task<GetAllPatientsQueryResponse> Handle(GetAllPatientsQuery request, CancellationToken cancellationToken)
     {
-        var patients = await _patientsService.GetAllAsync();
+        List<Patient> patients = [];
+
+        if (string.IsNullOrWhiteSpace(request.SearchKey))
+            patients = await _patientsService.GetAllAsync();
+        else
+        {
+            string[] tokens = request.SearchKey.Trim().Split();
+            patients = await _patientsService.SearchByTokensAsync(tokens);
+        }
 
         var response = new GetAllPatientsQueryResponse
         {
