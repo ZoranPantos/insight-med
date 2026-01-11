@@ -1,13 +1,14 @@
 import { Component, inject, ChangeDetectorRef, effect } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { RouterOutlet, RouterLink, RouterLinkActive, Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { SignalrService } from '../services/signalr.service';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule, FormsModule],
   template: `
     <div class="app-container">
       <nav class="navbar">
@@ -18,14 +19,14 @@ import { SignalrService } from '../services/signalr.service';
         </div>
 
         <div class="nav-group center" *ngIf="!isSearchHidden">
-          <input type="text" placeholder="Search..." class="search-input" />
-          <button class="search-btn">Go</button>
+          <input type="text" placeholder="Search..." class="search-input" 
+                 [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" />
+          <button class="search-btn" (click)="onSearch()">Go</button>
         </div>
 
         <div class="nav-group center" *ngIf="isSearchHidden"></div>
 
         <div class="nav-group right">
-          
           <div class="notification-wrapper">
             <span (click)="toggleNotifications()" 
                   class="notification-trigger" 
@@ -211,6 +212,9 @@ export class MainLayoutComponent {
   cdr = inject(ChangeDetectorRef);
   signalrService = inject(SignalrService);
   router = inject(Router);
+  route = inject(ActivatedRoute);
+
+  searchTerm = '';
   
   isNotificationsOpen = false;
   isLoading = false;
@@ -225,6 +229,16 @@ export class MainLayoutComponent {
   get isSearchHidden(): boolean {
     return this.router.url.startsWith('/profile') || 
            this.router.url.startsWith('/change-password');
+  }
+
+  onSearch() {
+    console.log('Search triggered with term:', this.searchTerm); //  Add logging
+    const currentPath = this.router.url.split('?')[0];
+
+    this.router.navigate([currentPath], {
+      queryParams: { searchKey: this.searchTerm || null },
+      queryParamsHandling: 'merge'
+    });
   }
 
   ngOnInit() {

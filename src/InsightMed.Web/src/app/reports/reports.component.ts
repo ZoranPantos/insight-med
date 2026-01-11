@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Router, NavigationEnd, RouterLink } from '@angular/router'; 
-import { Subscription, filter } from 'rxjs';
+import { ActivatedRoute, RouterLink } from '@angular/router'; 
+import { Subscription } from 'rxjs';
 
 interface LabReport {
   id: number;
@@ -112,36 +112,34 @@ interface LabReportsResponse {
 export class ReportsComponent implements OnInit, OnDestroy {
   private http = inject(HttpClient);
   private cd = inject(ChangeDetectorRef);
-  private router = inject(Router);
+  private route = inject(ActivatedRoute); 
 
   reports: LabReport[] = [];
   isLoading = false;
   errorMessage = '';
   
-  private routerSubscription: Subscription | undefined;
+  private querySubscription: Subscription | undefined;
 
-  constructor() {
-    this.routerSubscription = this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe(() => {
-      this.fetchReports();
+  ngOnInit() {
+    this.querySubscription = this.route.queryParams.subscribe(params => {
+      const searchKey = params['searchKey'] || '';
+      this.fetchReports(searchKey);
     });
   }
 
-  ngOnInit() {
-    this.fetchReports();
-  }
-
   ngOnDestroy() {
-    if (this.routerSubscription) {
-      this.routerSubscription.unsubscribe();
+    if (this.querySubscription) {
+      this.querySubscription.unsubscribe();
     }
   }
 
-  fetchReports() {
+  fetchReports(searchKey: string = '') {
     this.isLoading = true;
+    this.errorMessage = ''; 
     
-    this.http.get<LabReportsResponse>('http://localhost:5000/api/LabReports')
+    this.http.get<LabReportsResponse>('http://localhost:5000/api/LabReports', {
+      params: { searchKey: searchKey } 
+    })
       .subscribe({
         next: (response) => {
           this.reports = response.labReports;
