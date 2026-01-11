@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using InsightMed.Application.Modules.LabReports.Models;
 using InsightMed.Application.Modules.LabReports.Services.Abstactions;
+using InsightMed.Domain.Entities;
 using MediatR;
 
 namespace InsightMed.Application.Modules.LabReports.Queries;
 
-public sealed record GetAllLabReportsQuery : IRequest<GetAllLabReportsQueryResponse>;
+public sealed record GetAllLabReportsQuery(string? SearchKey) : IRequest<GetAllLabReportsQueryResponse>;
 
 public sealed class GetAllLabReportsQueryHandler : IRequestHandler<GetAllLabReportsQuery, GetAllLabReportsQueryResponse>
 {
@@ -22,7 +23,15 @@ public sealed class GetAllLabReportsQueryHandler : IRequestHandler<GetAllLabRepo
         GetAllLabReportsQuery request,
         CancellationToken cancellationToken)
     {
-        var labReports = await _labReportsService.GetAllAsync();
+        List<LabReport> labReports = [];
+
+        if (string.IsNullOrWhiteSpace(request.SearchKey))
+            labReports = await _labReportsService.GetAllAsync();
+        else
+        {
+            string[] tokens = request.SearchKey.Trim().Split();
+            labReports = await _labReportsService.SearchByTokensAsync(tokens);
+        }
 
         var response = new GetAllLabReportsQueryResponse
         {
@@ -32,4 +41,3 @@ public sealed class GetAllLabReportsQueryHandler : IRequestHandler<GetAllLabRepo
         return response;
     }
 }
-

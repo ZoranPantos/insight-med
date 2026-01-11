@@ -48,4 +48,25 @@ public sealed class LabReportsService : ILabReportsService
             .SaveChangesAsync()
             .ConfigureAwait(false);
     }
+
+    public async Task<List<LabReport>> SearchByTokensAsync(string[] tokens)
+    {
+        var query = _context.LabReports
+            .AsNoTracking()
+            .Include(r => r.Patient)
+            .AsQueryable();
+
+        foreach (var token in tokens)
+        {
+            string searchTerm = token.Trim().ToLower();
+
+            query = query.Where(r =>
+                r.Patient.FirstName.ToLower().Contains(searchTerm) ||
+                r.Patient.LastName.ToLower().Contains(searchTerm) ||
+                r.Patient.Uid.ToLower().Contains(searchTerm)
+            );
+        }
+
+        return await query.ToListAsync().ConfigureAwait(false);
+    }
 }
