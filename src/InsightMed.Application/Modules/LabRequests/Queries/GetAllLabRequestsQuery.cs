@@ -2,6 +2,7 @@
 using InsightMed.Application.Modules.LabParameters.Services.Abstractions;
 using InsightMed.Application.Modules.LabRequests.Models;
 using InsightMed.Application.Modules.LabRequests.Services.Abstractions;
+using InsightMed.Domain.Enums;
 using MediatR;
 
 namespace InsightMed.Application.Modules.LabRequests.Queries;
@@ -37,6 +38,9 @@ public sealed class GetAllLabRequestsQueryHandler
         foreach (var labRequest in labRequests)
         {
             var labRequestLiteResponse = _mapper.Map<LabRequestLiteResponse>(labRequest);
+
+            if (labRequest.LabRequestState == LabRequestState.Completed && labRequest.LabReport is not null)
+                labRequestLiteResponse.LabReportId = labRequest.LabReport.Id;
 
             foreach (var labParameterId in labRequest.LabParameterIds)
             {

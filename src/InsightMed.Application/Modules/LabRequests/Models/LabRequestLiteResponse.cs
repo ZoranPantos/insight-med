@@ -9,5 +9,6 @@ public sealed class LabRequestLiteResponse
     public LabRequestState LabRequestState { get; set; }
     public string PatientFullName { get; set; } = string.Empty;
     public string PatientUid { get; set; } = string.Empty;
+    public int? LabReportId { get; set; }
     public List<LabRequestLabParameterLiteResponse> LabParameters { get; set; } = [];
 }

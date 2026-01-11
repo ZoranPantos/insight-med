@@ -8,12 +8,14 @@ interface LabParameter {
   name: string;
 }
 
+// 1. Update Interface to match new JSON
 interface LabRequest {
   id: number;
   created: string;
   labRequestState: number;
   patientFullName: string;
   patientUid: string;
+  labReportId: number | null; // Added nullable ID
   labParameters: LabParameter[];
 }
 
@@ -79,8 +81,8 @@ interface LabRequestsResponse {
               </td>
 
               <td class="actions-col">
-                <a *ngIf="req.labRequestState === 1" 
-                   [routerLink]="['/reports', req.id]" 
+                <a *ngIf="req.labRequestState === 1 && req.labReportId" 
+                   [routerLink]="['/reports', req.labReportId]" 
                    class="view-report-link">
                    View Report
                 </a>
