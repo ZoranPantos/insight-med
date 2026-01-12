@@ -20,8 +20,8 @@ public sealed class LabRequestsController : ControllerBase
         _sender = sender ?? throw new ArgumentNullException(nameof(sender));
 
     [HttpGet]
-    public async Task<ActionResult<GetAllLabRequestsQueryResponse>> GetAllAsync([
-        FromQuery] string? searchKey,
+    public async Task<ActionResult<GetAllLabRequestsQueryResponse>> GetAllAsync(
+        [FromQuery] string? searchKey,
         [FromQuery] int pageNumber)
     {
         var response = await _sender.Send(new GetAllLabRequestsQuery(searchKey, pageNumber));

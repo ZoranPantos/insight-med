@@ -93,6 +93,7 @@ dotnet ef database update --startup-project ../InsightMed.API
 
 ## Running from IDE
 
+Prerequisite for running the backend solution is to have **.NET 10 SDK** installed.
 Set up a new startup profile in the IDE (Visual Studio or Rider) to run both _InsightMed.API_ and _InsightMed.LabRpcServer_ simultaneously.
 SQL Server, RabbitMQ, Elasticsearch, and Kibana are required. They can either be installed locally or spun up in containers by running the following commands:
 
@@ -123,7 +124,16 @@ docker run -d --name kibana -p 5601:5601 -e "ELASTICSEARCH_HOSTS=http://host.doc
 
 <br>
 
+Prerequisites for the frontend:
+- Node.js 24.11.1
+- npm 11.6.2
+- Angular CLI (global) @angular/cli@21.0.2
+
 To run the frontend app, open terminal in _InsightMed.Web_ folder and execute the following command
+```sh
+npm ci
+```
+then
 ```sh
 ng serve
 ```
