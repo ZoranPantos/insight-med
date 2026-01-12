@@ -32,14 +32,21 @@ public sealed class GetAllLabReportsQueryHandler : IRequestHandler<GetAllLabRepo
     {
         int pageNumber = request.PageNumber <= 0 ? 1 : request.PageNumber;
         int pageSize = _pagingOptions.ReportsPageSize;
+        int totalCount;
         List<LabReport> labReports = [];
 
         if (string.IsNullOrWhiteSpace(request.SearchKey))
-            labReports = await _labReportsService.GetAllPagedAsync(pageNumber, pageSize);
+        {
+            var (Items, TotalCount) = await _labReportsService.GetAllPagedAsync(pageNumber, pageSize);
+            labReports = Items;
+            totalCount = TotalCount;
+        }
         else
         {
             string[] tokens = request.SearchKey.Trim().Split();
-            labReports = await _labReportsService.SearchByTokensPagedAsync(tokens, pageNumber, pageSize);
+            var (Items, TotalCount) = await _labReportsService.SearchByTokensPagedAsync(tokens, pageNumber, pageSize);
+            labReports = Items;
+            totalCount = TotalCount;
         }
 
         var response = new GetAllLabReportsQueryResponse
@@ -47,7 +54,7 @@ public sealed class GetAllLabReportsQueryHandler : IRequestHandler<GetAllLabRepo
             LabReports = _mapper.Map<List<LabReportLiteResponse>>(labReports),
             PageNumber = pageNumber,
             PageSize = pageSize,
-            TotalCount = await _labReportsService.GetTotalLabReportCountAsync()
+            TotalCount = totalCount
         };
 
         return response;

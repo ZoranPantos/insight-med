@@ -12,9 +12,9 @@ public sealed class LabReportsService : ILabReportsService
     public LabReportsService(IAppDbContext context) =>
         _context = context ?? throw new ArgumentNullException(nameof(context));
 
-    public async Task<List<LabReport>> GetAllPagedAsync(int pageNumber, int pageSize)
+    public async Task<(List<LabReport> Items, int TotalCount)> GetAllPagedAsync(int pageNumber, int pageSize)
     {
-        return await _context.LabReports
+        var items = await _context.LabReports
             .AsNoTracking()
             .Include(labReport => labReport.Patient)
             .OrderByDescending(labReport => labReport.Created)
@@ -23,6 +23,12 @@ public sealed class LabReportsService : ILabReportsService
             .Take(pageSize)
             .ToListAsync()
             .ConfigureAwait(false);
+
+        int totalCount = await _context.LabReports
+            .CountAsync()
+            .ConfigureAwait(false);
+
+        return (items, totalCount);
     }
 
     public async Task<List<LabReport>> GetAllByPatientIdAsync(int patientId)
@@ -55,7 +61,7 @@ public sealed class LabReportsService : ILabReportsService
             .ConfigureAwait(false);
     }
 
-    public async Task<List<LabReport>> SearchByTokensPagedAsync(string[] tokens, int pageNumber, int pageSize)
+    public async Task<(List<LabReport> Items, int TotalCount)> SearchByTokensPagedAsync(string[] tokens, int pageNumber, int pageSize)
     {
         var query = _context.LabReports
             .AsNoTracking()
@@ -72,14 +78,18 @@ public sealed class LabReportsService : ILabReportsService
                 r.Patient.Uid.ToLower().Contains(searchTerm));
         }
 
-        return await query
+        int totalCount = await query
+            .CountAsync()
+            .ConfigureAwait(false);
+
+        var items = await query
             .OrderByDescending(labReport => labReport.Created)
             .ThenByDescending(labReport => labReport.Id)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync()
             .ConfigureAwait(false);
-    }
 
-    public async Task<int> GetTotalLabReportCountAsync() => await _context.LabReports.CountAsync();
+        return (items, totalCount);
+    }
 }
