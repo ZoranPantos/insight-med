@@ -13,14 +13,24 @@ public sealed class LabRequestsService : ILabRequestsService
     public LabRequestsService(IAppDbContext context) =>
         _context = context ?? throw new ArgumentNullException(nameof(context));
 
-    public async Task<List<LabRequest>> GetAllAsync()
+    public async Task<(List<LabRequest> Items, int TotalCount)> GetAllPagedAsync(int pageNumber, int pageSize)
     {
-        return await _context.LabRequests
+        var items = await _context.LabRequests
             .AsNoTracking()
             .Include(labRequest => labRequest.Patient)
             .Include(labRequest => labRequest.LabReport)
+            .OrderByDescending(labRequest => labRequest.Created)
+            .ThenByDescending(labRequest => labRequest.Id)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync()
             .ConfigureAwait(false);
+
+        int totalCount = await _context.LabRequests
+            .CountAsync()
+            .ConfigureAwait(false);
+
+        return (items, totalCount);
     }
 
     public async Task AddAsync(LabRequest labRequest)
@@ -49,7 +59,7 @@ public sealed class LabRequestsService : ILabRequestsService
         return labRequest.Id;
     }
 
-    public async Task<List<LabRequest>> SearchByTokensAsync(string[] tokens)
+    public async Task<(List<LabRequest> Items, int TotalCount)> SearchByTokensPagedAsync(string[] tokens, int pageNumber, int pageSize)
     {
         var query = _context.LabRequests
             .AsNoTracking()
@@ -67,8 +77,18 @@ public sealed class LabRequestsService : ILabRequestsService
                 r.Patient.Uid.ToLower().Contains(searchTerm));
         }
 
-        return await query
+        int totalCount = await query
+            .CountAsync()
+            .ConfigureAwait(false);
+
+        var items = await query
+            .OrderByDescending(labRequest => labRequest.Created)
+            .ThenByDescending(labRequest => labRequest.Id)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync()
             .ConfigureAwait(false);
+
+        return (items, totalCount);
     }
 }

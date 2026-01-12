@@ -1,6 +1,8 @@
-﻿namespace InsightMed.Application.Modules.LabRequests.Models;
+﻿using InsightMed.Application.Common.Models;
 
-public sealed class GetAllLabRequestsQueryResponse
+namespace InsightMed.Application.Modules.LabRequests.Models;
+
+public sealed class GetAllLabRequestsQueryResponse : BasePagedResponse
 {
     public List<LabRequestLiteResponse> LabRequests { get; set; } = [];
 }
