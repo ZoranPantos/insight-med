@@ -232,11 +232,14 @@ export class MainLayoutComponent {
   }
 
   onSearch() {
-    console.log('Search triggered with term:', this.searchTerm); //  Add logging
+    console.log('Search triggered with term:', this.searchTerm); 
     const currentPath = this.router.url.split('?')[0];
 
     this.router.navigate([currentPath], {
-      queryParams: { searchKey: this.searchTerm || null },
+      queryParams: { 
+        searchKey: this.searchTerm || null,
+        pageNumber: 1
+      },
       queryParamsHandling: 'merge'
     });
   }
