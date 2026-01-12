@@ -12,11 +12,15 @@ public sealed class LabReportsService : ILabReportsService
     public LabReportsService(IAppDbContext context) =>
         _context = context ?? throw new ArgumentNullException(nameof(context));
 
-    public async Task<List<LabReport>> GetAllAsync()
+    public async Task<List<LabReport>> GetAllPagedAsync(int pageNumber, int pageSize)
     {
         return await _context.LabReports
             .AsNoTracking()
             .Include(labReport => labReport.Patient)
+            .OrderByDescending(labReport => labReport.Created)
+            .ThenByDescending(labReport => labReport.Id)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync()
             .ConfigureAwait(false);
     }
@@ -27,6 +31,8 @@ public sealed class LabReportsService : ILabReportsService
             .AsNoTracking()
             .Include(LabReport => LabReport.Patient)
             .Where(labReport => labReport.PatientId == patientId)
+            .OrderByDescending(labReport => labReport.Created)
+            .ThenByDescending(labReport => labReport.Id)
             .ToListAsync()
             .ConfigureAwait(false);
     }
@@ -49,7 +55,7 @@ public sealed class LabReportsService : ILabReportsService
             .ConfigureAwait(false);
     }
 
-    public async Task<List<LabReport>> SearchByTokensAsync(string[] tokens)
+    public async Task<List<LabReport>> SearchByTokensPagedAsync(string[] tokens, int pageNumber, int pageSize)
     {
         var query = _context.LabReports
             .AsNoTracking()
@@ -67,7 +73,13 @@ public sealed class LabReportsService : ILabReportsService
         }
 
         return await query
+            .OrderByDescending(labReport => labReport.Created)
+            .ThenByDescending(labReport => labReport.Id)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync()
             .ConfigureAwait(false);
     }
+
+    public async Task<int> GetTotalLabReportCountAsync() => await _context.LabReports.CountAsync();
 }

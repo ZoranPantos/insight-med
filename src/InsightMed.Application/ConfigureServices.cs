@@ -25,6 +25,7 @@ public static class ConfigureServices
         });
 
         services.Configure<MemoryCacheOptions>(configuration.GetSection("MemoryCache"));
+        services.Configure<PagingOptions>(configuration.GetSection("Paging"));
 
         return services;
     }
