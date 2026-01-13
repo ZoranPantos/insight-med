@@ -1,8 +1,9 @@
-﻿using InsightMed.Domain.Enums;
+﻿using InsightMed.Application.Common.Models;
+using InsightMed.Domain.Enums;
 
 namespace InsightMed.Application.Modules.Patients.Models;
 
-public sealed class GetPatientByIdQueryResponse
+public sealed class GetPatientByIdQueryResponse : BasePagedResponse
 {
     public int Id { get; set; }
     public string Uid { get; set; } = string.Empty;
@@ -14,6 +15,5 @@ public sealed class GetPatientByIdQueryResponse
     public Gender Gender { get; set; }
     public BloodGroup BloodGroup { get; set; }
 
-    public List<PatientLabReportResponse> LabReports { get; set; } = [];
     public List<PatientLabRequestResponse> LabRequests { get; set; } = [];
 }

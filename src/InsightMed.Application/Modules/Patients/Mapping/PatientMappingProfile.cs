@@ -11,7 +11,6 @@ public sealed class PatientMappingProfile : Profile
     {
         CreateMap<Patient, PatientLiteResponse>();
         CreateMap<Patient, GetPatientByIdQueryResponse>();
-        CreateMap<LabReport, PatientLabReportResponse>();
 
         CreateMap<LabRequest, PatientLabRequestResponse>()
             .ForMember(

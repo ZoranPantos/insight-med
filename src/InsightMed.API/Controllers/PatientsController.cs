@@ -36,9 +36,11 @@ public sealed class PatientsController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<GetPatientByIdQueryResponse>> GetByIdAsync(int id)
+    public async Task<ActionResult<GetPatientByIdQueryResponse>> GetByIdAsync(
+        int id,
+        [FromQuery] int pageNumber)
     {
-        var response = await _sender.Send(new GetPatientByIdQuery(id));
+        var response = await _sender.Send(new GetPatientByIdQuery(id, pageNumber));
         return Ok(response);
     }
 

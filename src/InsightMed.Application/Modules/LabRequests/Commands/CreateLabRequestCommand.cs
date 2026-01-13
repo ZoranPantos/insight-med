@@ -108,14 +108,16 @@ public sealed class CreateLabRequestCommandHandler : IRequestHandler<CreateLabRe
 
                 await labReportsService.AddAsync(labReport);
 
-                var patient = await patientsService.GetByIdAsync(patientId)
-                    ?? throw new ResourceNotFoundException($"Patient with ID {patientId} not found");
+                var (Patient, _, _) = await patientsService.GetByIdWithLabRequestsPagedAsync(patientId, 0, 0);
+
+                if (Patient is null)
+                    throw new ResourceNotFoundException($"Patient with ID {patientId} not found");
 
                 var notification = new Notification
                 {
                     LabReportId = labReport.Id,
                     RequesterId = userId,
-                    Message = $"Report for patient {patient.FirstName} {patient.LastName} {patient.Uid} is available. Date created UTC: {labReport.Created}"
+                    Message = $"Report for patient {Patient.FirstName} {Patient.LastName} {Patient.Uid} is available. Date created UTC: {labReport.Created}"
                 };
 
                 await notificationsService.AddAsync(notification);

@@ -45,15 +45,32 @@ public class PatientsService : IPatientsService
         return (items, totalCount);
     }
 
-    public async Task<Patient?> GetByIdAsync(int id)
+    public async Task<(Patient? Patient, List<LabRequest> PagedLabRequests, int TotalCount)> GetByIdWithLabRequestsPagedAsync(int id, int pageNumber, int pageSize)
     {
-        return await _context.Patients
+        var patient = await _context.Patients
             .AsNoTracking()
-            .Include(patient => patient.LabReports)
-            .Include(patient => patient.LabRequests)
-            .ThenInclude(request => request.LabReport)
-            .FirstOrDefaultAsync(patient => patient.Id == id)
+            .FirstOrDefaultAsync(patient => patient.Id == id);
+
+        if (patient is null) return (null, [], 0);
+
+        var requestsQuery = _context.LabRequests
+            .AsNoTracking()
+            .Where(labRequest => labRequest.PatientId == id)
+            .Include(labRequest => labRequest.LabReport);
+
+        int totalCount = await requestsQuery
+            .CountAsync()
             .ConfigureAwait(false);
+
+        var pagedRequests = await requestsQuery
+            .OrderByDescending(request => request.Created)
+            .ThenByDescending(request => request.Id)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync()
+            .ConfigureAwait(false);
+
+        return (patient, pagedRequests, totalCount);
     }
 
     public async Task AddAsync(Patient patient)
