@@ -27,9 +27,11 @@ public sealed class PatientsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<GetAllPatientsQueryResponse>> GetAllAsync([FromQuery] string? searchKey)
+    public async Task<ActionResult<GetAllPatientsQueryResponse>> GetAllAsync(
+        [FromQuery] string? searchKey,
+        [FromQuery] int? pageNumber)
     {
-        var response = await _sender.Send(new GetAllPatientsQuery(searchKey));
+        var response = await _sender.Send(new GetAllPatientsQuery(searchKey, pageNumber));
         return Ok(response);
     }
 

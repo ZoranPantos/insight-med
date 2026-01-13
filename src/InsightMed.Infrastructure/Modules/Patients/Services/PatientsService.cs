@@ -12,12 +12,37 @@ public class PatientsService : IPatientsService
     public PatientsService(IAppDbContext context) =>
         _context = context ?? throw new ArgumentNullException(nameof(context));
     
-    public async Task<List<Patient>> GetAllAsync()
+    public async Task<(List<Patient> Items, int TotalCount)> GetAllAsync()
     {
-        return await _context.Patients
+        var items = await _context.Patients
             .AsNoTracking()
             .ToListAsync()
             .ConfigureAwait(false);
+
+        int totalCount = await _context.Patients
+            .CountAsync()
+            .ConfigureAwait(false);
+
+        return (items, totalCount);
+    }
+
+    public async Task<(List<Patient> Items, int TotalCount)> GetAllPagedAsync(int pageNumber, int pageSize)
+    {
+        var items = await _context.Patients
+            .AsNoTracking()
+            .OrderBy(p => p.FirstName)
+            .ThenBy(p => p.LastName)
+            .ThenBy(p => p.Id)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync()
+            .ConfigureAwait(false);
+
+        int totalCount = await _context.Patients
+            .CountAsync()
+            .ConfigureAwait(false);
+
+        return (items, totalCount);
     }
 
     public async Task<Patient?> GetByIdAsync(int id)
@@ -42,7 +67,8 @@ public class PatientsService : IPatientsService
             .ConfigureAwait(false);
     }
 
-    public async Task<List<Patient>> SearchByTokensAsync(string[] tokens)
+    public async Task<(List<Patient> Items, int TotalCount)> SearchByTokensPagedAsync(
+        string[] tokens, int pageNumber, int pageSize)
     {
         var query = _context.Patients
             .AsNoTracking()
@@ -58,8 +84,19 @@ public class PatientsService : IPatientsService
                 p.Uid.ToLower().Contains(searchTerm));
         }
 
-        return await query
+        int totalCount = await query
+            .CountAsync()
+            .ConfigureAwait(false);
+
+        var items = await query
+            .OrderBy(p => p.FirstName)
+            .ThenBy(p => p.LastName)
+            .ThenBy(p => p.Id)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync()
             .ConfigureAwait(false);
+
+        return (items, totalCount);
     }
 }

@@ -36,7 +36,7 @@ public sealed class GetAllLabRequestsQueryHandler
         CancellationToken cancellationToken)
     {
         int pageNumber = request.PageNumber <= 0 ? 1 : request.PageNumber;
-        int pageSize = _pagingOptions.ReportsPageSize;
+        int pageSize = _pagingOptions.RequestsPageSize;
         int totalCount;
         var response = new GetAllLabRequestsQueryResponse();
 

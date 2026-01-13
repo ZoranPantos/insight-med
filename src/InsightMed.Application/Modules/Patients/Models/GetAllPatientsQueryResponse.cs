@@ -1,6 +1,8 @@
-﻿namespace InsightMed.Application.Modules.Patients.Models;
+﻿using InsightMed.Application.Common.Models;
 
-public sealed class GetAllPatientsQueryResponse
+namespace InsightMed.Application.Modules.Patients.Models;
+
+public sealed class GetAllPatientsQueryResponse : BasePagedResponse
 {
     public List<PatientLiteResponse> Patients { get; set; } = [];
 }
