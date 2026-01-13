@@ -94,7 +94,7 @@ interface LabRequestsResponse {
             </tr>
 
             <tr *ngIf="requests.length === 0">
-              <td colspan="5" class="empty-text">No requests found.</td>
+              <td colspan="5" class="empty-text">No requests found</td>
             </tr>
           </tbody>
         </table>

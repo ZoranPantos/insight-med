@@ -67,7 +67,7 @@ interface LabReportsResponse {
             </tr>
 
             <tr *ngIf="reports.length === 0">
-              <td colspan="3" class="empty-text">No reports found.</td>
+              <td colspan="3" class="empty-text">No reports found</td>
             </tr>
           </tbody>
         </table>

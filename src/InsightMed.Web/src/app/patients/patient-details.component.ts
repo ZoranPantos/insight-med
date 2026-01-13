@@ -118,7 +118,7 @@ interface PatientDetails {
                   </td>
                 </tr>
                 <tr *ngIf="patient.labRequests.length === 0">
-                  <td colspan="3" class="empty-text">No requests on file.</td>
+                  <td colspan="3" class="empty-text">No requests found</td>
                 </tr>
               </tbody>
             </table>

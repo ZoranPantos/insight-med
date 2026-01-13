@@ -60,7 +60,7 @@ interface PatientsResponse {
             </tr>
             
             <tr *ngIf="patients.length === 0">
-              <td colspan="4" class="empty-text">No patients found.</td>
+              <td colspan="4" class="empty-text">No patients found</td>
             </tr>
           </tbody>
         </table>
