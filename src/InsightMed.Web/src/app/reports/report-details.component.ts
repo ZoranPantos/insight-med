@@ -35,10 +35,15 @@ interface LabReportDetails {
       <div class="header">
         <div class="title-group">
             <h2>Report Details</h2>
+            
             <div *ngIf="report" class="patient-info">
                 <span class="patient-name">{{ report.patientFullName }}</span>
                 <span class="uid-badge">{{ report.patientUid }}</span>
             </div>
+
+            <span *ngIf="report" class="report-date">
+              {{ report.created | date:'MMM d, y, h:mm a' }}
+            </span>
         </div>
         <button class="export-btn" (click)="onExportPdf()">Export PDF</button>
       </div>
@@ -104,6 +109,11 @@ interface LabReportDetails {
         border-radius: 4px; 
         font-weight: 500; 
         font-size: 0.9em; 
+    }
+
+    .report-date {
+        color: #888;
+        font-size: 0.9rem;
     }
 
     .export-btn {
