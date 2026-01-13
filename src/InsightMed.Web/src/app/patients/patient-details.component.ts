@@ -96,7 +96,7 @@ interface PatientDetails {
               </thead>
               <tbody>
                 <tr *ngFor="let req of patient.labRequests">
-                  <td>{{ req.created | date:'MMM d, y, h:mm a' }}</td>
+                  <td class="date-col">{{ req.created | date:'MMM d, y, h:mm a' }}</td>
                   <td>
                     <span class="status-badge" 
                           [class.pending]="req.labRequestState === 0"
@@ -166,6 +166,8 @@ interface PatientDetails {
     th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #f0f0f0; }
     th { background-color: #fafafa; font-weight: 600; color: #555; font-size: 0.9em; text-transform: uppercase; }
     tr:hover { background-color: #f9f9f9; }
+
+    .date-col { white-space: nowrap; color: #666; font-size: 0.9rem; }
 
     .status-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 0.85em; font-weight: 500; }
     .status-badge.pending { background-color: #fff4ce; color: #664d03; }
