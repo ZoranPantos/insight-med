@@ -3,18 +3,25 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { LoadingSpinnerComponent } from '../shared/loading-spinner.component';
 
 @Component({
   selector: 'app-add-patient',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LoadingSpinnerComponent],
   template: `
     <div class="page-container">
       <div class="header">
         <h2>Add New Patient</h2>
       </div>
 
-      <div class="form-container">
+      <app-loading-spinner 
+        *ngIf="isLoading" 
+        message="Saving patient..." 
+        minHeight="300px">
+      </app-loading-spinner>
+
+      <div class="form-container" *ngIf="!isLoading">
         
         <div class="form-row">
           <div class="form-group">
@@ -163,7 +170,7 @@ import { Router } from '@angular/router';
       position: absolute; top: 105%; left: 0; right: 0;
       background: white; border: 1px solid #ddd; border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000;
-      overflow: hidden; max-height: 320px; overflow-y: auto;
+      overflow: hidden; max-height: 200px; overflow-y: auto;
     }
 
     .option-item { padding: 10px 20px; color: #333; transition: background 0.1s; }

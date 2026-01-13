@@ -4,6 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, RouterLink, Router } from '@angular/router'; 
 import { Subscription } from 'rxjs';
 
+import { LoadingSpinnerComponent } from '../shared/loading-spinner.component'; 
+
 interface LabReport {
   id: number;
   created: string;
@@ -21,16 +23,17 @@ interface LabReportsResponse {
 @Component({
   selector: 'app-reports',
   standalone: true,
-  imports: [CommonModule, DatePipe, RouterLink], 
+  imports: [CommonModule, DatePipe, RouterLink, LoadingSpinnerComponent], 
   template: `
     <div class="page-container">
       <div class="header">
         <h2>Lab Reports</h2>
       </div>
 
-      <div *ngIf="isLoading" class="loading">
-        Loading reports...
-      </div>
+      <app-loading-spinner 
+        *ngIf="isLoading" 
+        minHeight="200px">
+      </app-loading-spinner>
 
       <div *ngIf="errorMessage" class="error">
         {{ errorMessage }}
@@ -58,7 +61,7 @@ interface LabReportsResponse {
 
               <td class="actions">
                 <a [routerLink]="['/reports', report.id]" class="view-link">
-                   View Details
+                    View Details
                 </a>
               </td>
             </tr>
@@ -129,7 +132,8 @@ interface LabReportsResponse {
       border-color: #c7e0f4;
     }
     
-    .loading, .error, .empty-text { padding: 20px; text-align: center; color: #666; }
+    /* Removed .loading style as it is now handled by the component */
+    .error, .empty-text { padding: 20px; text-align: center; color: #666; }
     .error { color: #d9534f; }
 
     .pagination-controls {
@@ -233,7 +237,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           console.error('Error fetching reports:', err);
-          this.errorMessage = 'Failed to load lab reports.';
+          this.errorMessage = 'Failed to load data';
           this.isLoading = false;
           this.cd.detectChanges();
         }

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { LoadingSpinnerComponent } from '../shared/loading-spinner.component'; 
 
 interface Patient {
   id: number;
@@ -21,7 +22,7 @@ interface PatientsResponse {
 @Component({
   selector: 'app-patients',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, LoadingSpinnerComponent],
   template: `
     <div class="page-container">
       <div class="header">
@@ -29,9 +30,10 @@ interface PatientsResponse {
         <a routerLink="/patients/add" class="create-btn">Add Patient</a>
       </div>
 
-      <div *ngIf="isLoading" class="loading">
-        Loading patients...
-      </div>
+      <app-loading-spinner 
+        *ngIf="isLoading" 
+        minHeight="200px">
+      </app-loading-spinner>
 
       <div *ngIf="errorMessage" class="error">
         {{ errorMessage }}
@@ -122,7 +124,9 @@ interface PatientsResponse {
     .actions { text-align: right; }
     .view-link { color: #0078d4; text-decoration: none; font-weight: 500; font-size: 0.9em; padding: 6px 12px; border: 1px solid transparent; border-radius: 4px; transition: all 0.2s; }
     .view-link:hover { background-color: #eff6fc; border-color: #c7e0f4; }
-    .loading, .error, .empty-text { padding: 20px; text-align: center; color: #666; }
+    
+    /* Removed .loading style */
+    .error, .empty-text { padding: 20px; text-align: center; color: #666; }
     .error { color: #d9534f; }
 
     .pagination-controls {
@@ -227,7 +231,7 @@ export class PatientsComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           console.error('Error fetching patients:', err);
-          this.errorMessage = 'Failed to load patients. Please try again later.';
+          this.errorMessage = 'Failed to load data';
           this.isLoading = false;
           this.cd.detectChanges();
         }

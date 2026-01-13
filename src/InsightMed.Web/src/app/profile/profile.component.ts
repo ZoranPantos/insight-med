@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router, NavigationEnd } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { Subscription, filter } from 'rxjs';
+import { LoadingSpinnerComponent } from '../shared/loading-spinner.component';
 
 interface AccountInfo {
   userName: string;
@@ -14,16 +15,17 @@ interface AccountInfo {
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, LoadingSpinnerComponent],
   template: `
     <div class="page-container">
       <div class="header">
         <h2>Profile</h2>
       </div>
 
-      <div *ngIf="isLoading" class="loading">
-        Loading profile...
-      </div>
+      <app-loading-spinner 
+        *ngIf="isLoading" 
+        minHeight="200px">
+      </app-loading-spinner>
 
       <div *ngIf="!isLoading && accountInfo" class="content-wrapper">
         
@@ -161,8 +163,6 @@ interface AccountInfo {
     .logout-btn:hover {
       background-color: #bb2d3b;
     }
-
-    .loading { padding: 20px; text-align: center; color: #666; }
   `]
 })
 export class ProfileComponent implements OnInit, OnDestroy {
@@ -211,7 +211,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           this.cd.detectChanges();
         },
         error: (err) => {
-          console.error('Failed to load profile', err);
+          console.error('Failed to load data', err);
           this.isLoading = false;
           this.cd.detectChanges();
         }

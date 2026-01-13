@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { LoadingSpinnerComponent } from '../shared/loading-spinner.component';
 
 @Component({
   selector: 'app-change-password',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LoadingSpinnerComponent],
   template: `
     <div class="page-container">
       
@@ -15,7 +16,13 @@ import { Router } from '@angular/router';
         <h2>Change Password</h2>
       </div>
 
-      <div class="form-wrapper">
+      <app-loading-spinner 
+        *ngIf="isLoading" 
+        message="Updating password..." 
+        minHeight="300px">
+      </app-loading-spinner>
+
+      <div class="form-wrapper" *ngIf="!isLoading">
         
         <div class="form-group">
           <label>Old Password</label>
@@ -141,6 +148,7 @@ import { Router } from '@angular/router';
       border-radius: 8px; 
       margin-top: 10px; 
       text-align: left;
+      font-size: 1rem; 
     }
     .error-message { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
     ul { margin: 0; padding-left: 15px; }

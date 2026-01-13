@@ -3,6 +3,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { LoadingSpinnerComponent } from '../shared/loading-spinner.component';
 
 interface LabReport {
   id: number;
@@ -40,7 +41,7 @@ interface PatientDetails {
 @Component({
   selector: 'app-patient-details',
   standalone: true,
-  imports: [CommonModule, RouterLink, DatePipe],
+  imports: [CommonModule, RouterLink, DatePipe, LoadingSpinnerComponent],
   template: `
     <div class="page-container">
       
@@ -48,7 +49,11 @@ interface PatientDetails {
         <h2>Patient Details</h2>
       </div>
 
-      <div *ngIf="isLoading" class="loading">Loading patient details...</div>
+      <app-loading-spinner 
+        *ngIf="isLoading" 
+        minHeight="300px">
+      </app-loading-spinner>
+
       <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
 
       <div *ngIf="!isLoading && patient" class="content-wrapper">
@@ -190,7 +195,8 @@ interface PatientDetails {
       border-color: #c7e0f4; 
     }
     
-    .loading, .error, .empty-text { padding: 20px; text-align: center; color: #666; }
+    /* Removed .loading style */
+    .error, .empty-text { padding: 20px; text-align: center; color: #666; }
     .error { color: #d9534f; }
 
     .pagination-controls {
@@ -290,7 +296,7 @@ export class PatientDetailsComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           console.error(err);
-          this.errorMessage = 'Failed to load patient details.';
+          this.errorMessage = 'Failed to load data';
           this.isLoading = false;
           this.cd.detectChanges();
         }

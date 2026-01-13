@@ -1,14 +1,15 @@
-import { Component, inject, ChangeDetectorRef, effect } from '@angular/core';
+import { Component, inject, ChangeDetectorRef, effect, OnInit, OnDestroy } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { SignalrService } from '../services/signalr.service';
+import { LoadingSpinnerComponent } from '../shared/loading-spinner.component';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule, FormsModule],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule, FormsModule, LoadingSpinnerComponent],
   template: `
     <div class="app-container">
       <nav class="navbar">
@@ -37,15 +38,30 @@ import { SignalrService } from '../services/signalr.service';
 
             <div *ngIf="isNotificationsOpen" class="dropdown">
               <div class="dropdown-content">
-                <div *ngFor="let item of notifications" class="notification-item">
-                  {{ item.message }}
+                
+                <app-loading-spinner 
+                  *ngIf="isLoading" 
+                  message="Loading..." 
+                  minHeight="150px">
+                </app-loading-spinner>
+
+                <div *ngIf="errorMessage && !isLoading" class="error-state">
+                  {{ errorMessage }}
                 </div>
-                <div *ngIf="notifications.length === 0" class="empty-state">
-                  No new notifications
-                </div>
+
+                <ng-container *ngIf="!isLoading && !errorMessage">
+                  <div *ngFor="let item of notifications" class="notification-item">
+                    {{ item.message }}
+                  </div>
+
+                  <div *ngIf="notifications.length === 0" class="empty-state">
+                    No new notifications
+                  </div>
+                </ng-container>
+
               </div>
               
-              <div class="dropdown-footer">
+              <div class="dropdown-footer" *ngIf="notifications.length > 0 && !isLoading">
                 <button class="clear-btn" (click)="clearAll()">Clear</button>
               </div>
             </div>
@@ -175,12 +191,31 @@ import { SignalrService } from '../services/signalr.service';
     }
     .notification-item:hover { background-color: #f9f9f9; }
     
-    .empty-state { padding: 30px; text-align: center; color: #999; font-style: italic; }
+    .empty-state { 
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 150px;
+      padding: 20px; 
+      color: #999; 
+      font-style: italic; 
+    }
+    
+    .error-state { 
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 150px;
+      padding: 20px; 
+      color: #d9534f; 
+      font-size: 0.9rem;
+    }
 
     .dropdown-footer {
       padding: 15px; 
       text-align: center; 
       background-color: white; 
+      border-top: 1px solid #eee;
     }
 
     .clear-btn {
@@ -207,7 +242,7 @@ import { SignalrService } from '../services/signalr.service';
     main { padding-top: 20px; }
   `]
 })
-export class MainLayoutComponent {
+export class MainLayoutComponent implements OnInit, OnDestroy {
   http = inject(HttpClient);
   cdr = inject(ChangeDetectorRef);
   signalrService = inject(SignalrService);
@@ -218,6 +253,7 @@ export class MainLayoutComponent {
   
   isNotificationsOpen = false;
   isLoading = false;
+  errorMessage = '';
   notifications: any[] = [];
 
   constructor() {
@@ -265,6 +301,9 @@ export class MainLayoutComponent {
 
   fetchNotifications() {
     this.isLoading = true;
+    this.errorMessage = ''; 
+    this.notifications = []; 
+
     this.http.get<any>('http://localhost:5000/api/Notifications', {
       params: { filter: 'Unseen' }
     }).subscribe({
@@ -275,6 +314,7 @@ export class MainLayoutComponent {
       },
       error: (err) => {
         console.error(err);
+        this.errorMessage = 'Failed to load data';
         this.isLoading = false;
         this.cdr.detectChanges();
       }

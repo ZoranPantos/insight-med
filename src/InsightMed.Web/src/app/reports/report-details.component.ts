@@ -2,6 +2,7 @@ import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
+import { LoadingSpinnerComponent } from '../shared/loading-spinner.component';
 
 interface ReferenceRange {
   MinThreshold?: number;
@@ -28,7 +29,7 @@ interface LabReportDetails {
 @Component({
   selector: 'app-report-details',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, LoadingSpinnerComponent],
   template: `
     <div class="page-container">
       
@@ -48,9 +49,10 @@ interface LabReportDetails {
         <button class="export-btn" (click)="onExportPdf()">Export PDF</button>
       </div>
 
-      <div *ngIf="isLoading" class="loading">
-        Loading report details...
-      </div>
+      <app-loading-spinner 
+        *ngIf="isLoading" 
+        minHeight="300px">
+      </app-loading-spinner>
 
       <div *ngIf="errorMessage" class="error">
         {{ errorMessage }}
@@ -148,8 +150,7 @@ interface LabReportDetails {
 
     .param-name { font-weight: 500; color: #333; }
 
-    .loading, .error { padding: 20px; text-align: center; color: #666; }
-    .error { color: #d9534f; }
+    .error { padding: 20px; text-align: center; color: #d9534f; }
   `]
 })
 export class ReportDetailsComponent implements OnInit {
@@ -184,7 +185,7 @@ export class ReportDetailsComponent implements OnInit {
         },
         error: (err) => {
           console.error(err);
-          this.errorMessage = 'Failed to load report details.';
+          this.errorMessage = 'Failed to load data';
           this.isLoading = false;
           this.cd.detectChanges();
         }

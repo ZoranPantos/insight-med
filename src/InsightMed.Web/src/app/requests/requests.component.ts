@@ -3,6 +3,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router'; 
 import { Subscription } from 'rxjs';
+import { LoadingSpinnerComponent } from '../shared/loading-spinner.component'; 
 
 interface LabParameter {
   name: string;
@@ -28,7 +29,7 @@ interface LabRequestsResponse {
 @Component({
   selector: 'app-requests',
   standalone: true,
-  imports: [CommonModule, DatePipe, RouterLink], 
+  imports: [CommonModule, DatePipe, RouterLink, LoadingSpinnerComponent], 
   template: `
     <div class="page-container">
       <div class="header">
@@ -36,9 +37,10 @@ interface LabRequestsResponse {
         <a routerLink="/requests/create" class="create-btn">Create Request</a>
       </div>
 
-      <div *ngIf="isLoading" class="loading">
-        Loading requests...
-      </div>
+      <app-loading-spinner 
+        *ngIf="isLoading" 
+        minHeight="200px">
+      </app-loading-spinner>
 
       <div *ngIf="errorMessage" class="error">
         {{ errorMessage }}
@@ -193,7 +195,7 @@ interface LabRequestsResponse {
       border-color: #c7e0f4;
     }
     
-    .loading, .error, .empty-text { padding: 20px; text-align: center; color: #666; }
+    .error, .empty-text { padding: 20px; text-align: center; color: #666; }
     .error { color: #d9534f; }
 
     .pagination-controls {
@@ -298,7 +300,7 @@ export class RequestsComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           console.error('Error fetching requests:', err);
-          this.errorMessage = 'Failed to load lab requests.';
+          this.errorMessage = 'Failed to load data';
           this.isLoading = false;
           this.cd.detectChanges();
         }
