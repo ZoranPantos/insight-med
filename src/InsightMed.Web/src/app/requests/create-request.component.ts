@@ -69,7 +69,7 @@ interface Patient {
           </div>
 
           <div class="form-group">
-            <label>Select Parameters (Select at least one)</label>
+            <label>Select Parameters (at least one)</label>
             
             <div class="multi-select-box" (click)="toggleParamDropdown($event)">
               
@@ -149,10 +149,18 @@ interface Patient {
     label { font-size: 0.9em; font-weight: 500; color: #666; margin-left: 5px; }
 
     .dropdown-list {
-      position: absolute; top: 110%; left: 0; right: 0;
-      background: white; border: 1px solid #ddd; border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000;
-      max-height: 250px; overflow-y: auto;
+      position: absolute; 
+      top: 110%; 
+      left: 0; 
+      right: 0;
+      background: white; 
+      border: 1px solid #ddd; 
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
     .empty-option { padding: 15px; text-align: center; color: #999; }
 
@@ -194,7 +202,6 @@ interface Patient {
     .placeholder-text { color: #777; font-size: 0.95rem; margin-left: 5px; }
     .arrow-icon { margin-left: auto; color: #666; font-size: 0.8em; }
 
-    /* Chips */
     .chip {
       background-color: #eef3fc; color: #0078d4; border: 1px solid #c7e0f4;
       border-radius: 16px; padding: 4px 10px; font-size: 0.9em; font-weight: 500;
@@ -205,14 +212,17 @@ interface Patient {
     }
     .remove-chip:hover { color: #d9534f; }
 
-    /* Param Dropdown Internal Search */
     .dropdown-search-wrapper { padding: 10px; border-bottom: 1px solid #eee; background: #fafafa; }
     .dropdown-search-input {
       width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; outline: none;
     }
     .dropdown-search-input:focus { border-color: #0078d4; }
 
-    .checkbox-list { max-height: 200px; overflow-y: auto; }
+    .checkbox-list { 
+      max-height: 250px;
+      overflow-y: auto; 
+      flex: 1;
+    }
 
     .checkbox-item {
       display: flex; align-items: center; cursor: pointer; user-select: none;
@@ -235,7 +245,6 @@ interface Patient {
     }
     .checkbox-item input:checked ~ .label-text { color: #0078d4; font-weight: 600; }
 
-    /* --- General & Actions --- */
     .message { padding: 10px 15px; border-radius: 8px; margin-top: 10px; }
     .error-message { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
     ul { margin: 0; padding-left: 15px; }
@@ -303,7 +312,7 @@ export class CreateRequestComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading initial data', err);
-        this.errorMessages = ['Failed to load data. Please refresh the page.'];
+        this.errorMessages = ['Failed to load data'];
         this.isLoadingData = false;
         this.cd.detectChanges();
       }
@@ -393,7 +402,7 @@ export class CreateRequestComponent implements OnInit {
 
   onSubmit() {
     if (!this.selectedPatientId || this.selectedParams.length === 0) {
-      this.errorMessages = ['Please select a patient and at least one parameter.'];
+      this.errorMessages = ['Please select a patient and at least one parameter'];
       return;
     }
 
@@ -419,7 +428,7 @@ export class CreateRequestComponent implements OnInit {
             const rawMessages = err.error.detail.split(',');
             this.errorMessages = rawMessages.map((msg: string) => msg.trim().replace(/\.$/, ''));
           } else {
-            this.errorMessages = ['Failed to create request. Please try again.'];
+            this.errorMessages = ['Failed to create request'];
           }
           this.cd.detectChanges();
         }
