@@ -228,7 +228,10 @@ export class MainLayoutComponent {
 
   get isSearchHidden(): boolean {
     return this.router.url.startsWith('/profile') || 
-           this.router.url.startsWith('/change-password');
+           this.router.url.startsWith('/change-password') ||
+           this.router.url.startsWith('/patients/') ||
+           this.router.url.startsWith('/requests/create') ||
+           this.router.url.startsWith('/reports/');
   }
 
   onSearch() {
