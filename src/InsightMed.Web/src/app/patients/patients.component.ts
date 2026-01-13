@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { RouterLink, ActivatedRoute } from '@angular/router'; // 1. Added ActivatedRoute
+import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 interface Patient {
@@ -13,6 +13,9 @@ interface Patient {
 
 interface PatientsResponse {
   patients: Patient[];
+  totalCount: number;
+  pageNumber: number;
+  pageSize: number;
 }
 
 @Component({
@@ -60,6 +63,27 @@ interface PatientsResponse {
           </tbody>
         </table>
       </div>
+
+      <div *ngIf="!isLoading && !errorMessage && totalPages > 1" class="pagination-controls">
+        <button 
+          class="page-btn" 
+          [disabled]="currentPage === 1" 
+          (click)="changePage(currentPage - 1)">
+          Prev
+        </button>
+
+        <span class="page-info">
+          {{ currentPage }} / {{ totalPages }}
+        </span>
+
+        <button 
+          class="page-btn" 
+          [disabled]="currentPage === totalPages" 
+          (click)="changePage(currentPage + 1)">
+          Next
+        </button>
+      </div>
+
     </div>
   `,
   styles: [`
@@ -78,7 +102,7 @@ interface PatientsResponse {
       padding: 8px 20px;
       background-color: #0078d4; 
       color: white;
-      text-decoration: none;
+      text-decoration: none; 
       border: none;
       border-radius: 20px;
       cursor: pointer;
@@ -100,23 +124,77 @@ interface PatientsResponse {
     .view-link:hover { background-color: #eff6fc; border-color: #c7e0f4; }
     .loading, .error, .empty-text { padding: 20px; text-align: center; color: #666; }
     .error { color: #d9534f; }
+
+    .pagination-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin-top: 25px;
+    }
+    
+    .page-info { 
+      font-weight: 600; 
+      color: #555; 
+      font-size: 1rem;
+      min-width: 60px;
+      text-align: center;
+    }
+
+    .page-btn {
+      padding: 10px 24px;       
+      background-color: #e0e0e0; 
+      color: #333;
+      border: none;
+      border-radius: 20px;     
+      cursor: pointer;
+      
+      font-family: inherit; 
+      font-weight: 600;
+      font-size: 0.95rem;      
+      
+      transition: background-color 0.2s, transform 0.1s;
+      min-width: 100px;         
+    }
+
+    .page-btn:hover:not(:disabled) {
+      background-color: #d0d0d0;
+    }
+
+    .page-btn:active {
+      transform: scale(0.98);
+    }
+
+    .page-btn:disabled {
+      background-color: #f5f5f5;
+      color: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
   `]
 })
 export class PatientsComponent implements OnInit, OnDestroy {
   private http = inject(HttpClient);
   private cd = inject(ChangeDetectorRef);
+  private router = inject(Router);
   private route = inject(ActivatedRoute);
 
   patients: Patient[] = [];
   isLoading = false;
   errorMessage = '';
   
+  currentPage = 1;
+  totalPages = 1;
+  totalCount = 0;
+  
   private querySubscription: Subscription | undefined;
 
   ngOnInit() {
     this.querySubscription = this.route.queryParams.subscribe(params => {
       const searchKey = params['searchKey'] || '';
-      this.fetchPatients(searchKey);
+      const page = params['pageNumber'] ? Number(params['pageNumber']) : 1;
+      
+      this.fetchPatients(searchKey, page);
     });
   }
 
@@ -126,16 +204,24 @@ export class PatientsComponent implements OnInit, OnDestroy {
     }
   }
 
-  fetchPatients(searchKey: string = '') {
+  fetchPatients(searchKey: string, page: number) {
     this.isLoading = true;
     this.errorMessage = '';
     
     this.http.get<PatientsResponse>('http://localhost:5000/api/Patients', {
-      params: { searchKey: searchKey }
+      params: { 
+        searchKey: searchKey,
+        pageNumber: page
+      }
     })
       .subscribe({
         next: (response) => {
           this.patients = response.patients;
+          
+          this.totalCount = response.totalCount;
+          this.currentPage = response.pageNumber;
+          this.totalPages = Math.ceil(this.totalCount / response.pageSize);
+
           this.isLoading = false;
           this.cd.detectChanges();
         },
@@ -146,5 +232,15 @@ export class PatientsComponent implements OnInit, OnDestroy {
           this.cd.detectChanges();
         }
       });
+  }
+
+  changePage(newPage: number) {
+    if (newPage < 1 || newPage > this.totalPages) return;
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { pageNumber: newPage },
+      queryParamsHandling: 'merge' 
+    });
   }
 }
