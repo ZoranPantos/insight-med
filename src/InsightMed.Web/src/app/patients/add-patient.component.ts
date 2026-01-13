@@ -170,13 +170,20 @@ import { LoadingSpinnerComponent } from '../shared/loading-spinner.component';
       position: absolute; top: 105%; left: 0; right: 0;
       background: white; border: 1px solid #ddd; border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000;
-      overflow: hidden; max-height: 200px; overflow-y: auto;
+      overflow: hidden; 
+      max-height: 200px;
+      overflow-y: auto;
     }
 
     .option-item { padding: 10px 20px; color: #333; transition: background 0.1s; }
     .option-item:hover { background-color: #f5f5f5; color: #0078d4; }
 
-    .calendar-dropdown { padding: 15px; cursor: default; }
+    .calendar-dropdown { 
+      padding: 15px; 
+      cursor: default;
+      max-height: none; 
+      overflow-y: visible;
+    }
     
     .calendar-header {
       display: flex; justify-content: space-between; align-items: center;

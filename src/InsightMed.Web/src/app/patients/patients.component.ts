@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { LoadingSpinnerComponent } from '../shared/loading-spinner.component'; 
+import { ErrorDisplayComponent } from '../shared/error-display.component';
 
 interface Patient {
   id: number;
@@ -22,7 +23,7 @@ interface PatientsResponse {
 @Component({
   selector: 'app-patients',
   standalone: true,
-  imports: [CommonModule, RouterLink, LoadingSpinnerComponent],
+  imports: [CommonModule, RouterLink, LoadingSpinnerComponent, ErrorDisplayComponent],
   template: `
     <div class="page-container">
       <div class="header">
@@ -35,9 +36,11 @@ interface PatientsResponse {
         minHeight="200px">
       </app-loading-spinner>
 
-      <div *ngIf="errorMessage" class="error">
-        {{ errorMessage }}
-      </div>
+      <app-error-display
+        *ngIf="errorMessage && !isLoading"
+        [message]="errorMessage"
+        minHeight="200px">
+      </app-error-display>
 
       <div *ngIf="!isLoading && !errorMessage" class="table-container">
         <table>
@@ -125,9 +128,7 @@ interface PatientsResponse {
     .view-link { color: #0078d4; text-decoration: none; font-weight: 500; font-size: 0.9em; padding: 6px 12px; border: 1px solid transparent; border-radius: 4px; transition: all 0.2s; }
     .view-link:hover { background-color: #eff6fc; border-color: #c7e0f4; }
     
-    /* Removed .loading style */
-    .error, .empty-text { padding: 20px; text-align: center; color: #666; }
-    .error { color: #d9534f; }
+    .empty-text { padding: 20px; text-align: center; color: #666; }
 
     .pagination-controls {
       display: flex;

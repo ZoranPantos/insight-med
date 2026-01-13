@@ -3,8 +3,8 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, RouterLink, Router } from '@angular/router'; 
 import { Subscription } from 'rxjs';
-
 import { LoadingSpinnerComponent } from '../shared/loading-spinner.component'; 
+import { ErrorDisplayComponent } from '../shared/error-display.component';
 
 interface LabReport {
   id: number;
@@ -23,7 +23,7 @@ interface LabReportsResponse {
 @Component({
   selector: 'app-reports',
   standalone: true,
-  imports: [CommonModule, DatePipe, RouterLink, LoadingSpinnerComponent], 
+  imports: [CommonModule, DatePipe, RouterLink, LoadingSpinnerComponent, ErrorDisplayComponent], 
   template: `
     <div class="page-container">
       <div class="header">
@@ -35,9 +35,11 @@ interface LabReportsResponse {
         minHeight="200px">
       </app-loading-spinner>
 
-      <div *ngIf="errorMessage" class="error">
-        {{ errorMessage }}
-      </div>
+      <app-error-display
+        *ngIf="errorMessage && !isLoading"
+        [message]="errorMessage"
+        minHeight="200px">
+      </app-error-display>
 
       <div *ngIf="!isLoading && !errorMessage" class="table-container">
         <table>
@@ -132,9 +134,7 @@ interface LabReportsResponse {
       border-color: #c7e0f4;
     }
     
-    /* Removed .loading style as it is now handled by the component */
-    .error, .empty-text { padding: 20px; text-align: center; color: #666; }
-    .error { color: #d9534f; }
+    .empty-text { padding: 20px; text-align: center; color: #666; }
 
     .pagination-controls {
       display: flex;
@@ -159,11 +159,9 @@ interface LabReportsResponse {
       border: none;
       border-radius: 20px;     
       cursor: pointer;
-      
       font-family: inherit; 
       font-weight: 600;
       font-size: 0.95rem;      
-      
       transition: background-color 0.2s, transform 0.1s;
       min-width: 100px;         
     }

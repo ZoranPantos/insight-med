@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingSpinnerComponent } from '../shared/loading-spinner.component';
+import { ErrorDisplayComponent } from '../shared/error-display.component';
 
 interface ReferenceRange {
   MinThreshold?: number;
@@ -29,7 +30,7 @@ interface LabReportDetails {
 @Component({
   selector: 'app-report-details',
   standalone: true,
-  imports: [CommonModule, LoadingSpinnerComponent],
+  imports: [CommonModule, LoadingSpinnerComponent, ErrorDisplayComponent],
   template: `
     <div class="page-container">
       
@@ -54,9 +55,11 @@ interface LabReportDetails {
         minHeight="300px">
       </app-loading-spinner>
 
-      <div *ngIf="errorMessage" class="error">
-        {{ errorMessage }}
-      </div>
+      <app-error-display
+        *ngIf="errorMessage && !isLoading"
+        [message]="errorMessage"
+        minHeight="300px">
+      </app-error-display>
 
       <div *ngIf="!isLoading && report && parsedContent.length > 0" class="table-container">
         <table>
@@ -149,8 +152,6 @@ interface LabReportDetails {
     }
 
     .param-name { font-weight: 500; color: #333; }
-
-    .error { padding: 20px; text-align: center; color: #d9534f; }
   `]
 })
 export class ReportDetailsComponent implements OnInit {

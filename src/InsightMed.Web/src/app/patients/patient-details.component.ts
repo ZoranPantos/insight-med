@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { LoadingSpinnerComponent } from '../shared/loading-spinner.component';
+import { ErrorDisplayComponent } from '../shared/error-display.component';
 
 interface LabReport {
   id: number;
@@ -41,7 +42,7 @@ interface PatientDetails {
 @Component({
   selector: 'app-patient-details',
   standalone: true,
-  imports: [CommonModule, RouterLink, DatePipe, LoadingSpinnerComponent],
+  imports: [CommonModule, RouterLink, DatePipe, LoadingSpinnerComponent, ErrorDisplayComponent],
   template: `
     <div class="page-container">
       
@@ -54,9 +55,13 @@ interface PatientDetails {
         minHeight="300px">
       </app-loading-spinner>
 
-      <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+      <app-error-display
+        *ngIf="errorMessage && !isLoading"
+        [message]="errorMessage"
+        minHeight="300px">
+      </app-error-display>
 
-      <div *ngIf="!isLoading && patient" class="content-wrapper">
+      <div *ngIf="!isLoading && !errorMessage && patient" class="content-wrapper">
         
         <div class="info-card">
           <div class="info-header">
@@ -195,9 +200,7 @@ interface PatientDetails {
       border-color: #c7e0f4; 
     }
     
-    /* Removed .loading style */
-    .error, .empty-text { padding: 20px; text-align: center; color: #666; }
-    .error { color: #d9534f; }
+    .empty-text { padding: 20px; text-align: center; color: #666; }
 
     .pagination-controls {
       display: flex;
@@ -222,7 +225,7 @@ interface PatientDetails {
       border: none;
       border-radius: 20px;     
       cursor: pointer;
-      font-family: inherit;
+      font-family: inherit; 
       font-weight: 600;
       font-size: 0.95rem;      
       transition: background-color 0.2s, transform 0.1s;
@@ -281,6 +284,7 @@ export class PatientDetailsComponent implements OnInit, OnDestroy {
 
   fetchPatientDetails(id: string, page: number) {
     this.isLoading = true;
+    this.errorMessage = '';
     
     this.http.get<PatientDetails>(`http://localhost:5000/api/Patients/${id}`, {
       params: { pageNumber: page }

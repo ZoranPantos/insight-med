@@ -5,11 +5,12 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { SignalrService } from '../services/signalr.service';
 import { LoadingSpinnerComponent } from '../shared/loading-spinner.component';
+import { ErrorDisplayComponent } from '../shared/error-display.component';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule, FormsModule, LoadingSpinnerComponent],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule, FormsModule, LoadingSpinnerComponent, ErrorDisplayComponent],
   template: `
     <div class="app-container">
       <nav class="navbar">
@@ -45,9 +46,11 @@ import { LoadingSpinnerComponent } from '../shared/loading-spinner.component';
                   minHeight="150px">
                 </app-loading-spinner>
 
-                <div *ngIf="errorMessage && !isLoading" class="error-state">
-                  {{ errorMessage }}
-                </div>
+                <app-error-display
+                  *ngIf="errorMessage && !isLoading"
+                  [message]="errorMessage"
+                  minHeight="150px">
+                </app-error-display>
 
                 <ng-container *ngIf="!isLoading && !errorMessage">
                   <div *ngFor="let item of notifications" class="notification-item">
@@ -199,16 +202,6 @@ import { LoadingSpinnerComponent } from '../shared/loading-spinner.component';
       padding: 20px; 
       color: #999; 
       font-style: italic; 
-    }
-    
-    .error-state { 
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 150px;
-      padding: 20px; 
-      color: #d9534f; 
-      font-size: 0.9rem;
     }
 
     .dropdown-footer {

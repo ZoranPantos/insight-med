@@ -5,6 +5,7 @@ import { Router, NavigationEnd } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { Subscription, filter } from 'rxjs';
 import { LoadingSpinnerComponent } from '../shared/loading-spinner.component';
+import { ErrorDisplayComponent } from '../shared/error-display.component';
 
 interface AccountInfo {
   userName: string;
@@ -15,7 +16,7 @@ interface AccountInfo {
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, LoadingSpinnerComponent],
+  imports: [CommonModule, LoadingSpinnerComponent, ErrorDisplayComponent],
   template: `
     <div class="page-container">
       <div class="header">
@@ -24,10 +25,17 @@ interface AccountInfo {
 
       <app-loading-spinner 
         *ngIf="isLoading" 
+        message="Loading profile..." 
         minHeight="200px">
       </app-loading-spinner>
 
-      <div *ngIf="!isLoading && accountInfo" class="content-wrapper">
+      <app-error-display
+        *ngIf="errorMessage && !isLoading"
+        [message]="errorMessage"
+        minHeight="200px">
+      </app-error-display>
+
+      <div *ngIf="!isLoading && !errorMessage && accountInfo" class="content-wrapper">
         
         <div class="details-card">
           <div class="info-row">
@@ -173,6 +181,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   accountInfo: AccountInfo | null = null;
   isLoading = false;
+  errorMessage = '';
   private routerSubscription: Subscription | undefined;
 
   constructor() {
@@ -197,11 +206,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
     const id = this.authService.getUserIdFromToken();
 
     if (!id) {
-      console.error('Cannot fetch profile: User ID not found in token');
+      this.errorMessage = 'User ID not found. Please log in again.';
       return;
     }
 
     this.isLoading = true;
+    this.errorMessage = '';
     
     this.http.get<AccountInfo>(`http://localhost:5000/api/Auth/accountInfo/${id}`)
       .subscribe({
@@ -212,6 +222,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           console.error('Failed to load data', err);
+          this.errorMessage = 'Failed to load data';
           this.isLoading = false;
           this.cd.detectChanges();
         }
