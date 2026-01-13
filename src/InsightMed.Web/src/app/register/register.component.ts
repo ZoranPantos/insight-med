@@ -188,10 +188,10 @@ import { AuthService } from '../services/auth.service';
     }
     
     .message {
-      font-size: 0.9em;
       padding: 10px 15px;
       border-radius: 12px;
       text-align: left;
+      box-sizing: border-box; 
     }
 
     ul { margin: 0; padding-left: 15px; }

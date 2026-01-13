@@ -137,9 +137,9 @@ import { Router } from '@angular/router';
     .toggle-password-btn:hover { color: #0078d4; }
 
     .message { 
-      font-size: 0.9em;
       padding: 10px 15px; 
-      border-radius: 12px; 
+      border-radius: 8px; 
+      margin-top: 10px; 
       text-align: left;
     }
     .error-message { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
