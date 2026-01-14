@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
+import { LoadingSpinnerComponent } from '../shared/loading-spinner.component';
+import { ToastService } from '../services/toast.service';
 
 interface LabParameter {
   id: number;
@@ -20,7 +22,7 @@ interface Patient {
 @Component({
   selector: 'app-create-request',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LoadingSpinnerComponent],
   template: `
     <div class="page-container">
       
@@ -28,13 +30,15 @@ interface Patient {
         <h2>Create Lab Request</h2>
       </div>
 
-      <div class="form-container">
-        
-        <div *ngIf="isLoadingData" class="loading-state">
-          Loading data...
-        </div>
+      <app-loading-spinner 
+        *ngIf="isLoadingData || isSubmitting" 
+        [message]="isSubmitting ? 'Creating request...' : 'Loading data...'"
+        minHeight="300px">
+      </app-loading-spinner>
 
-        <div *ngIf="!isLoadingData" class="form-content">
+      <div class="form-container" *ngIf="!isLoadingData && !isSubmitting">
+        
+        <div class="form-content">
           
           <div class="form-group">
             <label>Select Patient</label>
@@ -138,8 +142,6 @@ interface Patient {
     .page-container { padding: 20px 0; font-family: sans-serif; max-width: 800px; margin: 0 auto; }
     .header { margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
     h2 { margin: 0; color: #333; }
-
-    .loading-state { text-align: center; color: #666; padding: 40px; font-style: italic; }
     
     .form-container { display: flex; flex-direction: column; }
     .form-content { display: flex; flex-direction: column; gap: 20px; } 
@@ -160,8 +162,14 @@ interface Patient {
       z-index: 1000;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
+      max-height: 250px; 
+      overflow-y: auto;
     }
+
+    .dropdown-list.param-dropdown {
+      overflow-y: hidden;
+    }
+
     .empty-option { padding: 15px; text-align: center; color: #999; }
 
     .searchable-dropdown { position: relative; width: 100%; }
@@ -179,6 +187,7 @@ interface Patient {
     .option-item {
       padding: 10px 20px; cursor: pointer; display: flex; justify-content: space-between;
       border-bottom: 1px solid #f9f9f9;
+      min-height: 40px; align-items: center;
     }
     .option-item:last-child { border-bottom: none; }
     .option-item:hover { background-color: #f0f8ff; color: #0078d4; }
@@ -212,21 +221,28 @@ interface Patient {
     }
     .remove-chip:hover { color: #d9534f; }
 
-    .dropdown-search-wrapper { padding: 10px; border-bottom: 1px solid #eee; background: #fafafa; }
+    .dropdown-search-wrapper { 
+      padding: 10px; 
+      border-bottom: 1px solid #eee; 
+      background: #fafafa;
+      flex-shrink: 0;
+    }
     .dropdown-search-input {
       width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; outline: none;
     }
     .dropdown-search-input:focus { border-color: #0078d4; }
 
     .checkbox-list { 
-      max-height: 250px;
-      overflow-y: auto; 
       flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto; 
     }
 
     .checkbox-item {
       display: flex; align-items: center; cursor: pointer; user-select: none;
       padding: 10px 20px; transition: background 0.1s; border-bottom: 1px solid #f9f9f9;
+      min-height: 40px;
     }
     .checkbox-item:hover { background-color: #f5f5f5; }
 
@@ -271,6 +287,7 @@ export class CreateRequestComponent implements OnInit {
   private http = inject(HttpClient);
   private router = inject(Router);
   private cd = inject(ChangeDetectorRef);
+  private toastService = inject(ToastService);
 
   allPatients: Patient[] = [];
   filteredPatients: Patient[] = [];
@@ -296,6 +313,7 @@ export class CreateRequestComponent implements OnInit {
   }
 
   loadData() {
+    this.isLoadingData = true; 
     forkJoin({
       params: this.http.get<any>('http://localhost:5000/api/LabParameters'),
       patients: this.http.get<any>('http://localhost:5000/api/Patients')
@@ -312,6 +330,7 @@ export class CreateRequestComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading initial data', err);
+        this.toastService.show('Failed to load form data', 'error');
         this.errorMessages = ['Failed to load data'];
         this.isLoadingData = false;
         this.cd.detectChanges();
@@ -418,12 +437,16 @@ export class CreateRequestComponent implements OnInit {
       .subscribe({
         next: () => {
           this.isSubmitting = false;
+          this.toastService.show('Action successful', 'success');
           this.router.navigate(['/requests']);
           this.cd.detectChanges();
         },
         error: (err) => {
           console.error(err);
           this.isSubmitting = false;
+          
+          this.toastService.show('Action failed', 'error');
+
           if (err.error && err.error.detail) {
             const rawMessages = err.error.detail.split(',');
             this.errorMessages = rawMessages.map((msg: string) => msg.trim().replace(/\.$/, ''));

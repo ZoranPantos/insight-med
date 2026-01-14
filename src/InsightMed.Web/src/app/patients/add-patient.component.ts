@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { LoadingSpinnerComponent } from '../shared/loading-spinner.component';
+import { ToastService } from '../services/toast.service';
 
 @Component({
   selector: 'app-add-patient',
@@ -240,6 +241,7 @@ export class AddPatientComponent implements OnInit {
   private http = inject(HttpClient);
   private router = inject(Router);
   private cd = inject(ChangeDetectorRef);
+  private toastService = inject(ToastService);
 
   firstName = '';
   lastName = '';
@@ -417,12 +419,14 @@ export class AddPatientComponent implements OnInit {
       .subscribe({
         next: () => {
           this.isLoading = false;
+          this.toastService.show('Action successful', 'success');
           this.router.navigate(['/patients']);
           this.cd.detectChanges();
         },
         error: (err) => {
           console.error(err);
           this.isLoading = false;
+          this.toastService.show('Action failed', 'error');
           if (err.error && err.error.detail) {
             const rawMessages = err.error.detail.split(',');
             this.errorMessages = rawMessages.map((msg: string) => msg.trim().replace(/\.$/, ''));

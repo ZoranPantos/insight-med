@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { LoadingSpinnerComponent } from '../shared/loading-spinner.component';
+import { ToastService } from '../services/toast.service';
 
 @Component({
   selector: 'app-change-password',
@@ -47,7 +48,7 @@ import { LoadingSpinnerComponent } from '../shared/loading-spinner.component';
               </svg>
 
               <svg *ngIf="showCurrentPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8-11-8z"></path>
                 <circle cx="12" cy="12" r="3"></circle>
               </svg>
             </button>
@@ -77,7 +78,7 @@ import { LoadingSpinnerComponent } from '../shared/loading-spinner.component';
               </svg>
 
               <svg *ngIf="showNewPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8-11-8z"></path>
                 <circle cx="12" cy="12" r="3"></circle>
               </svg>
             </button>
@@ -180,6 +181,7 @@ export class ChangePasswordComponent {
   private http = inject(HttpClient);
   private router = inject(Router);
   private cd = inject(ChangeDetectorRef);
+  private toastService = inject(ToastService);
 
   currentPassword = '';
   newPassword = '';
@@ -219,6 +221,7 @@ export class ChangePasswordComponent {
       .subscribe({
         next: () => {
           this.isLoading = false;
+          this.toastService.show('Action successful', 'success');
           this.router.navigate(['/profile']);
           this.cd.detectChanges();
         },
@@ -226,17 +229,19 @@ export class ChangePasswordComponent {
           console.error(err);
           this.isLoading = false;
           
+          this.toastService.show('Action failed', 'error');
+          
           if (err.error) {
              try {
-                const errorObj = JSON.parse(err.error);
-                if (errorObj && errorObj.detail) {
-                    const rawMessages = errorObj.detail.split(',');
-                    this.errorMessages = rawMessages.map((msg: string) => msg.trim().replace(/\.$/, ''));
-                } else {
-                    this.errorMessages = ['Failed to change password'];
-                }
+               const errorObj = JSON.parse(err.error);
+               if (errorObj && errorObj.detail) {
+                   const rawMessages = errorObj.detail.split(',');
+                   this.errorMessages = rawMessages.map((msg: string) => msg.trim().replace(/\.$/, ''));
+               } else {
+                   this.errorMessages = ['Failed to change password'];
+               }
              } catch (e) {
-                this.errorMessages = [err.error]; 
+               this.errorMessages = [err.error]; 
              }
           } else {
              this.errorMessages = ['Failed to change password'];
