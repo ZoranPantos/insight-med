@@ -16,6 +16,7 @@ public sealed class LabParametersService : ILabParametersService
     {
         return await _context.LabParameters
             .AsNoTracking()
+            .OrderBy(labParameter => labParameter.Name)
             .ToListAsync()
             .ConfigureAwait(false);
     }
