@@ -32,4 +32,11 @@ public sealed class LabReportsController : ControllerBase
         var response = await _sender.Send(new GetLabReportByIdQuery(id));
         return Ok(response);
     }
+
+    [HttpGet("{id:int}/export")]
+    public async Task<IActionResult> ExportPdf(int id)
+    {
+        var response = await _sender.Send(new ExportLabReportQuery(id));
+        return File(response.Data, response.ContentType, response.FileName);
+    }
 }

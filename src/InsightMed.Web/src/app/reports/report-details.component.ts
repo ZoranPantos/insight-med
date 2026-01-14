@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingSpinnerComponent } from '../shared/loading-spinner.component';
 import { ErrorDisplayComponent } from '../shared/error-display.component';
+import { ToastService } from '../services/toast.service';
 
 interface ReferenceRange {
   MinThreshold?: number;
@@ -47,7 +48,9 @@ interface LabReportDetails {
               {{ report.created | date:'MMM d, y, h:mm a' }}
             </span>
         </div>
-        <button class="export-btn" (click)="onExportPdf()">Export PDF</button>
+        <button class="export-btn" (click)="onExportPdf()" [disabled]="isLoading">
+            {{ isLoading ? 'Exporting...' : 'Export PDF' }}
+        </button>
       </div>
 
       <app-loading-spinner 
@@ -132,8 +135,9 @@ interface LabReportDetails {
       font-size: 0.95rem;
       transition: background-color 0.2s, transform 0.1s;
     }
-    .export-btn:hover { background-color: #005a9e; }
-    .export-btn:active { transform: scale(0.98); }
+    .export-btn:hover:not(:disabled) { background-color: #005a9e; }
+    .export-btn:active:not(:disabled) { transform: scale(0.98); }
+    .export-btn:disabled { background-color: #a0cce8; cursor: not-allowed; }
 
     .table-container { border: 1px solid #e0e0e0; border-radius: 4px; overflow: hidden; }
     table { width: 100%; border-collapse: collapse; background: white; }
@@ -158,6 +162,7 @@ export class ReportDetailsComponent implements OnInit {
   private http = inject(HttpClient);
   private route = inject(ActivatedRoute);
   private cd = inject(ChangeDetectorRef);
+  private toastService = inject(ToastService);
 
   report: LabReportDetails | null = null;
   parsedContent: ReportItem[] = [];
@@ -248,6 +253,49 @@ export class ReportDetailsComponent implements OnInit {
   }
 
   onExportPdf() {
-    console.log('Export PDF clicked for Report ID:', this.report?.id);
+    if (!this.report) return;
+
+    this.isLoading = true;
+    this.cd.detectChanges();
+
+    this.http.get(`http://localhost:5000/api/LabReports/${this.report.id}/export`, { 
+      responseType: 'blob',
+      observe: 'response' 
+    }).subscribe({
+      next: (response) => {
+        const blob = response.body;
+        if (blob) {
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          
+          const contentDisposition = response.headers.get('content-disposition');
+          let fileName = `report-${this.report?.id}.pdf`;
+          if (contentDisposition) {
+             const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentDisposition);
+             if (matches != null && matches[1]) { 
+               fileName = matches[1].replace(/['"]/g, '');
+             }
+          }
+          
+          link.download = fileName;
+          link.click();
+          window.URL.revokeObjectURL(url);
+          
+          this.toastService.show('Action successful', 'success');
+        }
+        
+        this.isLoading = false;
+        this.cd.detectChanges();
+      },
+      error: (err) => {
+        console.error('Download failed', err);
+        this.toastService.show('Action failed', 'error');
+        
+        this.errorMessage = "Could not download PDF";
+        this.isLoading = false;
+        this.cd.detectChanges();
+      }
+    });
   }
 }

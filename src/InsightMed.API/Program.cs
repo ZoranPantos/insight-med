@@ -3,9 +3,12 @@ using InsightMed.API.Extensions;
 using InsightMed.API.Hubs;
 using InsightMed.Application;
 using InsightMed.Infrastructure;
+using QuestPDF.Infrastructure;
 using Serilog;
 
 Console.Title = "InsightMed.API";
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 var builder = WebApplication.CreateBuilder(args);
 

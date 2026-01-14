@@ -42,6 +42,7 @@ public static class ConfigureServices
         services.AddScoped<ILabParametersService, LabParametersService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddScoped<IPdfLabReportGeneratorService, PdfLabReportGeneratorService>();
 
         services.AddSingleton<RabbitMqRpcClient>();
         services.AddSingleton<ILabRpcClient>(sp => sp.GetRequiredService<RabbitMqRpcClient>());
