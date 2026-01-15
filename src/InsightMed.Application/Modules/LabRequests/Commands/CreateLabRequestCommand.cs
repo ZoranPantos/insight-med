@@ -87,9 +87,6 @@ public sealed class CreateLabRequestCommandHandler : IRequestHandler<CreateLabRe
             string rpcResponseTransformed = rpcResponse.Replace("{\"LabParameterValueResponseDtos\":", string.Empty);
             rpcResponseTransformed = rpcResponseTransformed[..^1];
 
-            var labReportRpcResponse = JsonSerializer.Deserialize<LabReportRpcServerResponse>(rpcResponse) ??
-                throw new InvalidOperationException("Failed to deserialize Lab Report RPC Server response");
-
             using (var scope = _serviceScopeFactory.CreateScope())
             {
                 var labReportsService = scope.ServiceProvider.GetRequiredService<ILabReportsService>();

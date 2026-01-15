@@ -60,8 +60,9 @@ public sealed class PdfLabReportGeneratorService : IPdfLabReportGeneratorService
                         table.ColumnsDefinition(columns =>
                         {
                             columns.RelativeColumn(2); // Parameter
-                            columns.RelativeColumn(2); // Range
-                            columns.RelativeColumn(1); // Value
+                            columns.RelativeColumn(2); // Normal Range
+                            columns.RelativeColumn(1.2f); // Measured Value
+                            columns.RelativeColumn(0.8f); // Unit
                         });
 
                         table.Header(header =>
@@ -81,6 +82,12 @@ public sealed class PdfLabReportGeneratorService : IPdfLabReportGeneratorService
                                 .Element(CellStyle)
                                 .Text("Measured Value");
 
+                            header
+                                .Cell()
+                                .Element(CellStyle)
+                                .PaddingLeft(20)
+                                .Text("Unit");
+
                             static IContainer CellStyle(IContainer container)
                             {
                                 return container
@@ -91,7 +98,6 @@ public sealed class PdfLabReportGeneratorService : IPdfLabReportGeneratorService
                             }
                         });
 
-                        // Rows
                         foreach (var item in parsedContent)
                         {
                             bool isAbnormal = CheckIfAbnormal(item);
@@ -115,6 +121,14 @@ public sealed class PdfLabReportGeneratorService : IPdfLabReportGeneratorService
                                 .Padding(5)
                                 .Text(GetMeasurementDisplay(item))
                                 .SemiBold();
+
+                            table
+                                .Cell()
+                                .Background(backgroundColor)
+                                .PaddingVertical(5)
+                                .PaddingRight(5)
+                                .PaddingLeft(20)
+                                .Text(item.Reference.Unit ?? "N/A");
                         }
                     });
 

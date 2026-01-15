@@ -144,7 +144,8 @@ internal sealed class RpcServerWorker : BackgroundService
                     {
                         MinThreshold = labParameter.Reference.MinThreshold,
                         MaxThreshold = labParameter.Reference.MaxThreshold,
-                        Positive = labParameter.Reference.Positive
+                        Positive = labParameter.Reference.Positive,
+                        Unit = labParameter.Reference.Unit
                     }
                 };
 

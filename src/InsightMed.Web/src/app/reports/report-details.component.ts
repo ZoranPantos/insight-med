@@ -10,6 +10,7 @@ interface ReferenceRange {
   MinThreshold?: number;
   MaxThreshold?: number;
   Positive?: boolean;
+  Unit?: string;
 }
 
 interface ReportItem {
@@ -71,7 +72,7 @@ interface LabReportDetails {
               <th>Parameter</th>
               <th>Normal Range / Value</th>
               <th>Measured Value</th>
-            </tr>
+              <th>Unit</th> </tr>
           </thead>
           <tbody>
             <tr *ngFor="let item of parsedContent" [ngClass]="getRowClass(item)">
@@ -85,6 +86,10 @@ interface LabReportDetails {
 
               <td>
                 <strong>{{ getMeasurementDisplay(item) }}</strong>
+              </td>
+
+              <td>
+                {{ item.Reference.Unit || 'N/A' }}
               </td>
             </tr>
           </tbody>

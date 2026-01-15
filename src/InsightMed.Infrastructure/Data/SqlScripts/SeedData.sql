@@ -106,70 +106,70 @@ VALUES
 INSERT INTO [LabReports] ([Content], [Created], [LabRequestId], [PatientId])
 VALUES
     (N'[
-        {"Id":1,"Name":"Hemoglobin","IsPositive":null,"Measurement":14.5,"Reference":{"MinThreshold":12.0,"MaxThreshold":17.5,"Positive":null}},
-        {"Id":2,"Name":"White Blood Cell Count","IsPositive":null,"Measurement":7.2,"Reference":{"MinThreshold":4.5,"MaxThreshold":11.0,"Positive":null}},
-        {"Id":3,"Name":"Glucose","IsPositive":null,"Measurement":88.0,"Reference":{"MinThreshold":70.0,"MaxThreshold":100.0,"Positive":null}},
-        {"Id":15,"Name":"COVID-19 Antigen","IsPositive":false,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false}}
+        {"Id":1,"Name":"Hemoglobin","IsPositive":null,"Measurement":14.5,"Reference":{"MinThreshold":12.0,"MaxThreshold":17.5,"Positive":null,"Unit":"g/dL"}},
+        {"Id":2,"Name":"White Blood Cell Count","IsPositive":null,"Measurement":7.2,"Reference":{"MinThreshold":4.5,"MaxThreshold":11.0,"Positive":null,"Unit":"10^3/µL"}},
+        {"Id":3,"Name":"Glucose","IsPositive":null,"Measurement":88.0,"Reference":{"MinThreshold":70.0,"MaxThreshold":100.0,"Positive":null,"Unit":"mg/dL"}},
+        {"Id":15,"Name":"COVID-19 Antigen","IsPositive":false,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false,"Unit":null}}
     ]', '2023-01-12 14:00:00', 1, 1),
     (N'[
-        {"Id":2,"Name":"White Blood Cell Count","IsPositive":null,"Measurement":4.0,"Reference":{"MinThreshold":4.5,"MaxThreshold":11.0,"Positive":null}},
-        {"Id":3,"Name":"Glucose","IsPositive":null,"Measurement":92.0,"Reference":{"MinThreshold":70.0,"MaxThreshold":100.0,"Positive":null}},
-        {"Id":6,"Name":"Urine pH","IsPositive":null,"Measurement":6.0,"Reference":{"MinThreshold":4.5,"MaxThreshold":8.0,"Positive":null}}
+        {"Id":2,"Name":"White Blood Cell Count","IsPositive":null,"Measurement":4.0,"Reference":{"MinThreshold":4.5,"MaxThreshold":11.0,"Positive":null,"Unit":"10^3/µL"}},
+        {"Id":3,"Name":"Glucose","IsPositive":null,"Measurement":92.0,"Reference":{"MinThreshold":70.0,"MaxThreshold":100.0,"Positive":null,"Unit":"mg/dL"}},
+        {"Id":6,"Name":"Urine pH","IsPositive":null,"Measurement":6.0,"Reference":{"MinThreshold":4.5,"MaxThreshold":8.0,"Positive":null,"Unit":"pH"}}
     ]', '2023-03-22 16:45:00', 3, 3),
     (N'[
-        {"Id":3,"Name":"Glucose","IsPositive":null,"Measurement":100.0,"Reference":{"MinThreshold":70.0,"MaxThreshold":100.0,"Positive":null}},
-        {"Id":8,"Name":"Platelet Count","IsPositive":null,"Measurement":250.0,"Reference":{"MinThreshold":150.0,"MaxThreshold":400.0,"Positive":null}},
-        {"Id":9,"Name":"Thyroid Stimulating Hormone (TSH)","IsPositive":null,"Measurement":2.1,"Reference":{"MinThreshold":0.4,"MaxThreshold":4.0,"Positive":null}},
-        {"Id":13,"Name":"Urine Ketones","IsPositive":true,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false}}
+        {"Id":3,"Name":"Glucose","IsPositive":null,"Measurement":100.0,"Reference":{"MinThreshold":70.0,"MaxThreshold":100.0,"Positive":null,"Unit":"mg/dL"}},
+        {"Id":8,"Name":"Platelet Count","IsPositive":null,"Measurement":250.0,"Reference":{"MinThreshold":150.0,"MaxThreshold":400.0,"Positive":null,"Unit":"10^3/µL"}},
+        {"Id":9,"Name":"Thyroid Stimulating Hormone (TSH)","IsPositive":null,"Measurement":2.1,"Reference":{"MinThreshold":0.4,"MaxThreshold":4.0,"Positive":null,"Unit":"µIU/mL"}},
+        {"Id":13,"Name":"Urine Ketones","IsPositive":true,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false,"Unit":null}}
     ]', '2023-05-31 10:15:00', 5, 5),
     (N'[
-        {"Id":4,"Name":"Cholesterol","IsPositive":null,"Measurement":190.0,"Reference":{"MinThreshold":125.0,"MaxThreshold":200.0,"Positive":null}},
-        {"Id":6,"Name":"Urine pH","IsPositive":null,"Measurement":6.5,"Reference":{"MinThreshold":4.5,"MaxThreshold":8.0,"Positive":null}},
-        {"Id":7,"Name":"Bilirubin","IsPositive":null,"Measurement":0.9,"Reference":{"MinThreshold":0.1,"MaxThreshold":1.2,"Positive":null}}
+        {"Id":4,"Name":"Cholesterol","IsPositive":null,"Measurement":190.0,"Reference":{"MinThreshold":125.0,"MaxThreshold":200.0,"Positive":null,"Unit":"mg/dL"}},
+        {"Id":6,"Name":"Urine pH","IsPositive":null,"Measurement":6.5,"Reference":{"MinThreshold":4.5,"MaxThreshold":8.0,"Positive":null,"Unit":"pH"}},
+        {"Id":7,"Name":"Bilirubin","IsPositive":null,"Measurement":0.9,"Reference":{"MinThreshold":0.1,"MaxThreshold":1.2,"Positive":null,"Unit":"mg/dL"}}
     ]', '2023-07-12 12:45:00', 7, 7),
     (N'[
-        {"Id":8,"Name":"Platelet Count","IsPositive":null,"Measurement":210.0,"Reference":{"MinThreshold":150.0,"MaxThreshold":400.0,"Positive":null}},
-        {"Id":9,"Name":"Thyroid Stimulating Hormone (TSH)","IsPositive":null,"Measurement":3.5,"Reference":{"MinThreshold":0.4,"MaxThreshold":4.0,"Positive":null}},
-        {"Id":12,"Name":"HIV I/II Antibody","IsPositive":false,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false}}
+        {"Id":8,"Name":"Platelet Count","IsPositive":null,"Measurement":210.0,"Reference":{"MinThreshold":150.0,"MaxThreshold":400.0,"Positive":null,"Unit":"10^3/µL"}},
+        {"Id":9,"Name":"Thyroid Stimulating Hormone (TSH)","IsPositive":null,"Measurement":3.5,"Reference":{"MinThreshold":0.4,"MaxThreshold":4.0,"Positive":null,"Unit":"µIU/mL"}},
+        {"Id":12,"Name":"HIV I/II Antibody","IsPositive":false,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false,"Unit":null}}
     ]', '2023-09-22 15:15:00', 9, 9),
     (N'[
-        {"Id":1,"Name":"Hemoglobin","IsPositive":null,"Measurement":18.2,"Reference":{"MinThreshold":12.0,"MaxThreshold":17.5,"Positive":null}},
-        {"Id":2,"Name":"White Blood Cell Count","IsPositive":null,"Measurement":5.5,"Reference":{"MinThreshold":4.5,"MaxThreshold":11.0,"Positive":null}},
-        {"Id":3,"Name":"Glucose","IsPositive":null,"Measurement":64.4,"Reference":{"MinThreshold":70.0,"MaxThreshold":100.0,"Positive":null}},
-        {"Id":4,"Name":"Cholesterol","IsPositive":null,"Measurement":160.9,"Reference":{"MinThreshold":125.0,"MaxThreshold":200.0,"Positive":null}},
-        {"Id":5,"Name":"Creatinine","IsPositive":null,"Measurement":0.9,"Reference":{"MinThreshold":0.7,"MaxThreshold":1.3,"Positive":null}},
-        {"Id":15,"Name":"COVID-19 Antigen","IsPositive":false,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false}}
+        {"Id":1,"Name":"Hemoglobin","IsPositive":null,"Measurement":18.2,"Reference":{"MinThreshold":12.0,"MaxThreshold":17.5,"Positive":null,"Unit":"g/dL"}},
+        {"Id":2,"Name":"White Blood Cell Count","IsPositive":null,"Measurement":5.5,"Reference":{"MinThreshold":4.5,"MaxThreshold":11.0,"Positive":null,"Unit":"10^3/µL"}},
+        {"Id":3,"Name":"Glucose","IsPositive":null,"Measurement":64.4,"Reference":{"MinThreshold":70.0,"MaxThreshold":100.0,"Positive":null,"Unit":"mg/dL"}},
+        {"Id":4,"Name":"Cholesterol","IsPositive":null,"Measurement":160.9,"Reference":{"MinThreshold":125.0,"MaxThreshold":200.0,"Positive":null,"Unit":"mg/dL"}},
+        {"Id":5,"Name":"Creatinine","IsPositive":null,"Measurement":0.9,"Reference":{"MinThreshold":0.7,"MaxThreshold":1.3,"Positive":null,"Unit":"mg/dL"}},
+        {"Id":15,"Name":"COVID-19 Antigen","IsPositive":false,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false,"Unit":null}}
     ]', '2023-11-06 14:00:00', 11, 11),
     (N'[
-        {"Id":1,"Name":"Hemoglobin","IsPositive":null,"Measurement":14.0,"Reference":{"MinThreshold":12.0,"MaxThreshold":17.5,"Positive":null}},
-        {"Id":2,"Name":"White Blood Cell Count","IsPositive":null,"Measurement":8.0,"Reference":{"MinThreshold":4.5,"MaxThreshold":11.0,"Positive":null}},
-        {"Id":8,"Name":"Platelet Count","IsPositive":null,"Measurement":139.6,"Reference":{"MinThreshold":150.0,"MaxThreshold":400.0,"Positive":null}},
-        {"Id":9,"Name":"Thyroid Stimulating Hormone (TSH)","IsPositive":null,"Measurement":5.2,"Reference":{"MinThreshold":0.4,"MaxThreshold":4.0,"Positive":null}},
-        {"Id":10,"Name":"Vitamin D","IsPositive":null,"Measurement":35.0,"Reference":{"MinThreshold":30.0,"MaxThreshold":100.0,"Positive":null}},
-        {"Id":12,"Name":"HIV I/II Antibody","IsPositive":false,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false}}
+        {"Id":1,"Name":"Hemoglobin","IsPositive":null,"Measurement":14.0,"Reference":{"MinThreshold":12.0,"MaxThreshold":17.5,"Positive":null,"Unit":"g/dL"}},
+        {"Id":2,"Name":"White Blood Cell Count","IsPositive":null,"Measurement":8.0,"Reference":{"MinThreshold":4.5,"MaxThreshold":11.0,"Positive":null,"Unit":"10^3/µL"}},
+        {"Id":8,"Name":"Platelet Count","IsPositive":null,"Measurement":139.6,"Reference":{"MinThreshold":150.0,"MaxThreshold":400.0,"Positive":null,"Unit":"10^3/µL"}},
+        {"Id":9,"Name":"Thyroid Stimulating Hormone (TSH)","IsPositive":null,"Measurement":5.2,"Reference":{"MinThreshold":0.4,"MaxThreshold":4.0,"Positive":null,"Unit":"µIU/mL"}},
+        {"Id":10,"Name":"Vitamin D","IsPositive":null,"Measurement":35.0,"Reference":{"MinThreshold":30.0,"MaxThreshold":100.0,"Positive":null,"Unit":"ng/mL"}},
+        {"Id":12,"Name":"HIV I/II Antibody","IsPositive":false,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false,"Unit":null}}
     ]', '2023-11-21 09:30:00', 13, 13),
     (N'[
-        {"Id":3,"Name":"Glucose","IsPositive":null,"Measurement":110.0,"Reference":{"MinThreshold":70.0,"MaxThreshold":100.0,"Positive":null}},
-        {"Id":4,"Name":"Cholesterol","IsPositive":null,"Measurement":240.0,"Reference":{"MinThreshold":125.0,"MaxThreshold":200.0,"Positive":null}},
-        {"Id":13,"Name":"Urine Ketones","IsPositive":true,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false}},
-        {"Id":14,"Name":"Fecal Occult Blood","IsPositive":false,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false}},
-        {"Id":15,"Name":"COVID-19 Antigen","IsPositive":false,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false}}
+        {"Id":3,"Name":"Glucose","IsPositive":null,"Measurement":110.0,"Reference":{"MinThreshold":70.0,"MaxThreshold":100.0,"Positive":null,"Unit":"mg/dL"}},
+        {"Id":4,"Name":"Cholesterol","IsPositive":null,"Measurement":240.0,"Reference":{"MinThreshold":125.0,"MaxThreshold":200.0,"Positive":null,"Unit":"mg/dL"}},
+        {"Id":13,"Name":"Urine Ketones","IsPositive":true,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false,"Unit":null}},
+        {"Id":14,"Name":"Fecal Occult Blood","IsPositive":false,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false,"Unit":null}},
+        {"Id":15,"Name":"COVID-19 Antigen","IsPositive":false,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false,"Unit":null}}
     ]', '2023-12-02 10:00:00', 15, 15),
     (N'[
-        {"Id":1,"Name":"Hemoglobin","IsPositive":null,"Measurement":12.5,"Reference":{"MinThreshold":12.0,"MaxThreshold":17.5,"Positive":null}},
-        {"Id":2,"Name":"White Blood Cell Count","IsPositive":null,"Measurement":9.5,"Reference":{"MinThreshold":4.5,"MaxThreshold":11.0,"Positive":null}},
-        {"Id":11,"Name":"Hepatitis B Surface Antigen","IsPositive":true,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false}},
-        {"Id":12,"Name":"HIV I/II Antibody","IsPositive":false,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false}},
-        {"Id":15,"Name":"COVID-19 Antigen","IsPositive":false,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false}}
+        {"Id":1,"Name":"Hemoglobin","IsPositive":null,"Measurement":12.5,"Reference":{"MinThreshold":12.0,"MaxThreshold":17.5,"Positive":null,"Unit":"g/dL"}},
+        {"Id":2,"Name":"White Blood Cell Count","IsPositive":null,"Measurement":9.5,"Reference":{"MinThreshold":4.5,"MaxThreshold":11.0,"Positive":null,"Unit":"10^3/µL"}},
+        {"Id":11,"Name":"Hepatitis B Surface Antigen","IsPositive":true,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false,"Unit":null}},
+        {"Id":12,"Name":"HIV I/II Antibody","IsPositive":false,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false,"Unit":null}},
+        {"Id":15,"Name":"COVID-19 Antigen","IsPositive":false,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false,"Unit":null}}
     ]', '2023-12-16 11:00:00', 17, 17),
     (N'[
-        {"Id":1,"Name":"Hemoglobin","IsPositive":null,"Measurement":15.0,"Reference":{"MinThreshold":12.0,"MaxThreshold":17.5,"Positive":null}},
-        {"Id":2,"Name":"White Blood Cell Count","IsPositive":null,"Measurement":6.0,"Reference":{"MinThreshold":4.5,"MaxThreshold":11.0,"Positive":null}},
-        {"Id":3,"Name":"Glucose","IsPositive":null,"Measurement":82.0,"Reference":{"MinThreshold":70.0,"MaxThreshold":100.0,"Positive":null}},
-        {"Id":4,"Name":"Cholesterol","IsPositive":null,"Measurement":180.0,"Reference":{"MinThreshold":125.0,"MaxThreshold":200.0,"Positive":null}},
-        {"Id":5,"Name":"Creatinine","IsPositive":null,"Measurement":1.1,"Reference":{"MinThreshold":0.7,"MaxThreshold":1.3,"Positive":null}},
-        {"Id":6,"Name":"Urine pH","IsPositive":null,"Measurement":7.0,"Reference":{"MinThreshold":4.5,"MaxThreshold":8.0,"Positive":null}},
-        {"Id":7,"Name":"Bilirubin","IsPositive":null,"Measurement":0.5,"Reference":{"MinThreshold":0.1,"MaxThreshold":1.2,"Positive":null}}
+        {"Id":1,"Name":"Hemoglobin","IsPositive":null,"Measurement":15.0,"Reference":{"MinThreshold":12.0,"MaxThreshold":17.5,"Positive":null,"Unit":"g/dL"}},
+        {"Id":2,"Name":"White Blood Cell Count","IsPositive":null,"Measurement":6.0,"Reference":{"MinThreshold":4.5,"MaxThreshold":11.0,"Positive":null,"Unit":"10^3/µL"}},
+        {"Id":3,"Name":"Glucose","IsPositive":null,"Measurement":82.0,"Reference":{"MinThreshold":70.0,"MaxThreshold":100.0,"Positive":null,"Unit":"mg/dL"}},
+        {"Id":4,"Name":"Cholesterol","IsPositive":null,"Measurement":180.0,"Reference":{"MinThreshold":125.0,"MaxThreshold":200.0,"Positive":null,"Unit":"mg/dL"}},
+        {"Id":5,"Name":"Creatinine","IsPositive":null,"Measurement":1.1,"Reference":{"MinThreshold":0.7,"MaxThreshold":1.3,"Positive":null,"Unit":"mg/dL"}},
+        {"Id":6,"Name":"Urine pH","IsPositive":null,"Measurement":7.0,"Reference":{"MinThreshold":4.5,"MaxThreshold":8.0,"Positive":null,"Unit":"pH"}},
+        {"Id":7,"Name":"Bilirubin","IsPositive":null,"Measurement":0.5,"Reference":{"MinThreshold":0.1,"MaxThreshold":1.2,"Positive":null,"Unit":"mg/dL"}}
     ]', '2024-01-06 09:15:00', 19, 19);
 
 INSERT INTO [Notifications] ([Message], [LabReportId], [Seen], [RequesterId])
