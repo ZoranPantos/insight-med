@@ -59,4 +59,11 @@ public sealed class PatientsController : ControllerBase
 
         return Ok();
     }
+
+    [HttpGet("{id:int}/evaluatedParameters")]
+    public async Task<ActionResult> GetEvaluatedParametersByPatientIdAsync(int id)
+    {
+        var response = await _sender.Send(new GetEvaluatedParametersByPatientIdQuery(id));
+        return Ok(response);
+    }
 }
