@@ -48,6 +48,11 @@ interface PatientDetails {
       
       <div class="header">
         <h2>Patient Details</h2>
+        <a *ngIf="patient" 
+           [routerLink]="['/patients', patient.id, 'analytics']" 
+           class="view-link analytics-btn">
+           View Analytics
+        </a>
       </div>
 
       <app-loading-spinner 
@@ -157,9 +162,19 @@ interface PatientDetails {
   styles: [`
     .page-container { padding: 20px 0; font-family: sans-serif; }
     
-    .header { margin-bottom: 25px; }
+    .header { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      margin-bottom: 25px; 
+    }
     h2 { margin: 0; color: #333; }
     h3 { margin: 0 0 15px 0; color: #444; font-size: 1.1rem; }
+
+    .analytics-btn {
+      font-size: 0.95rem;
+      border: 1px solid #c7e0f4;
+    }
 
     .info-card { background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
     .info-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px; }
@@ -185,6 +200,7 @@ interface PatientDetails {
 
     .actions-col { text-align: right; }
 
+    /* Shared style for links */
     .view-link { 
       color: #0078d4; 
       text-decoration: none; 
@@ -194,6 +210,7 @@ interface PatientDetails {
       border: 1px solid transparent; 
       border-radius: 4px; 
       transition: all 0.2s; 
+      cursor: pointer;
     }
     .view-link:hover { 
       background-color: #eff6fc; 
@@ -291,10 +308,8 @@ export class PatientDetailsComponent implements OnInit, OnDestroy {
     }).subscribe({
         next: (data) => {
           this.patient = data;
-          
           this.currentPage = data.pageNumber;
           this.totalPages = Math.ceil(data.totalCount / data.pageSize);
-
           this.isLoading = false;
           this.cd.detectChanges();
         },
@@ -309,7 +324,6 @@ export class PatientDetailsComponent implements OnInit, OnDestroy {
 
   changePage(newPage: number) {
     if (newPage < 1 || newPage > this.totalPages) return;
-
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { pageNumber: newPage },
