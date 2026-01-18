@@ -10,6 +10,10 @@
     <File Path="docs/Setup.md" />
     <File Path="docs/Technical.md" />
   </Folder>
+  <Folder Name="/Solution Items/Docs/Img/">
+    <File Path="docs/img/clean-architecture.png" />
+    <File Path="docs/img/high-level-look.png" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="src/InsightMed.API/InsightMed.API.csproj" Id="91eb8734-3072-4624-ac8a-03830e33f445" />
     <Project Path="src/InsightMed.Application/InsightMed.Application.csproj" Id="1d9ad8be-5f64-42c7-b4b0-7cd9fc1b646f" />
