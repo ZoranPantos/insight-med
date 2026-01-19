@@ -81,13 +81,14 @@ they are not limited only to state manipulation
 
 ## Data access strategy
 
-The solution utilizes two distinct approaches for databasee interaction.  
+The solution uses two distinct approaches for database interaction.  
 
 - **InsightMedDb** (EF Core) is used by the main API with Code-First approach. Relationshipts are defined via Fluent API in `OnModelCreating` method.  
-Database is created automatically on startup and seeded via a specific API endpoint _[GET] api/AppManagement/SeedData_.  
-Use case of in-memory caching is also present, where `IMemoryCache` is utilized for lab parameters as this reference data changes rarely.
+Database is created automatically on startup by execution of migration scripts and seeded via a specific API endpoint _[GET] api/AppManagement/SeedData_.  
 - **LabDb** (ADO.NET) is used by the _LabRpcServer_. The approach consists of raw SQL via ADO.NET.  
 The worker service ensures the database and tables exist and are seeded upon startup.
+
+Use case of in-memory caching is also present, where `IMemoryCache` is utilized for lab parameters as this reference data changes rarely.
 
 <br>
 
