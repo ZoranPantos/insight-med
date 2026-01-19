@@ -83,7 +83,7 @@ they are not limited only to state manipulation
 
 The solution uses two distinct approaches for database interaction.  
 
-- **InsightMedDb** (EF Core) is used by the main API with Code-First approach. Relationshipts are defined via Fluent API in `OnModelCreating` method.  
+- **InsightMedDb** (EF Core) is used by the main API with Code-First approach. Relationships are defined via Fluent API in `OnModelCreating` method.  
 Database is created automatically on startup by execution of migration scripts and seeded via a specific API endpoint _[GET] api/AppManagement/SeedData_.  
 - **LabDb** (ADO.NET) is used by the _LabRpcServer_. The approach consists of raw SQL via ADO.NET.  
 The worker service ensures the database and tables exist and are seeded upon startup.
@@ -93,3 +93,71 @@ Use case of in-memory caching is also present, where `IMemoryCache` is utilized 
 <br>
 
 ## Lab RPC Server (Worker Service)
+
+The _InsightMed.LabRpcServer_ is a standalone .NET Worker Service designed to simulate an external laboratory clinic.  
+The operational flow is as follows:
+1. Connection: Maintains a persistent connection to RabbitMQ using `IConnection` and `IChannel`
+2. Consumption: Listens on a specific queue for `LabRequest` messages
+3. Processing:
+    1. Deserializes the request
+    2. Fetches parameter constraints from **LabDb**
+    3. Randomizer Service: Uses `ParameterValueRandomizerService` to generate results. It produces either a boolean (for qualitative tests)
+       or a numeric value (for quantitative tests) based on defined thresholds (`MinThreshold`, `MaxThreshold`)
+    4. Simulation: Introduces a random delay (configurable via `LabResultsDelaySimulationParameters` in `appsettings.json`) to simulate
+       physical processing time
+4. Reply: Publishes the result back to the `ReplyTo` queue specified in the message properties, creating an RPC experience for the API
+
+<br>
+
+## Authentication & Identity
+
+The solution uses hybrid approach for identity management, combining [ASP.NET Core Identity](https://learn.microsoft.com/en-us/aspnet/core/security/authentication/identity?view=aspnetcore-10.0&tabs=visual-studio) for user persistence and
+JWT (JSON Web Tokens) for stateless authentication.  
+
+`AppDbContext` extends `IdentityDbContext` to persist users, roles and claims in the **InsightMedDb**. The system uses the standard `IdentityUser` to store credentials.  
+Since the API is stateless, it does not use cookies for sessions but instead it issues JWTs.
+The JWT settings are loaded from `appsettings.json` via `JwtOptions`.  
+`JwtBearer` middleware is configured in the API pipeline
+to validate the token signature and expiration on every request before it reaches the controllers.  
+
+The `[Authorize]` attribute is used on controllers/endpoints to enforce that a valid token is present.  
+
+Main services used for the authentication on the backend:
+- `AuthService`: A scoped service that acts as the facade for identity operations, responsible for managing user
+  accounts (registration, password changes) via ASP.NET Core Identity and generating signed JWT tokens upon successful credential validation
+- `CurrentUserService`: A scoped service that extracts the `UserId` and `Claims` from the current `HttpContext`, making the current user's identity available to the Application layer
+
+<br>
+
+## Logging
+
+Serilog is the logging backbone for both the API and the Worker Service.  
+Logs are shipped directly to **Elasticsearch**, where a **Kibana Data View** (`logs-insightmed-development*`) is used to inspect logs.  
+Additionally, logs are enriched with context such as `Application` name and `CorrelationId` to trace requests across the distributed system.
+
+<br>
+
+## Testing
+
+The solution contains unit and integration tests written using [xUnit](https://xunit.net/?tabs=cs) and [Moq](https://github.com/devlooped/moq).  
+Integration Host uses `WebApplicationFactory` to spin up a test host for end-to-end integration scenarios.
+
+<br>
+
+## Frontend architecture
+
+The frontend is an Angular 21 application structured by feature modules.  
+
+Project structure consists of:
+- App Modules: Split into logical folders (patients, reports, requests, etc.) containing components and specific logic
+- Core/Shared: Reusable components, pipes and directives  
+
+Authentication on the frontend is leveraged by an interceptor - `authInterceptor` which is registered globally.
+It injects the `AuthService`, retrieves the JWT token and appends the `Authorization: Bearer {token}` header to
+every outgoing HTTP request.  
+Additionally, route guards protect access to authorized pages.  
+
+As for SignalR integration, a dedicated `SignalRService` manages the WebSocket connection lifecycle:
+- Connection: Establishes a connection to the `/notifications` hub, passing the JWT via an access token factory
+- State Management: Uses Angular Signals (`hasUnseenNotifications`) to reactively update the UI when the server invokes `ReceiveUnseenStatus`
+- Resilience: Configured with `.withAutomaticReconnect()` to handle network instability
