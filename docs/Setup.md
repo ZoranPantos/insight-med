@@ -150,7 +150,7 @@ To generate some logs beforehand, we can seed or truncate the **InsightMedDb** d
 1. Ensure our app has already sent at least one log to Elasticsearch  
    (the data stream is created only after the first log).
 
-2. In Kibana, open the main menu (☰) → **Stack Management**.
+2. In Kibana, open the main menu → **Stack Management**.
 
 3. Under **Kibana**, click **Data Views**.
 
@@ -167,13 +167,13 @@ To generate some logs beforehand, we can seed or truncate the **InsightMedDb** d
 
 ### 2. View Logs in Discover
 
-1. Open the main menu (☰) → **Discover**.
+1. Open the main menu → **Discover**.
 
 2. In the top-left **data view** dropdown, select  
    `logs-insightmed-development`.
 
 3. In the top-right **time range** picker, choose a range that covers when
-   logs were written (e.g. **Last 24 hours** or **Last 7 days**).
+   logs were written.
 
 4. Logs should appear as:
    - A time histogram at the top.
@@ -198,8 +198,6 @@ To generate some logs beforehand, we can seed or truncate the **InsightMedDb** d
    - In the table header, hover `_source` and click the **−** icon.
 
 6. Reorder columns by dragging their headers into your preferred order
-   (e.g. `@timestamp`, `log.level`, `message`, `labels.RequestName`,
-   `metadata.CorrelationId`, `error.message`, `event.duration`).
 
 7. Save this view:
    - Click **Save** at the top of Discover.
@@ -217,3 +215,8 @@ API supports basic authentication. Credentials for default seeded account are
 | Email                    | Password                     |
 | ------------------------ | ---------------------------- |
 | default@test.com         | Default1!                    |
+
+In order to test the endpoints via Swagger, we need to configure the Swagger UI client to automatically attach
+an Authorization HTTP Header to every request we make.  
+To do this, after performing the login via _[GET] api/Auth/Login_, copy the token from the response
+and use it to authorize by clicking on **Authorize** button at the start of the page.
