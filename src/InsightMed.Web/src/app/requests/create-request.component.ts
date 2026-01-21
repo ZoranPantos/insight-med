@@ -449,7 +449,12 @@ export class CreateRequestComponent implements OnInit {
 
           if (err.error && err.error.detail) {
             const rawMessages = err.error.detail.split(',');
-            this.errorMessages = rawMessages.map((msg: string) => msg.trim().replace(/\.$/, ''));
+            
+            this.errorMessages = rawMessages.map((msg: string) => 
+              msg.trim()
+                 .replace(/^:\s*/, '')
+                 .replace(/\.$/, '')
+            );
           } else {
             this.errorMessages = ['Failed to create request'];
           }

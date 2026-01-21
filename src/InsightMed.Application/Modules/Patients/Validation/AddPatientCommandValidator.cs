@@ -40,7 +40,7 @@ public sealed class AddPatientCommandValidator : AbstractValidator<AddPatientCom
 
         RuleFor(command => command.Input.WeightKg)
             .GreaterThan(0)
-            .WithMessage("Height value is invalid")
+            .WithMessage("Weight value is invalid")
             .LessThan(700)
             .WithMessage("Weight value is invalid");
 

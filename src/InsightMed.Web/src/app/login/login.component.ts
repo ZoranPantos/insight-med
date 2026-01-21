@@ -150,13 +150,11 @@ import { AuthService } from '../services/auth.service';
       transform: scale(0.98);
     }
     
-    /* Updated Message Styles */
     .message {
-      /* font-size: 0.9em;  <-- REMOVED THIS LINE */
       padding: 10px 15px;
       border-radius: 12px; 
       text-align: left;
-      box-sizing: border-box; /* Added for consistency */
+      box-sizing: border-box;
     }
 
     ul { margin: 0; padding-left: 15px; }

@@ -389,7 +389,6 @@ export class AddPatientComponent implements OnInit {
     return options.find(o => o.value === val)?.label || 'Select';
   }
 
-  // Toggles
   toggleGender(e: Event) { e.stopPropagation(); const open = !this.isGenderOpen; this.closeAllDropdowns(); this.isGenderOpen = open; }
   toggleBlood(e: Event) { e.stopPropagation(); const open = !this.isBloodGroupOpen; this.closeAllDropdowns(); this.isBloodGroupOpen = open; }
   toggleSmoking(e: Event) { e.stopPropagation(); const open = !this.isSmokingOpen; this.closeAllDropdowns(); this.isSmokingOpen = open; }
@@ -470,12 +469,34 @@ export class AddPatientComponent implements OnInit {
           console.error(err);
           this.isLoading = false;
           this.toastService.show('Action failed', 'error');
-          if (err.error && err.error.detail) {
-            const rawMessages = err.error.detail.split(',');
-            this.errorMessages = rawMessages.map((msg: string) => msg.trim().replace(/\.$/, ''));
-          } else {
-            this.errorMessages = ['Failed to add patient'];
+          
+          this.errorMessages = [];
+
+          if (err.error) {
+            if (err.error.errors) {
+                const errorObj = err.error.errors;
+                for (const key in errorObj) {
+                    if (errorObj.hasOwnProperty(key)) {
+                        this.errorMessages.push(...errorObj[key]);
+                    }
+                }
+            } 
+            else if (err.error.detail) {
+                const rawMessages = err.error.detail.split(/,|\n/);
+                
+                this.errorMessages = rawMessages
+                    .map((msg: string) => {
+                        let cleanMsg = msg.replace(/^[^:]+:\s*/, '');
+                        return cleanMsg.trim().replace(/\.$/, '');
+                    })
+                    .filter((msg: string) => msg.length > 0);
+            }
           }
+
+          if (this.errorMessages.length === 0) {
+             this.errorMessages = ['Failed to add patient'];
+          }
+          
           this.cd.detectChanges();
         }
       });
