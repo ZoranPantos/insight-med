@@ -60,6 +60,17 @@ public sealed class PatientsController : ControllerBase
         return Ok();
     }
 
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult> UpdatePatientAsync(int id, UpdatePatientInputModel input)
+    {
+        var commandInputModel = _mapper.Map<UpdatePatientCommandInput>(input);
+        commandInputModel.Id = id;
+
+        await _sender.Send(new UpdatePatientCommand(commandInputModel));
+
+        return Ok();
+    }
+
     [HttpGet("{id:int}/evaluatedParameters")]
     public async Task<ActionResult> GetEvaluatedParametersByPatientIdAsync(int id)
     {

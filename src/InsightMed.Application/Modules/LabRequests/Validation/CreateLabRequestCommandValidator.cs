@@ -29,7 +29,7 @@ public sealed class CreateLabRequestCommandValidator : AbstractValidator<CreateL
 
         RuleFor(command => command)
             .MustAsync(NoDuplicatePendingLabRequestAsync)
-            .WithMessage("A pending lab request with the same PatientId and identical LabParameterIds already exists");
+            .WithMessage("A pending lab request with the same patient and identical lab parameters already exists");
     }
 
     private async Task<bool> PatientExistsAsync(int patientId, CancellationToken cancellationToken) =>

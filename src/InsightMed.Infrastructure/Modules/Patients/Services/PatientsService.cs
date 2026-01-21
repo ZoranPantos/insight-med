@@ -1,4 +1,5 @@
 ﻿using InsightMed.Application.Common.Abstractions.Data;
+using InsightMed.Application.Modules.Patients.Models;
 using InsightMed.Application.Modules.Patients.Services.Abstractions;
 using InsightMed.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -82,6 +83,26 @@ public class PatientsService : IPatientsService
         await _context
             .SaveChangesAsync()
             .ConfigureAwait(false);
+    }
+
+    public async Task<bool> UpdateAsync(int id, UpdatePatientDto patient)
+    {
+        var existingPatient = await _context.Patients
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (existingPatient is null) return false;
+
+        existingPatient.SmokingStatus = patient.SmokingStatus;
+        existingPatient.ExerciseLevel = patient.ExerciseLevel;
+        existingPatient.DietType = patient.DietType;
+        existingPatient.HeightCm = patient.HeightCm;
+        existingPatient.WeightKg = patient.WeightKg;
+
+        await _context
+            .SaveChangesAsync()
+            .ConfigureAwait(false);
+
+        return true;
     }
 
     public async Task<(List<Patient> Items, int TotalCount)> SearchByTokensPagedAsync(
