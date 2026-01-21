@@ -31,7 +31,12 @@ interface PatientDetails {
   phone: string;
   dateOfBirth: string;
   gender: number;      
-  bloodGroup: number;  
+  bloodGroup: number;
+  smokingStatus: number;
+  exerciseLevel: number;
+  dietType: number;
+  heightCm: number;
+  weightKg: number;
   labReports: LabReport[];
   labRequests: LabRequest[];
   totalCount: number;
@@ -70,8 +75,11 @@ interface PatientDetails {
         
         <div class="info-card">
           <div class="info-header">
-            <h3>{{ patient.firstName }} {{ patient.lastName }}</h3>
-            <span class="uid-badge">{{ patient.uid }}</span>
+            <div class="name-group">
+              <h3>{{ patient.firstName }} {{ patient.lastName }}</h3>
+              <span class="uid-badge">{{ patient.uid }}</span>
+            </div>
+            <button class="update-btn" (click)="onUpdate()">Update</button>
           </div>
           
           <div class="info-grid">
@@ -91,11 +99,37 @@ interface PatientDetails {
               <label>Gender</label>
               <div>{{ getGenderString(patient.gender) }}</div>
             </div>
+          </div>
+
+          <hr class="section-divider" />
+
+          <div class="info-grid">
             <div class="info-item">
               <label>Blood Group</label>
               <div>{{ getBloodGroupString(patient.bloodGroup) }}</div>
             </div>
+            <div class="info-item">
+              <label>Height</label>
+              <div>{{ patient.heightCm ? patient.heightCm + ' cm' : '-' }}</div>
+            </div>
+            <div class="info-item">
+              <label>Weight</label>
+              <div>{{ patient.weightKg ? patient.weightKg + ' kg' : '-' }}</div>
+            </div>
+            <div class="info-item">
+              <label>Smoking Status</label>
+              <div>{{ getSmokingStatusString(patient.smokingStatus) }}</div>
+            </div>
+            <div class="info-item">
+              <label>Exercise Level</label>
+              <div>{{ getExerciseLevelString(patient.exerciseLevel) }}</div>
+            </div>
+            <div class="info-item">
+              <label>Diet Type</label>
+              <div>{{ getDietTypeString(patient.dietType) }}</div>
+            </div>
           </div>
+
         </div>
 
         <div class="section">
@@ -177,9 +211,33 @@ interface PatientDetails {
     }
 
     .info-card { background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-    .info-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px; }
+    
+    .info-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px; margin-bottom: 15px; }
+    .name-group { display: flex; align-items: center; gap: 10px; }
     .info-header h3 { margin: 0; font-size: 1.3rem; color: #0078d4; }
+    
     .uid-badge { background-color: #eef3fc; color: #3b5998; padding: 4px 8px; border-radius: 4px; font-weight: 500; font-size: 0.9em; }
+
+    .update-btn {
+      padding: 8px 24px;
+      background-color: #0078d4; 
+      color: white;
+      border: none;
+      border-radius: 25px; 
+      cursor: pointer;
+      font-weight: 600; 
+      font-size: 0.95rem; 
+      transition: background-color 0.2s, transform 0.1s;
+      min-width: 100px;
+    }
+    .update-btn:hover { background-color: #005a9e; }
+    .update-btn:active { transform: scale(0.98); }
+
+    .section-divider {
+      border: 0;
+      border-top: 1px solid #eee;
+      margin: 20px 0;
+    }
 
     .info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
     .info-item label { display: block; color: #888; font-size: 0.85em; margin-bottom: 4px; font-weight: 500; }
@@ -200,7 +258,6 @@ interface PatientDetails {
 
     .actions-col { text-align: right; }
 
-    /* Shared style for links */
     .view-link { 
       color: #0078d4; 
       text-decoration: none; 
@@ -331,6 +388,12 @@ export class PatientDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
+  onUpdate() {
+    if (this.patient) {
+      this.router.navigate(['/patients/edit', this.patient.id]);
+    }
+  }
+
   getGenderString(value: number): string {
     switch (value) {
       case 0: return 'Male';
@@ -351,5 +414,31 @@ export class PatientDetailsComponent implements OnInit, OnDestroy {
       case 7: return 'O Negative';
       default: return 'Unknown';
     }
+  }
+
+  getSmokingStatusString(value: number): string {
+    switch (value) {
+      case 0: return 'Never';
+      case 1: return 'Former';
+      case 2: return 'Current';
+      default: return 'Unknown';
+    }
+  }
+
+  getExerciseLevelString(value: number): string {
+    switch (value) {
+      case 0: return 'Sedentary';
+      case 1: return 'Moderate';
+      case 2: return 'Active';
+      default: return 'Unknown';
+    }
+  }
+
+  getDietTypeString(value: number): string {
+    const diets = [
+      'Regular', 'Vegetarian', 'Vegan', 'Gluten Free', 'Lactose Free', 
+      'Low Carb', 'Low Sodium', 'Diabetic', 'Renal', 'Soft', 'Liquid'
+    ];
+    return diets[value] || 'Unknown';
   }
 }

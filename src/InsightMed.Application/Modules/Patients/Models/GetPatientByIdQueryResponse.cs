@@ -12,8 +12,14 @@ public sealed class GetPatientByIdQueryResponse : BasePagedResponse
     public string Email { get; set; } = string.Empty;
     public string Phone { get; set; } = string.Empty;
     public DateTime DateOfBirth { get; set; }
+
     public Gender Gender { get; set; }
     public BloodGroup BloodGroup { get; set; }
+    public SmokingStatus SmokingStatus { get; set; }
+    public ExerciseLevel ExerciseLevel { get; set; }
+    public DietType DietType { get; set; }
+    public double HeightCm { get; set; }
+    public double WeightKg { get; set; }
 
     public List<PatientLabRequestResponse> LabRequests { get; set; } = [];
 }
