@@ -32,6 +32,18 @@ public sealed class AddPatientCommandValidator : AbstractValidator<AddPatientCom
             .NotEmpty()
             .WithMessage("Email must not be empty");
 
+        RuleFor(command => command.Input.HeightCm)
+            .GreaterThan(0)
+            .WithMessage("Height value is invalid")
+            .LessThan(300)
+            .WithMessage("Height value is invalid");
+
+        RuleFor(command => command.Input.WeightKg)
+            .GreaterThan(0)
+            .WithMessage("Height value is invalid")
+            .LessThan(700)
+            .WithMessage("Weight value is invalid");
+
         RuleFor(command => command.Input.DateOfBirth)
             .NotEmpty()
             .Must(BeOlderThanUtcNow)

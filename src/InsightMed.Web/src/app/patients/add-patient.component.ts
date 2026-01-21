@@ -61,17 +61,14 @@ import { ToastService } from '../services/toast.service';
               <span class="icon">📅</span>
 
               <div *ngIf="isDateOpen" class="dropdown-list calendar-dropdown" (click)="$event.stopPropagation()">
-                
                 <div class="calendar-header">
                   <button (click)="changeMonth(-1)">‹</button>
                   <span>{{ getMonthName(viewMonth) }} {{ viewYear }}</span>
                   <button (click)="changeMonth(1)">›</button>
                 </div>
-
                 <div class="calendar-grid days-header">
                   <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
                 </div>
-
                 <div class="calendar-grid">
                   <span *ngFor="let empty of emptyDays" class="day empty"></span>
                   <span *ngFor="let day of monthDays" 
@@ -84,19 +81,16 @@ import { ToastService } from '../services/toast.service';
               </div>
             </div>
           </div>
-
         </div>
 
         <div class="form-row">
-          
           <div class="form-group">
             <label>Gender</label>
             <div class="custom-select" (click)="toggleGender($event)" [class.open]="isGenderOpen">
-              <div class="selected-value">{{ getGenderLabel(gender) }}</div>
+              <div class="selected-value">{{ getOptionLabel(genderOptions, gender) }}</div>
               <span class="arrow">▼</span>
-              
               <div *ngIf="isGenderOpen" class="dropdown-list">
-                <div *ngFor="let opt of genderOptions" class="option-item" (click)="selectGender(opt.value, $event)">
+                <div *ngFor="let opt of genderOptions" class="option-item" (click)="selectOption('gender', opt.value, $event)">
                   {{ opt.label }}
                 </div>
               </div>
@@ -106,17 +100,69 @@ import { ToastService } from '../services/toast.service';
           <div class="form-group">
             <label>Blood Group</label>
             <div class="custom-select" (click)="toggleBlood($event)" [class.open]="isBloodGroupOpen">
-              <div class="selected-value">{{ getBloodGroupLabel(bloodGroup) }}</div>
+              <div class="selected-value">{{ getOptionLabel(bloodGroupOptions, bloodGroup) }}</div>
               <span class="arrow">▼</span>
-
               <div *ngIf="isBloodGroupOpen" class="dropdown-list">
-                <div *ngFor="let opt of bloodGroupOptions" class="option-item" (click)="selectBlood(opt.value, $event)">
+                <div *ngFor="let opt of bloodGroupOptions" class="option-item" (click)="selectOption('bloodGroup', opt.value, $event)">
+                  {{ opt.label }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Height (cm)</label>
+            <input type="number" [(ngModel)]="heightCm" (input)="clearMessages()" class="pill-input" placeholder="e.g. 175" />
+          </div>
+          <div class="form-group">
+            <label>Weight (kg)</label>
+            <input type="number" [(ngModel)]="weightKg" (input)="clearMessages()" class="pill-input" placeholder="e.g. 70.5" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Smoking Status</label>
+            <div class="custom-select" (click)="toggleSmoking($event)" [class.open]="isSmokingOpen">
+              <div class="selected-value">{{ getOptionLabel(smokingOptions, smokingStatus) }}</div>
+              <span class="arrow">▼</span>
+              <div *ngIf="isSmokingOpen" class="dropdown-list">
+                <div *ngFor="let opt of smokingOptions" class="option-item" (click)="selectOption('smokingStatus', opt.value, $event)">
                   {{ opt.label }}
                 </div>
               </div>
             </div>
           </div>
 
+          <div class="form-group">
+            <label>Exercise Level</label>
+            <div class="custom-select" (click)="toggleExercise($event)" [class.open]="isExerciseOpen">
+              <div class="selected-value">{{ getOptionLabel(exerciseOptions, exerciseLevel) }}</div>
+              <span class="arrow">▼</span>
+              <div *ngIf="isExerciseOpen" class="dropdown-list">
+                <div *ngFor="let opt of exerciseOptions" class="option-item" (click)="selectOption('exerciseLevel', opt.value, $event)">
+                  {{ opt.label }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Diet Type</label>
+            <div class="custom-select" (click)="toggleDiet($event)" [class.open]="isDietOpen">
+              <div class="selected-value">{{ getOptionLabel(dietOptions, dietType) }}</div>
+              <span class="arrow">▼</span>
+              <div *ngIf="isDietOpen" class="dropdown-list">
+                <div *ngFor="let opt of dietOptions" class="option-item" (click)="selectOption('dietType', opt.value, $event)">
+                  {{ opt.label }}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div *ngIf="errorMessages.length > 0" class="message error-message">
@@ -127,10 +173,7 @@ import { ToastService } from '../services/toast.service';
         
         <div class="actions">
           <button class="cancel-btn" (click)="onCancel()">Cancel</button>
-          
-          <button class="submit-btn" (click)="onSubmit()" [disabled]="isLoading">
-            Save
-          </button>
+          <button class="submit-btn" (click)="onSubmit()" [disabled]="isLoading">Save</button>
         </div>
 
       </div>
@@ -171,56 +214,29 @@ import { ToastService } from '../services/toast.service';
       position: absolute; top: 105%; left: 0; right: 0;
       background: white; border: 1px solid #ddd; border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000;
-      overflow: hidden; 
-      max-height: 200px;
-      overflow-y: auto;
+      overflow: hidden; max-height: 200px; overflow-y: auto;
     }
 
     .option-item { padding: 10px 20px; color: #333; transition: background 0.1s; }
     .option-item:hover { background-color: #f5f5f5; color: #0078d4; }
 
-    .calendar-dropdown { 
-      padding: 15px; 
-      cursor: default;
-      max-height: none; 
-      overflow-y: visible;
-    }
+    .calendar-dropdown { padding: 15px; cursor: default; max-height: none; overflow-y: visible; }
     
-    .calendar-header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 10px; font-weight: 600; color: #333;
-    }
-    .calendar-header button {
-      background: none; border: none; font-size: 1.2rem; 
-      color: #666; cursor: pointer; min-width: auto; padding: 0 5px;
-    }
+    .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: 600; color: #333; }
+    .calendar-header button { background: none; border: none; font-size: 1.2rem; color: #666; cursor: pointer; min-width: auto; padding: 0 5px; }
     .calendar-header button:hover { color: #0078d4; background: none; }
 
-    .calendar-grid {
-      display: grid; grid-template-columns: repeat(7, 1fr);
-      text-align: center; row-gap: 5px;
-    }
-    
-    .days-header span {
-      font-size: 0.8em; color: #888; font-weight: 600; margin-bottom: 5px;
-    }
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; row-gap: 5px; }
+    .days-header span { font-size: 0.8em; color: #888; font-weight: 600; margin-bottom: 5px; }
 
-    .day {
-      width: 30px; height: 30px; line-height: 30px;
-      margin: 0 auto; border-radius: 50%; font-size: 0.9em;
-      cursor: pointer; transition: background 0.2s;
-    }
+    .day { width: 30px; height: 30px; line-height: 30px; margin: 0 auto; border-radius: 50%; font-size: 0.9em; cursor: pointer; transition: background 0.2s; }
     .day:hover:not(.empty) { background-color: #f0f0f0; }
     .day.selected { background-color: #0078d4; color: white; }
     .day.empty { cursor: default; }
 
     .actions { display: flex; justify-content: flex-end; align-items: center; gap: 15px; margin-top: 20px; }
 
-    button {
-      padding: 10px 24px; border: none; border-radius: 25px; 
-      cursor: pointer; font-weight: 600; font-size: 0.95rem;
-      transition: background-color 0.2s, transform 0.1s; min-width: 120px;
-    }
+    button { padding: 10px 24px; border: none; border-radius: 25px; cursor: pointer; font-weight: 600; font-size: 0.95rem; transition: background-color 0.2s, transform 0.1s; min-width: 120px; }
     button:active { transform: scale(0.98); }
 
     .cancel-btn { background-color: #e0e0e0; color: #333; }
@@ -250,8 +266,14 @@ export class AddPatientComponent implements OnInit {
   phone = '';
   dateOfBirth = '';
   
-  gender: number = 0; 
-  bloodGroup: number = 0; 
+  gender = 0; 
+  bloodGroup = 0; 
+  
+  heightCm: number | null = null;
+  weightKg: number | null = null;
+  smokingStatus = 0;
+  exerciseLevel = 0;
+  dietType = 0;
 
   isLoading = false;
   errorMessages: string[] = [];
@@ -259,9 +281,12 @@ export class AddPatientComponent implements OnInit {
   isGenderOpen = false;
   isBloodGroupOpen = false;
   isDateOpen = false;
+  isSmokingOpen = false;
+  isExerciseOpen = false;
+  isDietOpen = false;
 
-  viewYear: number = new Date().getFullYear();
-  viewMonth: number = new Date().getMonth();
+  viewYear = new Date().getFullYear();
+  viewMonth = new Date().getMonth();
   monthDays: number[] = [];
   emptyDays: any[] = [];
   months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -282,15 +307,40 @@ export class AddPatientComponent implements OnInit {
     { value: 7, label: 'O Negative' }
   ];
 
+  smokingOptions = [
+    { value: 0, label: 'Never' },
+    { value: 1, label: 'Former' },
+    { value: 2, label: 'Current' }
+  ];
+
+  exerciseOptions = [
+    { value: 0, label: 'Sedentary' },
+    { value: 1, label: 'Moderate' },
+    { value: 2, label: 'Active' }
+  ];
+
+  dietOptions = [
+    { value: 0, label: 'Regular' },
+    { value: 1, label: 'Vegetarian' },
+    { value: 2, label: 'Vegan' },
+    { value: 3, label: 'Gluten Free' },
+    { value: 4, label: 'Lactose Free' },
+    { value: 5, label: 'Low Carb' },
+    { value: 6, label: 'Low Sodium' },
+    { value: 7, label: 'Diabetic' },
+    { value: 8, label: 'Renal' },
+    { value: 9, label: 'Soft' },
+    { value: 10, label: 'Liquid' }
+  ];
+
   ngOnInit() {
     this.generateCalendar();
   }
 
   toggleDate(event: Event) {
     event.stopPropagation();
+    this.closeAllDropdowns();
     this.isDateOpen = !this.isDateOpen;
-    this.isGenderOpen = false;
-    this.isBloodGroupOpen = false;
     
     if (this.isDateOpen) {
       const d = this.dateOfBirth ? new Date(this.dateOfBirth) : new Date();
@@ -315,7 +365,6 @@ export class AddPatientComponent implements OnInit {
   generateCalendar() {
     const firstDay = new Date(this.viewYear, this.viewMonth, 1).getDay();
     const daysInMonth = new Date(this.viewYear, this.viewMonth + 1, 0).getDate();
-    
     this.emptyDays = Array(firstDay).fill(0);
     this.monthDays = Array.from({ length: daysInMonth }, (_, i) => i + 1);
   }
@@ -334,48 +383,37 @@ export class AddPatientComponent implements OnInit {
     return y === this.viewYear && m === (this.viewMonth + 1) && d === day;
   }
 
-  getMonthName(idx: number) {
-    return this.months[idx];
+  getMonthName(idx: number) { return this.months[idx]; }
+
+  getOptionLabel(options: any[], val: number) {
+    return options.find(o => o.value === val)?.label || 'Select';
   }
 
-  getGenderLabel(val: number) {
-    return this.genderOptions.find(o => o.value === val)?.label || 'Select';
-  }
-  getBloodGroupLabel(val: number) {
-    return this.bloodGroupOptions.find(o => o.value === val)?.label || 'Select';
-  }
+  // Toggles
+  toggleGender(e: Event) { e.stopPropagation(); const open = !this.isGenderOpen; this.closeAllDropdowns(); this.isGenderOpen = open; }
+  toggleBlood(e: Event) { e.stopPropagation(); const open = !this.isBloodGroupOpen; this.closeAllDropdowns(); this.isBloodGroupOpen = open; }
+  toggleSmoking(e: Event) { e.stopPropagation(); const open = !this.isSmokingOpen; this.closeAllDropdowns(); this.isSmokingOpen = open; }
+  toggleExercise(e: Event) { e.stopPropagation(); const open = !this.isExerciseOpen; this.closeAllDropdowns(); this.isExerciseOpen = open; }
+  toggleDiet(e: Event) { e.stopPropagation(); const open = !this.isDietOpen; this.closeAllDropdowns(); this.isDietOpen = open; }
 
-  toggleGender(event: Event) {
-    event.stopPropagation();
-    this.isGenderOpen = !this.isGenderOpen;
+  closeAllDropdowns() {
+    this.isGenderOpen = false;
     this.isBloodGroupOpen = false;
     this.isDateOpen = false;
+    this.isSmokingOpen = false;
+    this.isExerciseOpen = false;
+    this.isDietOpen = false;
   }
 
-  toggleBlood(event: Event) {
+  selectOption(field: 'gender' | 'bloodGroup' | 'smokingStatus' | 'exerciseLevel' | 'dietType', val: number, event: Event) {
     event.stopPropagation();
-    this.isBloodGroupOpen = !this.isBloodGroupOpen;
-    this.isGenderOpen = false;
-    this.isDateOpen = false;
-  }
-
-  selectGender(val: number, event: Event) {
-    event.stopPropagation();
-    this.gender = val;
-    this.isGenderOpen = false;
-  }
-
-  selectBlood(val: number, event: Event) {
-    event.stopPropagation();
-    this.bloodGroup = val;
-    this.isBloodGroupOpen = false;
+    this[field] = val;
+    this.closeAllDropdowns();
   }
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: Event) {
-    this.isGenderOpen = false;
-    this.isBloodGroupOpen = false;
-    this.isDateOpen = false;
+    this.closeAllDropdowns();
   }
 
   clearMessages() {
@@ -412,7 +450,12 @@ export class AddPatientComponent implements OnInit {
       phone: this.phone,
       dateOfBirth: this.dateOfBirth,
       gender: this.gender,
-      bloodGroup: this.bloodGroup
+      bloodGroup: this.bloodGroup,
+      heightCm: this.heightCm,
+      weightKg: this.weightKg,
+      smokingStatus: this.smokingStatus,
+      exerciseLevel: this.exerciseLevel,
+      dietType: this.dietType
     };
 
     this.http.post('http://localhost:5000/api/Patients', payload)

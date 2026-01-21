@@ -12,4 +12,9 @@ public sealed class AddPatientCommandInput
     public DateOnly DateOfBirth { get; set; }
     public Gender Gender { get; set; }
     public BloodGroup BloodGroup { get; set; }
+    public SmokingStatus SmokingStatus { get; set; }
+    public ExerciseLevel ExerciseLevel { get; set; }
+    public DietType DietType { get; set; }
+    public double HeightCm { get; set; }
+    public double WeightKg { get; set; }
 }

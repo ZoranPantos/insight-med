@@ -8,4 +8,9 @@ public sealed record AddPatientInputModel(
     string Email,
     DateOnly DateOfBirth,
     int Gender,
-    int BloodGroup);
+    int BloodGroup,
+    int SmokingStatus,
+    int ExerciseLevel,
+    int DietType,
+    double HeightCm,
+    double WeightKg);
