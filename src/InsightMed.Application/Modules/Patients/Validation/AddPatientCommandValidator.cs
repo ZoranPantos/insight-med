@@ -47,7 +47,7 @@ public sealed class AddPatientCommandValidator : AbstractValidator<AddPatientCom
         RuleFor(command => command.Input.DateOfBirth)
             .NotEmpty()
             .Must(BeOlderThanUtcNow)
-            .WithMessage("Date of birth must be older than now");
+            .WithMessage("Date of birth cannot be in the future");
 
         RuleFor(command => command.Input.Uid)
             .NotEmpty()
@@ -55,8 +55,8 @@ public sealed class AddPatientCommandValidator : AbstractValidator<AddPatientCom
             .WithMessage("Patient with UID {PropertyValue} already exists");
     }
 
-    private bool BeOlderThanUtcNow(DateOnly dateOfBirthUtc) =>
-        dateOfBirthUtc < DateOnly.FromDateTime(DateTime.UtcNow);
+    private bool BeOlderThanUtcNow(DateOnly dateOfBirth) =>
+        dateOfBirth <= DateOnly.FromDateTime(DateTime.UtcNow);
 
     private async Task<bool> BeUniqueAsync(string uid, CancellationToken cancellationToken)
     {

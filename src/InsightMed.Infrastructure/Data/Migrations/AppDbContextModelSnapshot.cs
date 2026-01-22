@@ -142,8 +142,8 @@ namespace InsightMed.Infrastructure.Migrations
                     b.Property<int>("BloodGroup")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("DateOfBirth")
+                        .HasColumnType("date");
 
                     b.Property<int>("DietType")
                         .HasColumnType("int");

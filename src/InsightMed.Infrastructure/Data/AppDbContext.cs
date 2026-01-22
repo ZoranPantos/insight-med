@@ -1,5 +1,6 @@
 ﻿using InsightMed.Application.Common.Abstractions.Data;
 using InsightMed.Domain.Entities;
+using InsightMed.Infrastructure.Data.Converters;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,14 @@ public sealed class AppDbContext : IdentityDbContext<IdentityUser>, IAppDbContex
 
     public AppDbContext(DbContextOptions<AppDbContext> options, IConfiguration configuration) : base(options) =>
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        base.ConfigureConventions(configurationBuilder);
+
+        configurationBuilder.Properties<DateTime>()
+            .HaveConversion<UtcDateTimeConverter>();
+    }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

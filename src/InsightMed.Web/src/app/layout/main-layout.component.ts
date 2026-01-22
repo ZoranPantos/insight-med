@@ -1,6 +1,6 @@
 import { Component, inject, ChangeDetectorRef, effect, OnInit, OnDestroy } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router, ActivatedRoute } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { SignalrService } from '../services/signalr.service';
@@ -11,7 +11,7 @@ import { ToastComponent } from '../shared/toast.component';
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule, FormsModule, LoadingSpinnerComponent, ErrorDisplayComponent, ToastComponent],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule, FormsModule, LoadingSpinnerComponent, ErrorDisplayComponent, ToastComponent, DatePipe],
   template: `
     <div class="app-container">
       <nav class="navbar">
@@ -57,7 +57,26 @@ import { ToastComponent } from '../shared/toast.component';
                        class="notification-item"
                        [class.clickable]="item.labReportId"
                        (click)="onNotificationClick(item)">
-                    {{ item.message }}
+                    
+                    <div class="notif-text">
+                        <ng-container *ngIf="item.parsedText.hasMatch; else plainText">
+                            {{ item.parsedText.prefix }}
+                            <span class="highlight-text">
+                                {{ item.parsedText.name }}
+                                <span *ngIf="item.parsedText.uid" class="uid-text">{{ item.parsedText.uid }}</span>
+                            </span>
+                            {{ item.parsedText.suffix }}
+                        </ng-container>
+                        
+                        <ng-template #plainText>
+                            {{ item.displayMessage }}
+                        </ng-template>
+                    </div>
+                    
+                    <div *ngIf="item.displayDate" class="notification-date">
+                      {{ item.displayDate | date:'MMM d, y, h:mm a' }}
+                    </div>
+
                   </div>
 
                   <div *ngIf="notifications.length === 0" class="empty-state">
@@ -201,6 +220,22 @@ import { ToastComponent } from '../shared/toast.component';
     
     .clickable { cursor: pointer; } 
 
+    .highlight-text {
+      font-weight: 500;
+      color: #222;
+    }
+
+    .uid-text {
+      color: #3b5998;
+      margin-left: 3px;
+    }
+
+    .notification-date {
+      font-size: 0.85em;
+      color: #888;
+      margin-top: 4px;
+    }
+
     .empty-state { 
       display: flex;
       justify-content: center;
@@ -308,7 +343,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       params: { filter: 'Unseen' }
     }).subscribe({
       next: (data) => {
-        this.notifications = data.notifications;
+        this.notifications = data.notifications.map((n: any) => this.parseNotification(n));
         this.isLoading = false;
         this.cdr.detectChanges();
       },
@@ -319,6 +354,58 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  parseNotification(notification: any) {
+    const separator = 'Date created: ';
+    let textPart = notification.message;
+    let datePart = null;
+
+    if (notification.message && notification.message.includes(separator)) {
+      const parts = notification.message.split(separator);
+      textPart = parts[0];
+      datePart = parts[1];
+    }
+
+    const nameRegex = /Report for patient (.*?) is available/;
+    const match = textPart.match(nameRegex);
+
+    let parsedText = {
+      hasMatch: false,
+      prefix: textPart,
+      name: '',
+      uid: '',
+      suffix: ''
+    };
+
+    if (match && match[1]) {
+      const fullIdentity = match[1];
+      
+      const uidIndex = fullIdentity.lastIndexOf('UID-');
+      
+      let nameStr = fullIdentity;
+      let uidStr = '';
+
+      if (uidIndex > -1) {
+        nameStr = fullIdentity.substring(0, uidIndex).trim();
+        uidStr = fullIdentity.substring(uidIndex).trim();
+      }
+
+      parsedText = {
+        hasMatch: true,
+        prefix: 'Report for patient ',
+        name: nameStr,
+        uid: uidStr,
+        suffix: ' is available.'
+      };
+    }
+
+    return {
+      ...notification,
+      displayMessage: textPart,
+      parsedText: parsedText,
+      displayDate: datePart ? new Date(datePart + ' UTC') : null
+    };
   }
 
   clearAll() {

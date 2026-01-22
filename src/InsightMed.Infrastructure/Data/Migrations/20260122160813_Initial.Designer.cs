@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InsightMed.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260122132057_Initial")]
+    [Migration("20260122160813_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -145,8 +145,8 @@ namespace InsightMed.Infrastructure.Migrations
                     b.Property<int>("BloodGroup")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("DateOfBirth")
+                        .HasColumnType("date");
 
                     b.Property<int>("DietType")
                         .HasColumnType("int");
