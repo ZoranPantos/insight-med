@@ -1,7 +1,6 @@
 ﻿using InsightMed.Application.Auth.Services.Abstractions;
 using InsightMed.Application.Common.Abstractions.Messaging;
 using InsightMed.Application.Common.Exceptions;
-using InsightMed.Application.Modules.LabReports.Models;
 using InsightMed.Application.Modules.LabReports.Services.Abstactions;
 using InsightMed.Application.Modules.LabRequests.Services.Abstractions;
 using InsightMed.Application.Modules.Notifications.Services.Abstractions;

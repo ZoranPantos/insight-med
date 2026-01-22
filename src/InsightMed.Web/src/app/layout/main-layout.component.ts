@@ -53,7 +53,10 @@ import { ToastComponent } from '../shared/toast.component';
                 </app-error-display>
 
                 <ng-container *ngIf="!isLoading && !errorMessage">
-                  <div *ngFor="let item of notifications" class="notification-item">
+                  <div *ngFor="let item of notifications" 
+                       class="notification-item"
+                       [class.clickable]="item.labReportId"
+                       (click)="onNotificationClick(item)">
                     {{ item.message }}
                   </div>
 
@@ -196,6 +199,8 @@ import { ToastComponent } from '../shared/toast.component';
     }
     .notification-item:hover { background-color: #f9f9f9; }
     
+    .clickable { cursor: pointer; } 
+
     .empty-state { 
       display: flex;
       justify-content: center;
@@ -329,5 +334,12 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
           },
           error: (err) => console.error(err)
         });
+  }
+
+  onNotificationClick(item: any) {
+    if (item.labReportId) {
+      this.router.navigate(['/reports', item.labReportId]);
+      this.isNotificationsOpen = false;
     }
+  }
 }

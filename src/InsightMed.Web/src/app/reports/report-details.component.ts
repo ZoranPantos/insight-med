@@ -176,16 +176,22 @@ export class ReportDetailsComponent implements OnInit {
   errorMessage = '';
 
   ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.fetchReport(id);
-    } else {
-      this.errorMessage = 'Invalid Report ID';
-      this.isLoading = false;
-    }
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
+      if (id) {
+        this.fetchReport(id);
+      } else {
+        this.errorMessage = 'Invalid Report ID';
+        this.isLoading = false;
+      }
+    });
   }
 
   fetchReport(id: string) {
+    this.isLoading = true;
+    this.report = null;
+    this.errorMessage = '';
+
     this.http.get<LabReportDetails>(`http://localhost:5000/api/LabReports/${id}`)
       .subscribe({
         next: (data) => {
