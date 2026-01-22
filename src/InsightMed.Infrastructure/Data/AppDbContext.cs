@@ -53,9 +53,9 @@ public sealed class AppDbContext : IdentityDbContext<IdentityUser>, IAppDbContex
 
         modelBuilder.Entity<Notification>()
             .HasOne(n => n.LabReport)
-            .WithMany()
-            .HasForeignKey(n => n.LabReportId)
-            .OnDelete(DeleteBehavior.ClientCascade);
+            .WithOne(lr => lr.Notification)
+            .HasForeignKey<Notification>(n => n.LabReportId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Notification>()
             .HasOne<IdentityUser>()

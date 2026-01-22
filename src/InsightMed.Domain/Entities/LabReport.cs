@@ -7,8 +7,10 @@ public class LabReport
     public DateTime Created { get; set; }
 
     public int? LabRequestId { get; set; }
-    public LabRequest? LabRequest { get; set; }
+    public LabRequest LabRequest { get; set; }
 
     public int PatientId { get; set; }
     public Patient Patient { get; set; }
+
+    public Notification? Notification { get; set; }
 }

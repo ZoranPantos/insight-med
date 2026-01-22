@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace InsightMed.Infrastructure.Data.Migrations
+namespace InsightMed.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260102182007_AddIdentity")]
-    partial class AddIdentity
+    [Migration("20260122110356_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -117,12 +117,19 @@ namespace InsightMed.Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("RequesterId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<bool>("Seen")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LabReportId");
+                    b.HasIndex("LabReportId")
+                        .IsUnique();
+
+                    b.HasIndex("RequesterId");
 
                     b.ToTable("Notifications");
                 });
@@ -141,9 +148,15 @@ namespace InsightMed.Infrastructure.Data.Migrations
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("DietType")
+                        .HasColumnType("int");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ExerciseLevel")
+                        .HasColumnType("int");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -151,6 +164,9 @@ namespace InsightMed.Infrastructure.Data.Migrations
 
                     b.Property<int>("Gender")
                         .HasColumnType("int");
+
+                    b.Property<double>("HeightCm")
+                        .HasColumnType("float");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -160,9 +176,15 @@ namespace InsightMed.Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("SmokingStatus")
+                        .HasColumnType("int");
+
                     b.Property<string>("Uid")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("WeightKg")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
@@ -399,9 +421,15 @@ namespace InsightMed.Infrastructure.Data.Migrations
             modelBuilder.Entity("InsightMed.Domain.Entities.Notification", b =>
                 {
                     b.HasOne("InsightMed.Domain.Entities.LabReport", "LabReport")
+                        .WithOne("Notification")
+                        .HasForeignKey("InsightMed.Domain.Entities.Notification", "LabReportId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
-                        .HasForeignKey("LabReportId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .HasForeignKey("RequesterId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("LabReport");
@@ -456,6 +484,11 @@ namespace InsightMed.Infrastructure.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("InsightMed.Domain.Entities.LabReport", b =>
+                {
+                    b.Navigation("Notification");
                 });
 
             modelBuilder.Entity("InsightMed.Domain.Entities.LabRequest", b =>

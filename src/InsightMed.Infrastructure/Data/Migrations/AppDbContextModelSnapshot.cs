@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace InsightMed.Infrastructure.Data.Migrations
+namespace InsightMed.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
@@ -123,7 +123,8 @@ namespace InsightMed.Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LabReportId");
+                    b.HasIndex("LabReportId")
+                        .IsUnique();
 
                     b.HasIndex("RequesterId");
 
@@ -417,9 +418,9 @@ namespace InsightMed.Infrastructure.Data.Migrations
             modelBuilder.Entity("InsightMed.Domain.Entities.Notification", b =>
                 {
                     b.HasOne("InsightMed.Domain.Entities.LabReport", "LabReport")
-                        .WithMany()
-                        .HasForeignKey("LabReportId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .WithOne("Notification")
+                        .HasForeignKey("InsightMed.Domain.Entities.Notification", "LabReportId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
@@ -480,6 +481,11 @@ namespace InsightMed.Infrastructure.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("InsightMed.Domain.Entities.LabReport", b =>
+                {
+                    b.Navigation("Notification");
                 });
 
             modelBuilder.Entity("InsightMed.Domain.Entities.LabRequest", b =>
