@@ -16,6 +16,7 @@ public sealed class AppDbContext : IdentityDbContext<IdentityUser>, IAppDbContex
     public DbSet<LabRequest> LabRequests { get; set; }
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<Patient> Patients { get; set; }
+    public DbSet<UserProfile> UserProfiles { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options, IConfiguration configuration) : base(options) =>
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
@@ -63,5 +64,16 @@ public sealed class AppDbContext : IdentityDbContext<IdentityUser>, IAppDbContex
             .HasForeignKey(n => n.RequesterId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<UserProfile>()
+            .HasOne<IdentityUser>()
+            .WithOne()
+            .HasForeignKey<UserProfile>(up => up.UserId)
+            .HasPrincipalKey<IdentityUser>(u => u.Id)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<UserProfile>()
+            .HasIndex(up => up.UserId)
+            .IsUnique();
     }
 }

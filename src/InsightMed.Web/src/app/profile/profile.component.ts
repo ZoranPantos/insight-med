@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Router, NavigationEnd } from '@angular/router';
 import { AuthService } from '../services/auth.service';
@@ -11,12 +11,13 @@ interface AccountInfo {
   userName: string;
   email: string;
   emailConfirmed: boolean;
+  passwordLastChanged: string;
 }
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, LoadingSpinnerComponent, ErrorDisplayComponent],
+  imports: [CommonModule, DatePipe, LoadingSpinnerComponent, ErrorDisplayComponent],
   template: `
     <div class="page-container">
       <div class="header">
@@ -45,6 +46,13 @@ interface AccountInfo {
           <div class="info-row">
             <label>Email Address</label>
             <div class="value">{{ accountInfo.email }}</div>
+          </div>
+
+          <div class="info-row">
+            <label>Password Last Changed</label>
+            <div class="value">
+              {{ accountInfo.passwordLastChanged | date:'MMM d, y, h:mm a' }}
+            </div>
           </div>
 
           <div class="info-row">

@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using InsightMed.Application.Auth.Models;
 using InsightMed.Application.Auth.Services.Abstractions;
+using InsightMed.Application.Common.Abstractions.Data;
 using InsightMed.Application.Common.Exceptions;
+using InsightMed.Domain.Entities;
 using InsightMed.Infrastructure.Options;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -17,15 +20,18 @@ public sealed class AuthService : IAuthService
     private readonly JwtOptions _jwtOptions;
     private readonly IMapper _mapper;
     private readonly UserManager<IdentityUser> _userManager;
+    private readonly IAppDbContext _context;
 
     public AuthService(
         IOptions<JwtOptions> jwtOptions,
         IMapper mapper,
-        UserManager<IdentityUser> userManager)
+        UserManager<IdentityUser> userManager,
+        IAppDbContext context)
     {
         _jwtOptions = jwtOptions.Value ?? throw new ArgumentNullException(nameof(jwtOptions));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+        _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
     public async Task<string> LoginAsync(string email, string password)
@@ -72,13 +78,38 @@ public sealed class AuthService : IAuthService
             string errors = string.Join(", ", result.Errors.Select(e => e.Description));
             throw new InvalidClientDataException(errors);
         }
+
+        var userProfile = new UserProfile
+        {
+            UserId = user.Id,
+            PasswordLastChanged = DateTime.UtcNow
+        };
+
+        await _context.UserProfiles.AddAsync(userProfile);
+
+        await _context
+            .SaveChangesAsync()
+            .ConfigureAwait(false);
     }
 
     public async Task<IdentityUserResponse?> GetUserByIdAsync(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
-        return user is null ? null : _mapper.Map<IdentityUserResponse>(user);
+        if (user is null) return null;
+
+        var response = _mapper.Map<IdentityUserResponse>(user);
+
+        if (response is null) return null;
+
+        var userProfile = await _context.UserProfiles
+            .FirstOrDefaultAsync(up => up.UserId.Equals(userId))
+            .ConfigureAwait(false);
+
+        if (userProfile is not null && userProfile.PasswordLastChanged is not null)
+            response.PasswordLastChanged = userProfile.PasswordLastChanged.Value;
+
+        return response;
     }
 
     public async Task ChangePasswordAsync(string userId, string currentPassword, string newPassword)
@@ -92,6 +123,19 @@ public sealed class AuthService : IAuthService
         {
             string errors = string.Join(", ", result.Errors.Select(e => e.Description));
             throw new InvalidClientDataException(errors);
+        }
+
+        var userProfile = await _context.UserProfiles
+            .FirstOrDefaultAsync(up => up.UserId.Equals(userId))
+            .ConfigureAwait(false);
+
+        if (userProfile is not null)
+        {
+            userProfile.PasswordLastChanged = DateTime.UtcNow;
+
+            await _context
+                .SaveChangesAsync()
+                .ConfigureAwait(false);
         }
     }
 }

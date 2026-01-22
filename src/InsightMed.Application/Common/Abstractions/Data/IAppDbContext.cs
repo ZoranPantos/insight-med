@@ -11,6 +11,7 @@ public interface IAppDbContext
     DbSet<LabRequest> LabRequests { get; }
     DbSet<Notification> Notifications { get; }
     DbSet<Patient> Patients { get; }
+    DbSet<UserProfile> UserProfiles { get; set; }
 
     DatabaseFacade Database { get; }
 
