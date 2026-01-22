@@ -113,7 +113,8 @@ public sealed class CreateLabRequestCommandHandler : IRequestHandler<CreateLabRe
                 {
                     LabReportId = labReport.Id,
                     RequesterId = userId,
-                    Message = $"Report for patient {Patient.FirstName} {Patient.LastName} {Patient.Uid} is available. Date created UTC: {labReport.Created}"
+                    Message = $"Report for patient {Patient.FirstName} {Patient.LastName} {Patient.Uid} is available. " +
+                        $"Date created: {labReport.Created:MMM dd, yyyy, h:mm tt}"
                 };
 
                 await notificationsService.AddAsync(notification);

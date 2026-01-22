@@ -178,16 +178,16 @@ VALUES
 
 INSERT INTO [Notifications] ([Message], [LabReportId], [Seen], [RequesterId])
 VALUES
-    ('Report for patient John Doe UID-1001 is available. Date created UTC: 12/01/2023 14:00:00', 1, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
-    ('Report for patient Michael Johnson UID-1003 is available. Date created UTC: 22/03/2023 16:45:00', 2, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
-    ('Report for patient David Wilson UID-1005 is available. Date created UTC: 31/05/2023 10:15:00', 3, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
-    ('Report for patient Robert Anderson UID-1007 is available. Date created UTC: 12/07/2023 12:45:00', 4, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
-    ('Report for patient James Thomas UID-1009 is available. Date created UTC: 22/09/2023 15:15:00', 5, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
-    ('Report for patient Alice Brown UID-1011 is available. Date created UTC: 06/11/2023 14:00:00', 6, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
-    ('Report for patient Sophia Lewis UID-1013 is available. Date created UTC: 21/11/2023 09:30:00', 7, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
-    ('Report for patient Olivia Hall UID-1015 is available. Date created UTC: 02/12/2023 10:00:00', 8, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
-    ('Report for patient Emma Young UID-1017 is available. Date created UTC: 16/12/2023 11:00:00', 9, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
-    ('Report for patient Ava Wright UID-1019 is available. Date created UTC: 06/01/2024 09:15:00', 10, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa');
+    ('Report for patient John Doe UID-1001 is available. Date created: Jan 12, 2023, 2:00 PM', 1, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
+    ('Report for patient Michael Johnson UID-1003 is available. Date created: Mar 22, 2023, 4:45 PM', 2, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
+    ('Report for patient David Wilson UID-1005 is available. Date created: May 31, 2023, 10:15 AM', 3, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
+    ('Report for patient Robert Anderson UID-1007 is available. Date created: Jul 12, 2023, 12:45 PM', 4, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
+    ('Report for patient James Thomas UID-1009 is available. Date created: Sep 22, 2023, 3:15 PM', 5, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
+    ('Report for patient Alice Brown UID-1011 is available. Date created: Nov 6, 2023, 2:00 PM', 6, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
+    ('Report for patient Sophia Lewis UID-1013 is available. Date created: Nov 21, 2023, 9:30 AM', 7, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
+    ('Report for patient Olivia Hall UID-1015 is available. Date created: Dec 2, 2023, 10:00 AM', 8, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
+    ('Report for patient Emma Young UID-1017 is available. Date created: Dec 16, 2023, 11:00 AM', 9, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
+    ('Report for patient Ava Wright UID-1019 is available. Date created: Jan 6, 2024, 9:15 AM', 10, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa');
 
 ALTER TABLE [AspNetUsers] CHECK CONSTRAINT ALL;
 ALTER TABLE [LabRequests] CHECK CONSTRAINT ALL;
