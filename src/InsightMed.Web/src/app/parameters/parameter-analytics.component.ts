@@ -67,7 +67,7 @@ interface ParameterHistoryResponse {
         </a>
       </div>
 
-      <app-loading-spinner *ngIf="isLoadingInit" message="Loading data..." minHeight="300px"></app-loading-spinner>
+      <app-loading-spinner *ngIf="isLoadingInit" minHeight="300px"></app-loading-spinner>
       <app-error-display *ngIf="errorMessage && !isLoadingInit" [message]="errorMessage" minHeight="300px"></app-error-display>
 
       <div *ngIf="!isLoadingInit && !errorMessage" class="content">
@@ -99,7 +99,7 @@ interface ParameterHistoryResponse {
         <div *ngIf="selectedParameterId" class="analytics-card">
           
           <div *ngIf="isLoadingHistory" class="chart-loading">
-            <app-loading-spinner message="Loading chart..." minHeight="200px"></app-loading-spinner>
+            <app-loading-spinner minHeight="200px"></app-loading-spinner>
           </div>
 
           <div *ngIf="!isLoadingHistory && chartData" class="chart-wrapper">

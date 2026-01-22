@@ -43,7 +43,6 @@ import { ToastComponent } from '../shared/toast.component';
                 
                 <app-loading-spinner 
                   *ngIf="isLoading" 
-                  message="Loading..." 
                   minHeight="150px">
                 </app-loading-spinner>
 

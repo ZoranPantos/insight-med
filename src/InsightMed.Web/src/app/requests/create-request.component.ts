@@ -32,7 +32,7 @@ interface Patient {
 
       <app-loading-spinner 
         *ngIf="isLoadingData || isSubmitting" 
-        [message]="isSubmitting ? 'Creating request...' : 'Loading data...'"
+        [message]="isSubmitting ? 'Creating request...' : 'Loading...'"
         minHeight="300px">
       </app-loading-spinner>
 

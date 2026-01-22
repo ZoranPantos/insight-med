@@ -25,7 +25,6 @@ interface AccountInfo {
 
       <app-loading-spinner 
         *ngIf="isLoading" 
-        message="Loading profile..." 
         minHeight="200px">
       </app-loading-spinner>
 

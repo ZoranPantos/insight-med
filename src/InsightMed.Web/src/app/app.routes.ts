@@ -12,6 +12,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { ChangePasswordComponent } from './profile/change-password.component';
 import { CreateRequestComponent } from './requests/create-request.component';
 import { ParameterAnalyticsComponent } from './parameters/parameter-analytics.component';
+import { UpdatePatientComponent } from './patients/update-patient.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -27,6 +28,7 @@ export const routes: Routes = [
       { path: 'requests/create', component: CreateRequestComponent },
       { path: 'patients', component: PatientsComponent },
       { path: 'patients/add', component: AddPatientComponent },
+      { path: 'patients/edit/:id', component: UpdatePatientComponent },
       { path: 'patients/:id', component: PatientDetailsComponent },
       { path: 'profile', component: ProfileComponent },
       { path: 'change-password', component: ChangePasswordComponent },
