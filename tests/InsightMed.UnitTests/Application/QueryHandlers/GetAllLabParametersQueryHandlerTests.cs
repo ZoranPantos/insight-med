@@ -7,7 +7,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Moq;
 
-namespace InsightMed.UnitTests.Application;
+namespace InsightMed.UnitTests.Application.QueryHandlers;
 
 public sealed class GetAllLabParametersQueryHandlerTests
 {
