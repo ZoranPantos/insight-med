@@ -10,8 +10,8 @@ import { AuthService } from '../services/auth.service';
   imports: [FormsModule, CommonModule, RouterLink],
   template: `
     <div class="register-container">
-      <h1>InsightMed Register</h1>
-      
+      <img src="/assets/images/insight-med-logo.png" alt="InsightMed Logo" class="logo" />
+
       <div class="form-group">
         <input 
           type="text" 
@@ -101,12 +101,20 @@ import { AuthService } from '../services/auth.service';
   styles: [`
     .register-container {
       display: flex; flex-direction: column; gap: 25px;
-      width: 320px; margin: 100px auto; text-align: center;
+      width: 320px; 
+      margin: 80px auto; 
+      text-align: center;
       font-family: sans-serif;
     }
-    
-    h1 { margin-bottom: 10px; color: #333; }
 
+    .logo {
+      width: 180px;
+      height: auto;
+      align-self: center;
+      display: block;
+      object-fit: contain; 
+    }
+    
     .form-group {
       display: flex;
       flex-direction: column;
