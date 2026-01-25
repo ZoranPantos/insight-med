@@ -12,7 +12,7 @@ following dockerized components:
 - Databases: two distinct [SQL Server](https://www.microsoft.com/en-us/sql-server) instances
     - **InsightMedDb**: Main application database managed via [Entity Framework Core](https://learn.microsoft.com/en-us/ef/core/)
     - **LabDb**: Laboratory simulation database managed via [ADO.NET](https://learn.microsoft.com/en-us/dotnet/framework/data/adonet/ado-net-overview)
-- Message Broker: [RabbitMQ](https://www.rabbitmq.com/) for asynchronous inter-service communication
+- Message Broker: [RabbitMQ](https://www.rabbitmq.com/) for asynchronous service communication
 - Observability: [Elasticsearch](https://www.elastic.co/elasticsearch) and [Kibana](https://www.elastic.co/kibana) for log aggregation and visualization
 
 <br>
@@ -139,8 +139,9 @@ Additionally, logs are enriched with context such as `Application` name and `Cor
 
 ## Testing
 
-The solution contains unit and integration tests written using [xUnit](https://xunit.net/?tabs=cs) and [Moq](https://github.com/devlooped/moq).  
-Integration Host uses `WebApplicationFactory` to spin up a test host for end-to-end integration scenarios.
+Here we have two projects in question:
+- _InsightMed.UnitTests_: [xUnit](https://xunit.net/?tabs=cs) unit test project in a combination with [Moq](https://github.com/devlooped/moq) for basic mocking scenarios
+- _InsightMed.IntegrationTests_: xUnit integration test project that leverages [Testcontainers](https://testcontainers.com/) for throwaway Docker dependencies and `WebApplicationFactory` to host the API in-memory
 
 <br>
 
