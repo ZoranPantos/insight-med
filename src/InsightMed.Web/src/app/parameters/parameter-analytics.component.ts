@@ -6,7 +6,6 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartOptions, ScriptableContext } from 'chart.js'; 
-import 'chartjs-adapter-date-fns';
 
 import { LoadingSpinnerComponent } from '../shared/loading-spinner.component';
 import { ErrorDisplayComponent } from '../shared/error-display.component';
@@ -245,8 +244,15 @@ export class ParameterAnalyticsComponent implements OnInit {
 
   setupChart(data: ParameterHistoryResponse) {
     const isNumeric = data.labParameterReference.minThreshold !== null;
+    
     const sortedHistory = [...data.history].sort((a, b) => new Date(a.created).getTime() - new Date(b.created).getTime());
-    const labels = sortedHistory.map(h => h.created);
+    
+    const labels = sortedHistory.map(h => {
+        const d = new Date(h.created);
+        const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const timeStr = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        return [dateStr, timeStr]; 
+    });
     
     let datasetData: number[] = [];
     if (isNumeric) {
@@ -257,7 +263,6 @@ export class ParameterAnalyticsComponent implements OnInit {
 
     const getPointColor = (ctx: ScriptableContext<'line'>) => {
       if (ctx.raw === undefined || ctx.raw === null) return 'gray';
-      
       const val = ctx.raw as number;
 
       if (!isNumeric) {
@@ -279,13 +284,13 @@ export class ParameterAnalyticsComponent implements OnInit {
     };
 
     this.chartData = {
-      labels: labels,
+      labels: labels as any,
       datasets: [
         {
           data: datasetData,
           label: data.name,
           fill: false, 
-          tension: isNumeric ? 0.4 : 0, 
+          tension: isNumeric ? 0.3 : 0,
           borderColor: '#9ca3af', 
           borderWidth: 2,
           stepped: !isNumeric, 
@@ -334,13 +339,12 @@ export class ParameterAnalyticsComponent implements OnInit {
       maintainAspectRatio: false,
       scales: {
         x: {
-          type: 'time',
-          time: {
-            unit: 'day',
-            tooltipFormat: 'MMM d, yyyy HH:mm',
-            displayFormats: { day: 'MMM d' }
-          },
-          title: { display: true, text: 'Date' }
+          type: 'category', 
+          title: { display: true, text: 'Date' },
+          ticks: {
+            maxRotation: 0,
+            autoSkip: true
+          }
         },
         y: {
           title: { display: true, text: isNumeric ? `Value (${data.unit || ''})` : 'Result' },
@@ -354,6 +358,15 @@ export class ParameterAnalyticsComponent implements OnInit {
         legend: { display: false },
         tooltip: {
           callbacks: {
+            title: (tooltipItems) => {
+                const index = tooltipItems[0].dataIndex;
+                const labelArray = this.chartData?.labels?.[index];
+                
+                if (Array.isArray(labelArray)) {
+                    return labelArray.join(' at ');
+                }
+                return tooltipItems[0].label;
+            },
             label: (context) => {
               if (!isNumeric) {
                 return context.raw === 1 ? 'Positive' : 'Negative';
