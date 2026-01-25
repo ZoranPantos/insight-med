@@ -21,4 +21,8 @@
 		<ProjectReference Include="..\InsightMed.Application\InsightMed.Application.csproj" />
 		<ProjectReference Include="..\InsightMed.Infrastructure\InsightMed.Infrastructure.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="InsightMed.IntegrationTests" />
+	</ItemGroup>
 </Project>

@@ -27,7 +27,7 @@ public static class WebApplicationExtensions
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Errors in database migration step");
+            logger.LogError(ex, "Error in database migration step");
             throw;
         }
     }

@@ -27,7 +27,11 @@ public sealed class RabbitMqRpcClient : ILabRpcClient, IAsyncDisposable
         _rabbitMqOptions = rabbitMqOptions.Value ?? throw new ArgumentNullException(nameof(rabbitMqOptions));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-        _connectionFactory = new ConnectionFactory() { HostName = _rabbitMqOptions.HostName };
+        _connectionFactory = new ConnectionFactory()
+        {
+            HostName = _rabbitMqOptions.HostName,
+            Port = _rabbitMqOptions.Port
+        };
     }
 
     // Start once and keep the reply consumer alive
