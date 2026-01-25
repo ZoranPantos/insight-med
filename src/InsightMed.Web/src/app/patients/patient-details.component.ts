@@ -133,7 +133,7 @@ interface PatientDetails {
         </div>
 
         <div class="section">
-          <h3>Completed Lab Requests</h3>
+          <h3>Lab Requests</h3>
           <div class="table-container">
             <table>
               <thead>
