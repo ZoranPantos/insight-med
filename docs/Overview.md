@@ -1,5 +1,9 @@
 # Overview
 
+<br>
+
+## Introduction
+
 _InsightMed_ is a demo medical application for managing laboratory reports
 for patients. It simulates the typical workflow between doctors, patients,
 and an external laboratory clinic.
@@ -20,3 +24,42 @@ In _InsightMed_, this entire process is simulated:
   can be viewed by the doctor, as if they came from a real lab
 - From the doctor’s perspective, this behaves as if the patient actually went to a physical lab,
   provided samples, and the clinic later returned the finalized lab report
+
+Behaviour of these measurement results over time can be tracked through analytics page which provides an informational graph.  
+The system also provides other set of functionalities such as report export and CRUD operations for related entities.  
+
+<br>
+
+## First look
+
+The following screenshots can give an idea of basic UI look and some pages/elements that the end user might interact with.  
+
+<br>
+
+<p align="center">
+    <img src="img/login-scrsht.png" alt="Login">
+</p>
+
+<p align="center">
+    <img src="img/create-lab-request-scrsht.png" alt="Create lab request">
+</p>
+
+<p align="center">
+    <img src="img/lab-requests-scrsht.png" alt="Lab requests">
+</p>
+
+<p align="center">
+    <img src="img/report-details-scrsht.png" alt="Lab report">
+</p>
+
+<p align="center">
+    <img src="img/analytics-scrsht.png" alt="Analytics">
+</p>
+
+<p align="center">
+    <img src="img/add-patient-scrsht.png" alt="Add patient">
+</p>
+
+<p align="center">
+    <img src="img/patient-details-scrsht.png" alt="Patient details">
+</p>

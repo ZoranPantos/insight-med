@@ -4,7 +4,7 @@
 
 ## Containers startup
 
-The simplest way to run _insight-med_ is via docker, as the whole solution is containerized.
+The simplest way to run _InsightMed_ is via docker, as the whole solution is containerized.
 To start, first install docker for desktop from [here](https://www.docker.com/products/docker-desktop/) and enable WSL. Then simply navigate to cloned repository location, open the terminal
 and run the command  
 ```sh

@@ -11,8 +11,15 @@
     <File Path="docs/Technical.md" />
   </Folder>
   <Folder Name="/Solution Items/Docs/Img/">
+    <File Path="docs/img/add-patient-scrsht.png" />
+    <File Path="docs/img/analytics-scrsht.png" />
     <File Path="docs/img/clean-architecture.png" />
+    <File Path="docs/img/create-lab-request-scrsht.png" />
     <File Path="docs/img/high-level-look.png" />
+    <File Path="docs/img/lab-requests-scrsht.png" />
+    <File Path="docs/img/login-scrsht.png" />
+    <File Path="docs/img/patient-details-scrsht.png" />
+    <File Path="docs/img/report-details-scrsht.png" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/InsightMed.API/InsightMed.API.csproj" Id="91eb8734-3072-4624-ac8a-03830e33f445" />
