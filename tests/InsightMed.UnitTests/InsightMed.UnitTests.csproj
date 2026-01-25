@@ -31,6 +31,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\InsightMed.Application\InsightMed.Application.csproj" />
+    <ProjectReference Include="..\..\src\InsightMed.LabRpcServer\InsightMed.LabRpcServer.csproj" />
   </ItemGroup>
 
   <ItemGroup>
