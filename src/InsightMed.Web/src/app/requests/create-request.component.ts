@@ -341,23 +341,27 @@ export class CreateRequestComponent implements OnInit {
   openPatientDropdown() {
     this.isPatientDropdownOpen = true;
     this.isParamDropdownOpen = false;
-    this.filterPatients(); 
   }
 
   filterPatients() {
-    this.selectedPatientId = null;
-    this.selectedPatient = null;
-
     if (!this.patientSearchTerm) {
-      this.filteredPatients = this.allPatients;
-    } else {
-      const term = this.patientSearchTerm.toLowerCase();
-      this.filteredPatients = this.allPatients.filter(p => {
-        const fullName = `${p.firstName} ${p.lastName}`.toLowerCase();
-        return fullName.includes(term) || p.uid.toLowerCase().includes(term);
-      });
+    this.filteredPatients = this.allPatients;
+    this.selectedPatient = null;
+    this.selectedPatientId = null;
+  } else {
+    const term = this.patientSearchTerm.toLowerCase();
+    this.filteredPatients = this.allPatients.filter(p => {
+      const fullName = `${p.firstName} ${p.lastName}`.toLowerCase();
+      return fullName.includes(term) || p.uid.toLowerCase().includes(term);
+    });
+    
+    if (this.selectedPatient && 
+        this.patientSearchTerm !== `${this.selectedPatient.firstName} ${this.selectedPatient.lastName}`) {
+       this.selectedPatient = null;
+       this.selectedPatientId = null;
     }
-    this.isPatientDropdownOpen = true;
+  }
+  this.isPatientDropdownOpen = true;
   }
 
   selectPatient(patient: Patient) {
