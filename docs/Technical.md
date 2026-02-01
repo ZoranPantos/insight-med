@@ -4,7 +4,7 @@
 
 ## High-level look
 
-_InsightMed_ is a distributed system built around a modular monolith core. The infrastructure consists of the
+_InsightMed_ is a distributed system whose infrastructure consists of the
 following dockerized components:
 - _InsightMed.API_: [ASP.NET Core Web API](https://learn.microsoft.com/en-us/aspnet/core/web-api/?view=aspnetcore-10.0) (.NET 10)
 - _InsightMed.Web_: [Angular](https://angular.dev/) Single Page Application (v21, Node.js v24)

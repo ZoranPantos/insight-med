@@ -36,6 +36,8 @@ public static class ConfigureServices
         {
             options.AddDocumentTransformer((document, context, cancellationToken) =>
             {
+                document.Servers = [ new() { Url = "http://localhost:5000" } ];
+
                 document.Components ??= new OpenApiComponents();
                 document.Components.SecuritySchemes = new Dictionary<string, OpenApiSecurityScheme>
                 {

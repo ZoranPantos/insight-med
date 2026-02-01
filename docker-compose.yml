@@ -19,6 +19,11 @@ services:
       SA_PASSWORD: "Password1!"
     ports:
       - "1433:1433"
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools18/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "Password1!", "-Q", "SELECT 1", "-C"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
       - sqlserver-data:/var/opt/mssql
 
@@ -30,6 +35,11 @@ services:
       SA_PASSWORD: "Password2!"
     ports:
       - "1434:1433"
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools18/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "Password2!", "-Q", "SELECT 1", "-C"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
       - sqlserver-lab-data:/var/opt/mssql
 
@@ -62,13 +72,18 @@ services:
       context: .
       dockerfile: src/InsightMed.API/Dockerfile
     depends_on:
-      - sqlserver
-      - rabbitmq
-      - elastic
+      sqlserver:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+      elastic:
+        condition: service_started
     ports:
-      - "5000:8080" # host:container
+      - "5000:5000" # host:container
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://+:5000"
+      Kestrel__Endpoints__Http__Url: "http://0.0.0.0:5000"
 
       ConnectionStrings__DefaultConnection: >
         Server=sqlserver,1433;
@@ -90,8 +105,10 @@ services:
       context: .
       dockerfile: src/InsightMed.LabRpcServer/Dockerfile
     depends_on:
-      - sqlserver-lab
-      - rabbitmq
+      sqlserver-lab:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
     environment:
       DOTNET_ENVIRONMENT: "Development"
 
