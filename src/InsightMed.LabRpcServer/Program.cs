@@ -28,7 +28,7 @@ Log.Logger = new LoggerConfiguration()
   )
   .CreateLogger();
 
-var builder = Host.CreateApplicationBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSerilog();
 
@@ -39,5 +39,26 @@ builder.Services.AddTransient<IParameterValueRandomizerService, ParameterValueRa
 
 builder.Services.AddHostedService<RpcServerWorker>();
 
-var host = builder.Build();
-await host.RunAsync();
+var app = builder.Build();
+
+app.MapGet("/health", () => Results.Ok(new { status = "healthy" }));
+
+app.MapGet("/lab-parameters", async (ILabDbService labDbService, CancellationToken ct) =>
+{
+    var parameters = await labDbService.GetAllAsync(ct);
+
+    return Results.Ok(parameters.Select(p => new
+    {
+        p.Id,
+        p.Name,
+        reference = new
+        {
+            p.Reference.MinThreshold,
+            p.Reference.MaxThreshold,
+            p.Reference.Positive,
+            p.Reference.Unit
+        }
+    }));
+});
+
+await app.RunAsync();
