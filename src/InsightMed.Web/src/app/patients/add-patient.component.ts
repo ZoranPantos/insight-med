@@ -457,7 +457,7 @@ export class AddPatientComponent implements OnInit {
       dietType: this.dietType
     };
 
-    this.http.post('http://localhost:5000/api/Patients', payload)
+    this.http.post('/api/Patients', payload)
       .subscribe({
         next: () => {
           this.isLoading = false;

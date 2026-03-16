@@ -192,7 +192,7 @@ export class ReportDetailsComponent implements OnInit {
     this.report = null;
     this.errorMessage = '';
 
-    this.http.get<LabReportDetails>(`http://localhost:5000/api/LabReports/${id}`)
+    this.http.get<LabReportDetails>(`/api/LabReports/${id}`)
       .subscribe({
         next: (data) => {
           this.report = data;
@@ -269,7 +269,7 @@ export class ReportDetailsComponent implements OnInit {
     this.isLoading = true;
     this.cd.detectChanges();
 
-    this.http.get(`http://localhost:5000/api/LabReports/${this.report.id}/export`, { 
+    this.http.get(`/api/LabReports/${this.report.id}/export`, { 
       responseType: 'blob',
       observe: 'response' 
     }).subscribe({

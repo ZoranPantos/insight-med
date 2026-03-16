@@ -315,8 +315,8 @@ export class CreateRequestComponent implements OnInit {
   loadData() {
     this.isLoadingData = true; 
     forkJoin({
-      params: this.http.get<any>('http://localhost:5000/api/LabParameters'),
-      patients: this.http.get<any>('http://localhost:5000/api/Patients')
+      params: this.http.get<any>('/api/LabParameters'),
+      patients: this.http.get<any>('/api/Patients')
     }).subscribe({
       next: (response) => {
         this.allLabParameters = response.params.labParameters;
@@ -437,7 +437,7 @@ export class CreateRequestComponent implements OnInit {
       labParameterIds: this.selectedParams.map(p => p.id)
     };
 
-    this.http.post('http://localhost:5000/api/LabRequests', payload)
+    this.http.post('/api/LabRequests', payload)
       .subscribe({
         next: () => {
           this.isSubmitting = false;

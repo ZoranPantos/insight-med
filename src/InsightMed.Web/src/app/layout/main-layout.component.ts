@@ -391,7 +391,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.errorMessage = ''; 
     this.notifications = []; 
 
-    this.http.get<any>('http://localhost:5000/api/Notifications', {
+    this.http.get<any>('/api/Notifications', {
       params: { filter: 'Unseen' }
     }).subscribe({
       next: (data) => {
@@ -464,7 +464,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     if (this.notifications.length === 0) return;
     const ids = this.notifications.map(n => n.id);
 
-    this.http.put('http://localhost:5000/api/Notifications/seen', ids)
+    this.http.put('/api/Notifications/seen', ids)
         .subscribe({
           next: () => {
             this.notifications = [];

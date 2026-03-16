@@ -196,8 +196,8 @@ export class ParameterAnalyticsComponent implements OnInit {
   loadInitData(id: string) {
     this.isLoadingInit = true;
     forkJoin({
-      patient: this.http.get<PatientLite>(`http://localhost:5000/api/Patients/${id}`),
-      analytics: this.http.get<AnalyticsResponse>(`http://localhost:5000/api/Patients/${id}/evaluatedParameters`)
+      patient: this.http.get<PatientLite>(`/api/Patients/${id}`),
+      analytics: this.http.get<AnalyticsResponse>(`/api/Patients/${id}/evaluatedParameters`)
     }).subscribe({
       next: (response) => {
         this.patient = response.patient;
@@ -226,7 +226,7 @@ export class ParameterAnalyticsComponent implements OnInit {
     this.isLoadingHistory = true;
     this.chartData = undefined;
 
-    this.http.get<ParameterHistoryResponse>(`http://localhost:5000/api/Patients/${this.patientId}/parameterHistory/${parameterId}`)
+    this.http.get<ParameterHistoryResponse>(`/api/Patients/${this.patientId}/parameterHistory/${parameterId}`)
       .subscribe({
         next: (data) => {
           this.historyData = data;

@@ -222,7 +222,7 @@ export class UpdatePatientComponent implements OnInit {
   }
 
   fetchPatientData(id: number) {
-    this.http.get<any>(`http://localhost:5000/api/Patients/${id}`)
+    this.http.get<any>(`/api/Patients/${id}`)
       .subscribe({
         next: (data) => {
           this.firstName = data.firstName;
@@ -294,7 +294,7 @@ export class UpdatePatientComponent implements OnInit {
       dietType: this.dietType
     };
 
-    this.http.put(`http://localhost:5000/api/Patients/${this.patientId}`, payload)
+    this.http.put(`/api/Patients/${this.patientId}`, payload)
       .subscribe({
         next: () => {
           this.isSaving = false;

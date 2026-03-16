@@ -217,7 +217,7 @@ export class ChangePasswordComponent {
       newPassword: this.newPassword
     };
 
-    this.http.post('http://localhost:5000/api/Auth/changePassword', payload, { responseType: 'text' })
+    this.http.post('/api/Auth/changePassword', payload, { responseType: 'text' })
       .subscribe({
         next: () => {
           this.isLoading = false;

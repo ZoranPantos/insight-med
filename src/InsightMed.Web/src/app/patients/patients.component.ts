@@ -213,7 +213,7 @@ export class PatientsComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.errorMessage = '';
     
-    this.http.get<PatientsResponse>('http://localhost:5000/api/Patients', {
+    this.http.get<PatientsResponse>('/api/Patients', {
       params: { 
         searchKey: searchKey,
         pageNumber: page

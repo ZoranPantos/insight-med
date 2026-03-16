@@ -283,7 +283,7 @@ export class RequestsComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.errorMessage = '';
     
-    this.http.get<LabRequestsResponse>('http://localhost:5000/api/LabRequests', {
+    this.http.get<LabRequestsResponse>('/api/LabRequests', {
       params: { 
         searchKey: searchKey,
         pageNumber: page

@@ -10,7 +10,7 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
   
-  private apiUrl = 'http://localhost:5000/api'; 
+  private apiUrl = '/api'; 
   private tokenKey = 'insight_med_token';
 
   login(payload: any) {

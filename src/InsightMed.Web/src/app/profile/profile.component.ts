@@ -220,7 +220,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.errorMessage = '';
     
-    this.http.get<AccountInfo>(`http://localhost:5000/api/Auth/accountInfo/${id}`)
+    this.http.get<AccountInfo>(`/api/Auth/accountInfo/${id}`)
       .subscribe({
         next: (data) => {
           this.accountInfo = data;

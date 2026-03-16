@@ -360,7 +360,7 @@ export class PatientDetailsComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.errorMessage = '';
     
-    this.http.get<PatientDetails>(`http://localhost:5000/api/Patients/${id}`, {
+    this.http.get<PatientDetails>(`/api/Patients/${id}`, {
       params: { pageNumber: page }
     }).subscribe({
         next: (data) => {

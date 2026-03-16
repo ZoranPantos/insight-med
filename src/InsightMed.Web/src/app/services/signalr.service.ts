@@ -18,7 +18,7 @@ export class SignalrService {
     const token = this.authService.getToken();
 
     this.hubConnection = new HubConnectionBuilder()
-      .withUrl('http://localhost:5000/notifications', {
+      .withUrl('/notifications', {
         accessTokenFactory: () => token || '' 
       })
       .withAutomaticReconnect()
