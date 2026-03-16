@@ -4,11 +4,12 @@
 
 ## High-level look
 
-_InsightMed_ is a distributed system whose infrastructure consists of the
+_InsightMed_ is a microservice-based system whose infrastructure consists of the
 following dockerized components:
 - _InsightMed.API_: [ASP.NET Core Web API](https://learn.microsoft.com/en-us/aspnet/core/web-api/?view=aspnetcore-10.0) (.NET 10)
 - _InsightMed.Web_: [Angular](https://angular.dev/) Single Page Application (v21, Node.js v24)
-- _InsightMed.LabRpcServer_: [.NET Worker Service](https://learn.microsoft.com/en-us/dotnet/core/extensions/workers) (.NET 10) acting as a simulated external laboratory system
+- _InsightMed.LabRpcServer_: [ASP.NET Core Minimal API](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis?view=aspnetcore-10.0) + Background Worker (.NET 10) acting as a simulated external laboratory system
+- API Gateway: [nginx](https://nginx.org/) reverse proxy serving as the single entry point for all client traffic
 - Databases: two distinct [SQL Server](https://www.microsoft.com/en-us/sql-server) instances
     - **InsightMedDb**: Main application database managed via [Entity Framework Core](https://learn.microsoft.com/en-us/ef/core/)
     - **LabDb**: Laboratory simulation database managed via [ADO.NET](https://learn.microsoft.com/en-us/dotnet/framework/data/adonet/ado-net-overview)
@@ -23,12 +24,33 @@ following dockerized components:
 
 <br>
 
+_NOTE: Diagram to be updated; missing gateway_
+
+## API Gateway
+
+All client traffic flows through a single entry point — an nginx reverse proxy acting as the API Gateway.
+The frontend does not communicate with backend services directly; instead, it sends all requests to the gateway,
+which routes them to the appropriate service based on the URL path:
+
+- `/api/*` → _InsightMed.API_
+- `/notifications` → _InsightMed.API_ (WebSocket upgrade for SignalR)
+- `/*` → _InsightMed.Web_ (Angular SPA)
+
+The gateway also exposes the _InsightMed.LabRpcServer_ REST endpoints under the `/lab/*` prefix
+(e.g. `/lab/health`, `/lab/lab-parameters`). These are not used by the frontend application but are
+available for direct access.
+
+When running locally from the IDE (without Docker), the Angular CLI dev server provides an equivalent
+proxy configuration (`proxy.conf.json`) that routes `/api` and `/notifications` to the locally running API.
+
+<br>
+
 ## Communication between components
 
 The system uses different communication patterns to handle different requirements:
 - RESTful HTTP: Standard request/response model used between the Web API and Angular frontend
-- Real-Time with [SignalR](https://dotnet.microsoft.com/en-us/apps/aspnet/signalr): A persistent WebSocket connection between the Web API and Angular frontend to push notifications to the user without the need for polling
-- [RPC Messaging with RabbitMQ](https://www.rabbitmq.com/tutorials/tutorial-six-dotnet): Used for bidirectional communication between the Web API and the Lab Worker Service
+- Real-Time with [SignalR](https://dotnet.microsoft.com/en-us/apps/aspnet/signalr): A persistent WebSocket connection between the Web API and Angular frontend (proxied through the gateway) to push notifications to the user without the need for polling
+- [RPC Messaging with RabbitMQ](https://www.rabbitmq.com/tutorials/tutorial-six-dotnet): Used for asynchronous bidirectional communication between the Web API and the LabRpcServer (Minimal API)
 
 <br>
 
@@ -92,10 +114,13 @@ Use case of in-memory caching is also present, where `IMemoryCache` is utilized 
 
 <br>
 
-## Lab RPC Server (Worker Service)
+## Lab RPC Server
 
-The _InsightMed.LabRpcServer_ is a standalone .NET Worker Service designed to simulate an external laboratory clinic.  
-The operational flow is as follows:
+The _InsightMed.LabRpcServer_ is a standalone ASP.NET Core service designed to simulate an external laboratory clinic.
+It combines a background worker (for RabbitMQ message consumption) with a minimal REST API surface, running both
+in the same process.
+
+### RPC message processing
 1. Connection: Maintains a persistent connection to RabbitMQ using `IConnection` and `IChannel`
 2. Consumption: Listens on a specific queue for `LabRequest` messages
 3. Processing:
@@ -106,6 +131,14 @@ The operational flow is as follows:
     4. Simulation: Introduces a random delay (configurable via `LabResultsDelaySimulationParameters` in `appsettings.json`) to simulate
        physical processing time
 4. Reply: Publishes the result back to the `ReplyTo` queue specified in the message properties, creating an RPC experience for the API
+
+### REST API
+The service also exposes two HTTP endpoints:
+- `GET /health` — Standard health check returning service status
+- `GET /lab-parameters` — Returns the list of available laboratory parameters from **LabDb** with their reference ranges
+
+These endpoints are routable through the API Gateway under the `/lab/` prefix (e.g. `/lab/health`, `/lab/lab-parameters`)
+or accessible directly on port `5100`.
 
 <br>
 

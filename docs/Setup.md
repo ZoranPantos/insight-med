@@ -1,4 +1,4 @@
-﻿# Setup
+# Setup
 
 <br>
 
@@ -20,6 +20,7 @@ This should spin up the following containers:
 - insightmed-labrpcserver
 - kibana
 - insightmed-web
+- insightmed-gateway
 
 <br>
 
@@ -33,9 +34,13 @@ docker system prune
 ```
 <br>
 
-To access the required services, the following URLs are available. Host name and port numbers might vary depending on your configuration.
-- InsightMed API Swagger UI: http://localhost:5000/swagger/index.html
-- Angular home: http://localhost:4200
+Application traffic flows through the API Gateway on port `4200`, which routes requests
+to the appropriate service. Individual services are also accessible directly on their own ports.
+- Angular app: http://localhost:4200
+- InsightMed API (Swagger): http://localhost:5000/swagger/index.html
+- LabRpcServer:
+   - Health check: http://localhost:5100/health
+   - Lab parameters: http://localhost:5100/lab-parameters
 - Elasticsearch API: http://localhost:9200
   - Cluster health: http://localhost:9200/_cluster/health
 - Kibana UI: http://localhost:5601/app/home
@@ -95,6 +100,9 @@ dotnet ef database update --startup-project ../InsightMed.API
 
 Prerequisite for running the backend solution is to have **.NET 10 SDK** installed.
 Set up a new startup profile in the IDE (Visual Studio or Rider) to run both _InsightMed.API_ and _InsightMed.LabRpcServer_ simultaneously.
+When running locally, the API Gateway (nginx) is not needed — the Angular CLI dev server has a built-in proxy
+configuration (`proxy.conf.json`) that routes `/api` and `/notifications` requests to the locally running API.
+
 SQL Server, RabbitMQ, Elasticsearch, and Kibana are required. They can either be installed locally or spun up in containers by running the following commands:
 
 RabbitMQ  
