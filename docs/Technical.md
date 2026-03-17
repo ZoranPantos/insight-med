@@ -24,8 +24,6 @@ following dockerized components:
 
 <br>
 
-_NOTE: Diagram to be updated; missing gateway_
-
 ## API Gateway
 
 All client traffic flows through a single entry point — an nginx reverse proxy acting as the API Gateway.
