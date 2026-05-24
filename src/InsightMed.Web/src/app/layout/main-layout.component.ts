@@ -6,12 +6,11 @@ import { HttpClient } from '@angular/common/http';
 import { SignalrService } from '../services/signalr.service';
 import { LoadingSpinnerComponent } from '../shared/loading-spinner.component';
 import { ErrorDisplayComponent } from '../shared/error-display.component';
-import { ToastComponent } from '../shared/toast.component';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule, FormsModule, LoadingSpinnerComponent, ErrorDisplayComponent, ToastComponent, DatePipe],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule, FormsModule, LoadingSpinnerComponent, ErrorDisplayComponent, DatePipe],
   template: `
     <div class="app-container">
       <nav class="navbar">
@@ -136,8 +135,6 @@ import { ToastComponent } from '../shared/toast.component';
       <main>
         <router-outlet /> 
       </main>
-
-      <app-toast></app-toast>
     </div>
   `,
   styles: [`
