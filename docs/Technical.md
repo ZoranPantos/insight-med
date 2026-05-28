@@ -158,6 +158,13 @@ Main services used for the authentication on the backend:
   accounts (registration, password changes) via ASP.NET Core Identity and generating signed JWT tokens upon successful credential validation
 - `CurrentUserService`: A scoped service that extracts the `UserId` and `Claims` from the current `HttpContext`, making the current user's identity available to the Application layer
 
+Session expiration is handled on both ends.
+The backend stamps every issued JWT with a configurable expiry (`Jwt.ExpiresInDays` in `appsettings.json`)
+and rejects expired tokens on every request.
+On the frontend, `AuthService` reads the expiry from the token, schedules an auto-logout timer,
+and a fallback HTTP interceptor handles any 401 response — both redirect the user to the login page with a toast notification.
+The session clock resets only on a fresh login.
+
 <br>
 
 ## Logging
