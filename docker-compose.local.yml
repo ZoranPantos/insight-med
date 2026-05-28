@@ -1,0 +1,39 @@
+# Opt-in override for the hybrid local-dev workflow.
+#
+# Use case: api, labrpcserver and the Angular dev-server run on the host
+# (Visual Studio / `ng serve`), while sqlserver, sqlserver-lab, rabbitmq,
+# elastic, kibana and the gateway run in containers.
+#
+# Usage:
+#   1. Start infra only:
+#        docker compose up -d sqlserver sqlserver-lab rabbitmq elastic kibana
+#   2. Run API, LabRpcServer (Visual Studio) and `ng serve` on the host.
+#   3. Start the gateway with this override merged in:
+#        docker compose -f docker-compose.yml -f docker-compose.local.yml up gateway
+#   4. Open http://localhost:8080
+#
+# The default `docker compose up` ignores this file, so the all-in-docker
+# flow keeps working exactly as before.
+
+services:
+
+  # api, labrpcserver and web are NOT run as containers in the hybrid flow.
+  # Assigning them to the "never" profile makes Compose skip them unless
+  # `--profile never` is explicitly passed (which it never should be).
+  api:
+    profiles: ["never"]
+
+  labrpcserver:
+    profiles: ["never"]
+
+  web:
+    profiles: ["never"]
+
+  gateway:
+    ports: !override
+      - "8080:80"
+    volumes: !override
+      - ./gateway/nginx.local.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on: !override []
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

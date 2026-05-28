@@ -98,53 +98,94 @@ dotnet ef database update --startup-project ../InsightMed.API
 
 ## Running from IDE
 
-Prerequisite for running the backend solution is to have **.NET 10 SDK** installed.
-Set up a new startup profile in the IDE (Visual Studio or Rider) to run both _InsightMed.API_ and _InsightMed.LabRpcServer_ simultaneously.
-When running locally, the API Gateway (nginx) is not needed — the Angular CLI dev server has a built-in proxy
-configuration (`proxy.conf.json`) that routes `/api` and `/notifications` requests to the locally running API.
+This is the **hybrid** development flow: _InsightMed.API_, _InsightMed.LabRpcServer_, and the Angular dev server (`ng serve`) run on the host (from Visual Studio / Rider / a terminal), while all supporting infrastructure — and optionally the API Gateway — run as containers.
 
-SQL Server, RabbitMQ, Elasticsearch, and Kibana are required. They can either be installed locally or spun up in containers by running the following commands:
+### Prerequisites
 
-RabbitMQ  
-```sh
-docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4.0-management
-```
+Backend:
+- **.NET 10 SDK**
 
-SQL Server (**InsightMedDb**)  
-```sh
-docker run -d --name sqlserver -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=Password1!" -p 1433:1433 mcr.microsoft.com/mssql/server:2022-latest
-```
-
-SQL Server (**LabDb**)  
-```sh
-docker run -d --name sqlserver-lab -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=Password2!" -p 1434:1433 mcr.microsoft.com/mssql/server:2022-latest
-```
-
-Elasticsearch  
-```sh
-docker run -d --name elastic -p 9200:9200 -e "discovery.type=single-node" -e "xpack.security.enabled=false" -e "ES_JAVA_OPTS=-Xms512m -Xmx512m" docker.elastic.co/elasticsearch/elasticsearch:8.15.2
-```
-
-Kibana  
-```sh
-docker run -d --name kibana -p 5601:5601 -e "ELASTICSEARCH_HOSTS=http://host.docker.internal:9200" docker.elastic.co/kibana/kibana:8.15.2
-```
-
-<br>
-
-Prerequisites for the frontend:
+Frontend:
 - Node.js 24.11.1
 - npm 11.6.2
 - Angular CLI (global) @angular/cli@21.0.2
 
-To run the frontend app, open terminal in _InsightMed.Web_ folder and execute the following command
-```sh
-npm ci
+In the IDE, set up a startup profile that runs _InsightMed.API_ and _InsightMed.LabRpcServer_ simultaneously.
+
+<br>
+
+### The `dev-local.ps1` wrapper
+
+The repository contains a PowerShell helper at the repo root, `dev-local.ps1`, that wraps `docker compose` and always merges two files: the base `docker-compose.yml` and the override `docker-compose.local.yml`. Every `docker compose <subcommand>` you'd normally type, type instead as `.\dev-local.ps1 <subcommand>` — all arguments are forwarded verbatim.
+
+The override file does three things specific to the hybrid flow:
+1. Excludes `api`, `labrpcserver`, and `web` from being containerized (they run on the host instead) by placing them in a `never` profile.
+2. Re-publishes the gateway on host port **8080** so it doesn't collide with `ng serve` on `4200`.
+3. Swaps the gateway's mounted nginx config to `gateway/nginx.local.conf`, whose upstreams target `host.docker.internal` so it can reach the host-bound services.
+
+Using the wrapper for every hybrid-mode operation is important: a plain `docker compose up gateway` (or clicking "Start" in Docker Desktop on a gateway container that was created from the base file) will bake in the base config and nginx will crash with `[emerg] host not found in upstream "api:5000"`.
+
+<br>
+
+### Starting hybrid mode
+
+From a fresh state (nothing running):
+
+1. Bring up infrastructure + gateway in containers:
+   ```powershell
+   .\dev-local.ps1 up -d
+   ```
+   This creates and starts `sqlserver`, `sqlserver-lab`, `rabbitmq`, `elastic`, `kibana`, and `gateway`.
+   `api`, `labrpcserver`, and `web` are intentionally skipped (they're in the `never` profile).
+
+2. In the IDE, start _InsightMed.API_ and _InsightMed.LabRpcServer_.
+
+3. In _InsightMed.Web_, run `npm ci` (first time only) followed by `ng serve`.
+
+Endpoints in hybrid mode:
+- API Gateway: http://localhost:8080
+- Angular dev server (direct): http://localhost:4200
+- InsightMed API (direct, Swagger): http://localhost:5000/swagger/index.html
+- LabRpcServer (direct): http://localhost:5100
+- Kibana / RabbitMQ UI / Elasticsearch: same ports as in full-docker mode
+
+Either entry point works during development:
+- `http://localhost:4200` — the Angular dev server's own `proxy.conf.json` routes `/api` and `/notifications` to the locally running API.
+- `http://localhost:8080` — the same traffic goes through the gateway container, also covering `/lab/*` routes that the Angular dev proxy doesn't handle.
+
+<br>
+
+### Stopping hybrid mode
+
+Stop the backends in the IDE and stop `ng serve` (Ctrl+C). For the containers:
+```powershell
+.\dev-local.ps1 down      # stop and remove containers (named volumes preserved)
 ```
-then
-```sh
-ng serve
+or, to keep the containers around for a fast restart later:
+```powershell
+.\dev-local.ps1 stop
+.\dev-local.ps1 start     # bring them back without re-creation
 ```
+
+<br>
+
+### Switching between full-docker and hybrid modes
+
+A Docker container has its mounts and published ports **baked in at creation time** — they don't update when you change the compose files. The gateway therefore needs to be re-created with the correct configuration whenever you cross between modes. Always run `down` (not `stop`) for the mode you're leaving before bringing up the other one.
+
+**Full-docker → Hybrid:**
+```powershell
+docker compose down
+.\dev-local.ps1 up -d
+```
+
+**Hybrid → Full-docker:**
+```powershell
+.\dev-local.ps1 down
+docker compose up -d --build
+```
+
+Named volumes (`sqlserver-data`, `sqlserver-lab-data`, `esdata`) survive `down`, so database state is preserved across mode switches. Only `down -v` deletes them.
 
 <br>
 
