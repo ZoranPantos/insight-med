@@ -1,0 +1,71 @@
+<div class="page-container">
+  <div class="header">
+    <h2>Lab Reports</h2>
+  </div>
+
+  <app-loading-spinner 
+    *ngIf="isLoading" 
+    minHeight="200px">
+  </app-loading-spinner>
+
+  <app-error-display
+    *ngIf="errorMessage && !isLoading"
+    [message]="errorMessage"
+    minHeight="200px">
+  </app-error-display>
+
+  <div *ngIf="!isLoading && !errorMessage" class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Date Created</th>
+          <th>Patient</th>
+          <th class="actions">Actions</th> 
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let report of reports">
+          <td class="date-col">
+            {{ report.created | date:'MMM d, y, h:mm a' }}
+          </td>
+
+          <td>
+            <div class="patient-name">{{ report.patientFullName }}</div>
+            <div class="patient-uid">{{ report.patientUid }}</div>
+          </td>
+
+          <td class="actions">
+            <a [routerLink]="['/reports', report.id]" class="view-link">
+                View Details
+            </a>
+          </td>
+        </tr>
+
+        <tr *ngIf="reports.length === 0">
+          <td colspan="3" class="empty-text">No reports found</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage && totalPages > 1" class="pagination-controls">
+    <button 
+      class="page-btn" 
+      [disabled]="currentPage === 1" 
+      (click)="changePage(currentPage - 1)">
+      Prev
+    </button>
+
+    <span class="page-info">
+      {{ currentPage }} / {{ totalPages }}
+    </span>
+
+    <button 
+      class="page-btn" 
+      [disabled]="currentPage === totalPages" 
+      (click)="changePage(currentPage + 1)">
+      Next
+    </button>
+  </div>
+
+</div>

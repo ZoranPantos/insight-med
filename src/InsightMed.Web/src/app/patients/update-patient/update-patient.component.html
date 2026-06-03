@@ -1,0 +1,83 @@
+<div class="page-container">
+  <div class="header">
+    <h2>Update Patient</h2>
+  </div>
+
+  <app-loading-spinner 
+    *ngIf="isLoading" 
+    minHeight="300px">
+  </app-loading-spinner>
+
+  <div class="form-container" *ngIf="!isLoading">
+    
+    <div class="info-banner">
+      <p><strong>Patient:</strong> {{ firstName }} {{ lastName }} ({{ uid }})</p>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Height (cm)</label>
+        <input type="number" [(ngModel)]="heightCm" (input)="clearMessages()" class="pill-input" placeholder="e.g. 175" />
+      </div>
+      <div class="form-group">
+        <label>Weight (kg)</label>
+        <input type="number" [(ngModel)]="weightKg" (input)="clearMessages()" class="pill-input" placeholder="e.g. 70.5" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Smoking Status</label>
+        <div class="custom-select" (click)="toggleSmoking($event)" [class.open]="isSmokingOpen">
+          <div class="selected-value">{{ getOptionLabel(smokingOptions, smokingStatus) }}</div>
+          <span class="arrow">▼</span>
+          <div *ngIf="isSmokingOpen" class="dropdown-list">
+            <div *ngFor="let opt of smokingOptions" class="option-item" (click)="selectOption('smokingStatus', opt.value, $event)">
+              {{ opt.label }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Exercise Level</label>
+        <div class="custom-select" (click)="toggleExercise($event)" [class.open]="isExerciseOpen">
+          <div class="selected-value">{{ getOptionLabel(exerciseOptions, exerciseLevel) }}</div>
+          <span class="arrow">▼</span>
+          <div *ngIf="isExerciseOpen" class="dropdown-list">
+            <div *ngFor="let opt of exerciseOptions" class="option-item" (click)="selectOption('exerciseLevel', opt.value, $event)">
+              {{ opt.label }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Diet Type</label>
+        <div class="custom-select" (click)="toggleDiet($event)" [class.open]="isDietOpen">
+          <div class="selected-value">{{ getOptionLabel(dietOptions, dietType) }}</div>
+          <span class="arrow">▼</span>
+          <div *ngIf="isDietOpen" class="dropdown-list">
+            <div *ngFor="let opt of dietOptions" class="option-item" (click)="selectOption('dietType', opt.value, $event)">
+              {{ opt.label }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="errorMessages.length > 0" class="message error-message">
+      <ul>
+        <li *ngFor="let msg of errorMessages">{{ msg }}</li>
+      </ul>
+    </div>
+    
+    <div class="actions">
+      <button class="cancel-btn" (click)="onCancel()">Cancel</button>
+      <button class="submit-btn" (click)="onSubmit()" [disabled]="isSaving">Update</button>
+    </div>
+
+  </div>
+</div>

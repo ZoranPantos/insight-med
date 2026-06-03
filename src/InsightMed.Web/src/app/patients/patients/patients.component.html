@@ -1,0 +1,65 @@
+<div class="page-container">
+  <div class="header">
+    <h2>Patients</h2>
+    <a routerLink="/patients/add" class="create-btn">Add Patient</a>
+  </div>
+
+  <app-loading-spinner 
+    *ngIf="isLoading" 
+    minHeight="200px">
+  </app-loading-spinner>
+
+  <app-error-display
+    *ngIf="errorMessage && !isLoading"
+    [message]="errorMessage"
+    minHeight="200px">
+  </app-error-display>
+
+  <div *ngIf="!isLoading && !errorMessage" class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>UID</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th class="actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let patient of patients">
+          <td><span class="uid-badge">{{ patient.uid }}</span></td>
+          <td>{{ patient.firstName }}</td>
+          <td>{{ patient.lastName }}</td>
+          <td class="actions">
+            <a [routerLink]="['/patients', patient.id]" class="view-link">View Details</a>
+          </td>
+        </tr>
+        
+        <tr *ngIf="patients.length === 0">
+          <td colspan="4" class="empty-text">No patients found</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage && totalPages > 1" class="pagination-controls">
+    <button 
+      class="page-btn" 
+      [disabled]="currentPage === 1" 
+      (click)="changePage(currentPage - 1)">
+      Prev
+    </button>
+
+    <span class="page-info">
+      {{ currentPage }} / {{ totalPages }}
+    </span>
+
+    <button 
+      class="page-btn" 
+      [disabled]="currentPage === totalPages" 
+      (click)="changePage(currentPage + 1)">
+      Next
+    </button>
+  </div>
+
+</div>

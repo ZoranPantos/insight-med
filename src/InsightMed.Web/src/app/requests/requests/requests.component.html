@@ -1,0 +1,92 @@
+<div class="page-container">
+  <div class="header">
+    <h2>Lab Requests</h2>
+    <a routerLink="/requests/create" class="create-btn">Create Request</a>
+  </div>
+
+  <app-loading-spinner 
+    *ngIf="isLoading" 
+    minHeight="200px">
+  </app-loading-spinner>
+
+  <app-error-display
+    *ngIf="errorMessage && !isLoading"
+    [message]="errorMessage"
+    minHeight="200px">
+  </app-error-display>
+
+  <div *ngIf="!isLoading && !errorMessage" class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Date Created</th>
+          <th>Patient</th>
+          <th>Status</th>
+          <th>Parameters</th>
+          <th class="actions-col">Actions</th> 
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let req of requests">
+          <td class="date-col">
+            {{ req.created | date:'MMM d, y, h:mm a' }}
+          </td>
+
+          <td>
+            <div class="patient-name">{{ req.patientFullName }}</div>
+            <div class="patient-uid">{{ req.patientUid }}</div>
+          </td>
+
+          <td>
+            <span class="status-badge" 
+                  [class.pending]="req.labRequestState === 0"
+                  [class.completed]="req.labRequestState === 1">
+              {{ req.labRequestState === 1 ? 'Completed' : 'Pending' }}
+            </span>
+          </td>
+
+          <td>
+            <ol class="param-list">
+              <li *ngFor="let param of req.labParameters">
+                {{ param.name }}
+              </li>
+            </ol>
+          </td>
+
+          <td class="actions-col">
+            <a *ngIf="req.labRequestState === 1 && req.labReportId" 
+               [routerLink]="['/reports', req.labReportId]" 
+               class="view-report-link">
+               View Report
+            </a>
+          </td>
+        </tr>
+
+        <tr *ngIf="requests.length === 0">
+          <td colspan="5" class="empty-text">No requests found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage && totalPages > 1" class="pagination-controls">
+    <button 
+      class="page-btn" 
+      [disabled]="currentPage === 1" 
+      (click)="changePage(currentPage - 1)">
+      Prev
+    </button>
+
+    <span class="page-info">
+      {{ currentPage }} / {{ totalPages }}
+    </span>
+
+    <button 
+      class="page-btn" 
+      [disabled]="currentPage === totalPages" 
+      (click)="changePage(currentPage + 1)">
+      Next
+    </button>
+  </div>
+
+</div>

@@ -1,0 +1,113 @@
+<div class="page-container">
+  
+  <div class="header">
+    <h2>Create Lab Request</h2>
+  </div>
+
+  <app-loading-spinner 
+    *ngIf="isLoadingData || isSubmitting" 
+    [message]="isSubmitting ? 'Creating request...' : 'Loading...'"
+    minHeight="300px">
+  </app-loading-spinner>
+
+  <div class="form-container" *ngIf="!isLoadingData && !isSubmitting">
+    
+    <div class="form-content">
+      
+      <div class="form-group">
+        <label>Select Patient</label>
+        <div class="searchable-dropdown" (click)="$event.stopPropagation()">
+          
+          <input 
+            type="text" 
+            class="pill-input search-input" 
+            placeholder="Search by Name or UID..."
+            [(ngModel)]="patientSearchTerm" 
+            (focus)="openPatientDropdown()"
+            (input)="filterPatients()"
+          />
+          <span class="icon">🔍</span>
+
+          <div *ngIf="isPatientDropdownOpen" class="dropdown-list">
+            <div *ngFor="let p of filteredPatients" 
+                 class="option-item" 
+                 (click)="selectPatient(p)">
+              <span class="p-name">{{ p.firstName }} {{ p.lastName }}</span>
+              <span class="p-uid">{{ p.uid }}</span>
+            </div>
+            <div *ngIf="filteredPatients.length === 0" class="empty-option">
+              No patients found
+            </div>
+          </div>
+        </div>
+        
+        <div *ngIf="selectedPatient" class="selected-badge">
+          Selected: <strong>{{ selectedPatient.firstName }} {{ selectedPatient.lastName }}</strong> ({{ selectedPatient.uid }})
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Select Parameters (at least one)</label>
+        
+        <div class="multi-select-box" (click)="toggleParamDropdown($event)">
+          
+          <div *ngIf="selectedParams.length === 0" class="placeholder-text">
+            Click to select parameters...
+          </div>
+
+          <div *ngFor="let p of selectedParams" class="chip" (click)="$event.stopPropagation()">
+            {{ p.name }}
+            <span class="remove-chip" (click)="removeParam(p)">×</span>
+          </div>
+
+          <span class="arrow-icon">▼</span>
+        </div>
+
+        <div *ngIf="isParamDropdownOpen" class="dropdown-list param-dropdown" (click)="$event.stopPropagation()">
+          
+          <div class="dropdown-search-wrapper">
+            <input 
+              type="text" 
+              class="dropdown-search-input" 
+              placeholder="Search parameters..." 
+              [(ngModel)]="paramSearchTerm"
+              (input)="filterParams()"
+              autofocus
+            />
+          </div>
+
+          <div class="checkbox-list">
+            <label *ngFor="let param of filteredParams" class="checkbox-item">
+              <input 
+                type="checkbox" 
+                [checked]="isParamSelected(param.id)"
+                (change)="toggleParamSelection(param)"
+              />
+              <span class="checkmark"></span>
+              <span class="label-text">{{ param.name }}</span>
+            </label>
+            
+            <div *ngIf="filteredParams.length === 0" class="empty-option">
+              No parameters found
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div *ngIf="errorMessages.length > 0" class="message error-message">
+        <ul>
+          <li *ngFor="let msg of errorMessages">{{ msg }}</li>
+        </ul>
+      </div>
+
+      <div class="actions">
+        <button class="cancel-btn" (click)="onCancel()">Cancel</button>
+        <button class="submit-btn" (click)="onSubmit()" [disabled]="isSubmitting">
+          Send
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

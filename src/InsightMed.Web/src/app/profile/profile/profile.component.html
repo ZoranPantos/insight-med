@@ -1,0 +1,53 @@
+<div class="page-container">
+  <div class="header">
+    <h2>Profile</h2>
+  </div>
+
+  <app-loading-spinner 
+    *ngIf="isLoading" 
+    minHeight="200px">
+  </app-loading-spinner>
+
+  <app-error-display
+    *ngIf="errorMessage && !isLoading"
+    [message]="errorMessage"
+    minHeight="200px">
+  </app-error-display>
+
+  <div *ngIf="!isLoading && !errorMessage && accountInfo" class="content-wrapper">
+    
+    <div class="details-card">
+      <div class="info-row">
+        <label>Username</label>
+        <div class="value">{{ accountInfo.userName }}</div>
+      </div>
+
+      <div class="info-row">
+        <label>Email Address</label>
+        <div class="value">{{ accountInfo.email }}</div>
+      </div>
+
+      <div class="info-row">
+        <label>Password Last Changed</label>
+        <div class="value">
+          {{ accountInfo.passwordLastChanged | date:'MMM d, y, h:mm a' }}
+        </div>
+      </div>
+
+      <div class="info-row">
+        <label>Account Status</label>
+        <div class="value">
+          <span [class.verified]="accountInfo.emailConfirmed" class="status-badge">
+            {{ accountInfo.emailConfirmed ? 'Verified' : 'Unverified' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="change-pw-btn" (click)="onChangePassword()">Change Password</button>
+      <button class="logout-btn" (click)="onLogout()">Log Out</button>
+    </div>
+
+  </div>
+</div>

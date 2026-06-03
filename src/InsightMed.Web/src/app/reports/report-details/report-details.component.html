@@ -1,0 +1,63 @@
+<div class="page-container">
+  
+  <div class="header">
+    <div class="title-group">
+        <h2>Report Details</h2>
+        
+        <div *ngIf="report" class="patient-info">
+            <span class="patient-name">{{ report.patientFullName }}</span>
+            <span class="uid-badge">{{ report.patientUid }}</span>
+        </div>
+
+        <span *ngIf="report" class="report-date">
+          {{ report.created | date:'MMM d, y, h:mm a' }}
+        </span>
+    </div>
+    <button class="export-btn" (click)="onExportPdf()" [disabled]="isLoading">
+        {{ isLoading ? 'Exporting...' : 'Export PDF' }}
+    </button>
+  </div>
+
+  <app-loading-spinner 
+    *ngIf="isLoading" 
+    minHeight="300px">
+  </app-loading-spinner>
+
+  <app-error-display
+    *ngIf="errorMessage && !isLoading"
+    [message]="errorMessage"
+    minHeight="300px">
+  </app-error-display>
+
+  <div *ngIf="!isLoading && report && parsedContent.length > 0" class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Parameter</th>
+          <th>Normal Range / Value</th>
+          <th>Measured Value</th>
+          <th>Unit</th> </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of parsedContent" [ngClass]="getRowClass(item)">
+          <td>
+            <span class="param-name">{{ item.Name }}</span>
+          </td>
+
+          <td>
+            {{ getReferenceDisplay(item) }}
+          </td>
+
+          <td>
+            <strong>{{ getMeasurementDisplay(item) }}</strong>
+          </td>
+
+          <td>
+            {{ item.Reference.Unit || 'N/A' }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>

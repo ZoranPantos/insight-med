@@ -1,0 +1,71 @@
+<div class="page-container">
+  
+  <div class="header">
+    <div class="title-group">
+      <h2>Parameter Analytics</h2>
+      <div *ngIf="patient" class="patient-info">
+        <span class="patient-name">{{ patient.firstName }} {{ patient.lastName }}</span>
+        <span class="uid-badge">{{ patient.uid }}</span>
+      </div>
+    </div>
+    <a *ngIf="patientId" [routerLink]="['/patients', patientId]" class="back-link">
+      ← Back to Patient Details
+    </a>
+  </div>
+
+  <app-loading-spinner *ngIf="isLoadingInit" minHeight="300px"></app-loading-spinner>
+  <app-error-display *ngIf="errorMessage && !isLoadingInit" [message]="errorMessage" minHeight="300px"></app-error-display>
+
+  <div *ngIf="!isLoadingInit && !errorMessage" class="content">
+    
+    <div class="controls-card">
+      <div class="form-group">
+        <label>Select Parameter to Analyze</label>
+        <div class="custom-select" (click)="toggleDropdown($event)" [class.open]="isDropdownOpen">
+          <div class="selected-value">{{ getSelectedParameterName() }}</div>
+          <span class="arrow">▼</span>
+
+          <div *ngIf="isDropdownOpen" class="dropdown-list" (click)="$event.stopPropagation()">
+            <div class="dropdown-search-wrapper">
+              <input type="text" class="dropdown-search-input" placeholder="Search..." [(ngModel)]="searchTerm" (input)="filterParameters()" autofocus />
+            </div>
+            <div class="options-container">
+              <div *ngFor="let param of filteredParameters" class="option-item" (click)="selectParameter(param)">
+                {{ param.name }}
+              </div>
+              <div *ngIf="filteredParameters.length === 0" class="empty-option">No parameters found</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="parameters.length === 0" class="empty-state">No evaluated parameters found.</div>
+
+    <div *ngIf="selectedParameterId" class="analytics-card">
+      
+      <div *ngIf="isLoadingHistory" class="chart-loading">
+        <app-loading-spinner minHeight="200px"></app-loading-spinner>
+      </div>
+
+      <div *ngIf="!isLoadingHistory && chartData" class="chart-wrapper">
+        <div class="chart-header">
+            <h3>{{ historyData?.name }} History</h3>
+            <span class="unit-badge" *ngIf="historyData?.unit">Unit: {{ historyData?.unit }}</span>
+        </div>
+
+        <canvas baseChart
+          [data]="chartData"
+          [options]="chartOptions"
+          [type]="'line'">
+        </canvas>
+
+        <div class="reference-info" *ngIf="getReferenceText()">
+           <span class="info-icon">ℹ️</span> Normal Range: <strong>{{ getReferenceText() }}</strong>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>

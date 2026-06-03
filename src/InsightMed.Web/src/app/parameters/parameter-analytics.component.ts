@@ -7,8 +7,8 @@ import { forkJoin } from 'rxjs';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartOptions, ScriptableContext } from 'chart.js'; 
 
-import { LoadingSpinnerComponent } from '../shared/loading-spinner.component';
-import { ErrorDisplayComponent } from '../shared/error-display.component';
+import { LoadingSpinnerComponent } from '../shared/loading-spinner/loading-spinner.component';
+import { ErrorDisplayComponent } from '../shared/error-display/error-display.component';
 
 interface EvaluatedParameter {
   id: number;
@@ -50,114 +50,8 @@ interface ParameterHistoryResponse {
   selector: 'app-parameter-analytics',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink, LoadingSpinnerComponent, ErrorDisplayComponent, BaseChartDirective],
-  template: `
-    <div class="page-container">
-      
-      <div class="header">
-        <div class="title-group">
-          <h2>Parameter Analytics</h2>
-          <div *ngIf="patient" class="patient-info">
-            <span class="patient-name">{{ patient.firstName }} {{ patient.lastName }}</span>
-            <span class="uid-badge">{{ patient.uid }}</span>
-          </div>
-        </div>
-        <a *ngIf="patientId" [routerLink]="['/patients', patientId]" class="back-link">
-          ← Back to Patient Details
-        </a>
-      </div>
-
-      <app-loading-spinner *ngIf="isLoadingInit" minHeight="300px"></app-loading-spinner>
-      <app-error-display *ngIf="errorMessage && !isLoadingInit" [message]="errorMessage" minHeight="300px"></app-error-display>
-
-      <div *ngIf="!isLoadingInit && !errorMessage" class="content">
-        
-        <div class="controls-card">
-          <div class="form-group">
-            <label>Select Parameter to Analyze</label>
-            <div class="custom-select" (click)="toggleDropdown($event)" [class.open]="isDropdownOpen">
-              <div class="selected-value">{{ getSelectedParameterName() }}</div>
-              <span class="arrow">▼</span>
-
-              <div *ngIf="isDropdownOpen" class="dropdown-list" (click)="$event.stopPropagation()">
-                <div class="dropdown-search-wrapper">
-                  <input type="text" class="dropdown-search-input" placeholder="Search..." [(ngModel)]="searchTerm" (input)="filterParameters()" autofocus />
-                </div>
-                <div class="options-container">
-                  <div *ngFor="let param of filteredParameters" class="option-item" (click)="selectParameter(param)">
-                    {{ param.name }}
-                  </div>
-                  <div *ngIf="filteredParameters.length === 0" class="empty-option">No parameters found</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div *ngIf="parameters.length === 0" class="empty-state">No evaluated parameters found.</div>
-
-        <div *ngIf="selectedParameterId" class="analytics-card">
-          
-          <div *ngIf="isLoadingHistory" class="chart-loading">
-            <app-loading-spinner minHeight="200px"></app-loading-spinner>
-          </div>
-
-          <div *ngIf="!isLoadingHistory && chartData" class="chart-wrapper">
-            <div class="chart-header">
-                <h3>{{ historyData?.name }} History</h3>
-                <span class="unit-badge" *ngIf="historyData?.unit">Unit: {{ historyData?.unit }}</span>
-            </div>
-
-            <canvas baseChart
-              [data]="chartData"
-              [options]="chartOptions"
-              [type]="'line'">
-            </canvas>
-
-            <div class="reference-info" *ngIf="getReferenceText()">
-               <span class="info-icon">ℹ️</span> Normal Range: <strong>{{ getReferenceText() }}</strong>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-    </div>
-  `,
-  styles: [`
-    .page-container { padding: 20px 0; font-family: sans-serif; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
-    .title-group { display: flex; flex-direction: column; gap: 8px; }
-    h2 { margin: 0; color: #333; }
-    
-    .patient-info { display: flex; align-items: center; gap: 10px; }
-    .patient-name { font-size: 1.1rem; color: #666; }
-    .uid-badge { background-color: #eef3fc; color: #3b5998; padding: 4px 8px; border-radius: 4px; font-weight: 500; font-size: 0.9em; }
-    
-    .back-link { color: #0078d4; text-decoration: none; font-weight: 500; font-size: 0.95rem; cursor: pointer; }
-    .back-link:hover { text-decoration: underline; }
-
-    .controls-card { background: white; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-    .form-group { max-width: 400px; }
-    label { display: block; color: #666; font-size: 0.9em; font-weight: 500; margin-bottom: 8px; margin-left: 5px; }
-
-    .custom-select { width: 100%; padding: 10px 20px; border: 1px solid #ccc; border-radius: 25px; background: white; cursor: pointer; position: relative; display: flex; justify-content: space-between; align-items: center; user-select: none; }
-    .custom-select.open { border-color: #0078d4; box-shadow: 0 0 0 3px rgba(0,120,212,0.1); }
-    .dropdown-list { position: absolute; top: 105%; left: 0; right: 0; background: white; border: 1px solid #ddd; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; overflow: hidden; display: flex; flex-direction: column; }
-    .dropdown-search-wrapper { padding: 10px; border-bottom: 1px solid #eee; background: #fafafa; }
-    .dropdown-search-input { width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; outline: none; box-sizing: border-box; }
-    .options-container { max-height: 250px; overflow-y: auto; }
-    .option-item { padding: 10px 20px; color: #333; transition: background 0.1s; cursor: pointer; }
-    .option-item:hover { background-color: #f5f5f5; color: #0078d4; }
-    .empty-option { padding: 15px; text-align: center; color: #999; font-style: italic; }
-
-    .analytics-card { background: white; padding: 25px; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); min-height: 350px; }
-    .chart-wrapper { position: relative; height: 400px; width: 100%; }
-    .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-    .chart-header h3 { margin: 0; color: #444; }
-    .unit-badge { background: #f0f0f0; padding: 4px 10px; border-radius: 12px; font-size: 0.85em; color: #666; font-weight: 600; }
-    .reference-info { margin-top: 15px; padding: 10px; background-color: #f8f9fa; border-radius: 6px; color: #666; font-size: 0.9rem; text-align: center; }
-    .info-icon { margin-right: 5px; }
-  `]
+  templateUrl: './parameter-analytics.component.html',
+  styleUrl: './parameter-analytics.component.css'
 })
 export class ParameterAnalyticsComponent implements OnInit {
   private http = inject(HttpClient);

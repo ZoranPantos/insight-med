@@ -1,0 +1,16 @@
+<div *ngIf="toastService.toastState$ | async as toast" 
+     class="toast-container" 
+     [class.visible]="toast.visible"
+     [class.success]="toast.type === 'success'"
+     [class.error]="toast.type === 'error'">
+  
+  <div class="toast-content">
+    <span *ngIf="toast.type === 'success'" class="icon">✅</span>
+    
+    <span *ngIf="toast.type === 'error'" class="icon">⚠️</span>
+
+    <span class="message">{{ toast.message }}</span>
+  </div>
+
+  <button class="close-btn" (click)="close()">×</button>
+</div>

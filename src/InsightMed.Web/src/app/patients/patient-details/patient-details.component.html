@@ -1,0 +1,143 @@
+<div class="page-container">
+  
+  <div class="header">
+    <h2>Patient Details</h2>
+    <a *ngIf="patient" 
+       [routerLink]="['/patients', patient.id, 'analytics']" 
+       class="view-link analytics-btn">
+       View Analytics
+    </a>
+  </div>
+
+  <app-loading-spinner 
+    *ngIf="isLoading" 
+    minHeight="300px">
+  </app-loading-spinner>
+
+  <app-error-display
+    *ngIf="errorMessage && !isLoading"
+    [message]="errorMessage"
+    minHeight="300px">
+  </app-error-display>
+
+  <div *ngIf="!isLoading && !errorMessage && patient" class="content-wrapper">
+    
+    <div class="info-card">
+      <div class="info-header">
+        <div class="name-group">
+          <h3>{{ patient.firstName }} {{ patient.lastName }}</h3>
+          <span class="uid-badge">{{ patient.uid }}</span>
+        </div>
+        <button class="update-btn" (click)="onUpdate()">Update</button>
+      </div>
+      
+      <div class="info-grid">
+        <div class="info-item">
+          <label>Email</label>
+          <div>{{ patient.email }}</div>
+        </div>
+        <div class="info-item">
+          <label>Phone</label>
+          <div>{{ patient.phone }}</div>
+        </div>
+        <div class="info-item">
+          <label>Date of Birth</label>
+          <div>{{ patient.dateOfBirth | date:'mediumDate' }}</div>
+        </div>
+        <div class="info-item">
+          <label>Gender</label>
+          <div>{{ getGenderString(patient.gender) }}</div>
+        </div>
+      </div>
+
+      <hr class="section-divider" />
+
+      <div class="info-grid">
+        <div class="info-item">
+          <label>Blood Group</label>
+          <div>{{ getBloodGroupString(patient.bloodGroup) }}</div>
+        </div>
+        <div class="info-item">
+          <label>Height</label>
+          <div>{{ patient.heightCm ? patient.heightCm + ' cm' : '-' }}</div>
+        </div>
+        <div class="info-item">
+          <label>Weight</label>
+          <div>{{ patient.weightKg ? patient.weightKg + ' kg' : '-' }}</div>
+        </div>
+        <div class="info-item">
+          <label>Smoking Status</label>
+          <div>{{ getSmokingStatusString(patient.smokingStatus) }}</div>
+        </div>
+        <div class="info-item">
+          <label>Exercise Level</label>
+          <div>{{ getExerciseLevelString(patient.exerciseLevel) }}</div>
+        </div>
+        <div class="info-item">
+          <label>Diet Type</label>
+          <div>{{ getDietTypeString(patient.dietType) }}</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="section">
+      <h3>Lab Requests</h3>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Date Created</th>
+              <th>Status</th>
+              <th class="actions-col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let req of patient.labRequests">
+              <td class="date-col">{{ req.created | date:'MMM d, y, h:mm a' }}</td>
+              <td>
+                <span class="status-badge" 
+                      [class.pending]="req.labRequestState === 0"
+                      [class.completed]="req.labRequestState === 1">
+                  {{ req.labRequestState === 1 ? 'Completed' : 'Pending' }}
+                </span>
+              </td>
+              <td class="actions-col">
+                <a *ngIf="req.labRequestState === 1 && req.labReportId" 
+                   [routerLink]="['/reports', req.labReportId]" 
+                   class="view-link">
+                   View Report
+                </a>
+              </td>
+            </tr>
+            <tr *ngIf="patient.labRequests.length === 0">
+              <td colspan="3" class="empty-text">No requests found</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div *ngIf="totalPages > 1" class="pagination-controls">
+        <button 
+          class="page-btn" 
+          [disabled]="currentPage === 1" 
+          (click)="changePage(currentPage - 1)">
+          Prev
+        </button>
+
+        <span class="page-info">
+          {{ currentPage }} / {{ totalPages }}
+        </span>
+
+        <button 
+          class="page-btn" 
+          [disabled]="currentPage === totalPages" 
+          (click)="changePage(currentPage + 1)">
+          Next
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+</div>

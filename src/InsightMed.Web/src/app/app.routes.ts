@@ -2,17 +2,17 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { MainLayoutComponent } from './layout/main-layout.component';
-import { ReportsComponent } from './reports/reports.component';
-import { ReportDetailsComponent } from './reports/report-details.component';
-import { RequestsComponent } from './requests/requests.component';
-import { PatientsComponent } from './patients/patients.component';
-import { AddPatientComponent } from './patients/add-patient.component';
-import { PatientDetailsComponent } from './patients/patient-details.component';
-import { ProfileComponent } from './profile/profile.component';
-import { ChangePasswordComponent } from './profile/change-password.component';
-import { CreateRequestComponent } from './requests/create-request.component';
+import { ReportsComponent } from './reports/reports/reports.component';
+import { ReportDetailsComponent } from './reports/report-details/report-details.component';
+import { RequestsComponent } from './requests/requests/requests.component';
+import { PatientsComponent } from './patients/patients/patients.component';
+import { AddPatientComponent } from './patients/add-patient/add-patient.component';
+import { PatientDetailsComponent } from './patients/patient-details/patient-details.component';
+import { ProfileComponent } from './profile/profile/profile.component';
+import { ChangePasswordComponent } from './profile/change-password/change-password.component';
+import { CreateRequestComponent } from './requests/create-request/create-request.component';
 import { ParameterAnalyticsComponent } from './parameters/parameter-analytics.component';
-import { UpdatePatientComponent } from './patients/update-patient.component';
+import { UpdatePatientComponent } from './patients/update-patient/update-patient.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },

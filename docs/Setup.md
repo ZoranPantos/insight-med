@@ -98,7 +98,7 @@ dotnet ef database update --startup-project ../InsightMed.API
 
 ## Running from IDE
 
-This is the **hybrid** development flow: _InsightMed.API_, _InsightMed.LabRpcServer_, and the Angular dev server (`ng serve`) run on the host (from Visual Studio / Rider / a terminal), while all supporting infrastructure — and optionally the API Gateway — run as containers.
+This is the **hybrid** development flow: _InsightMed.API_, _InsightMed.LabRpcServer_, and the Angular dev server (`ng serve`) run on the host (from Visual Studio / Rider / a terminal), while all supporting infrastructure - and optionally the API Gateway - run as containers.
 
 ### Prerequisites
 
@@ -116,7 +116,7 @@ In the IDE, set up a startup profile that runs _InsightMed.API_ and _InsightMed.
 
 ### The `dev-local.ps1` wrapper
 
-The repository contains a PowerShell helper at the repo root, `dev-local.ps1`, that wraps `docker compose` and always merges two files: the base `docker-compose.yml` and the override `docker-compose.local.yml`. Every `docker compose <subcommand>` you'd normally type, type instead as `.\dev-local.ps1 <subcommand>` — all arguments are forwarded verbatim.
+The repository contains a PowerShell helper at the repo root, `dev-local.ps1`, that wraps `docker compose` and always merges two files: the base `docker-compose.yml` and the override `docker-compose.local.yml`. Every `docker compose <subcommand>` you'd normally type, type instead as `.\dev-local.ps1 <subcommand>` - all arguments are forwarded verbatim.
 
 The override file does three things specific to the hybrid flow:
 1. Excludes `api`, `labrpcserver`, and `web` from being containerized (they run on the host instead) by placing them in a `never` profile.
@@ -150,8 +150,8 @@ Endpoints in hybrid mode:
 - Kibana / RabbitMQ UI / Elasticsearch: same ports as in full-docker mode
 
 Either entry point works during development:
-- `http://localhost:4200` — the Angular dev server's own `proxy.conf.json` routes `/api` and `/notifications` to the locally running API.
-- `http://localhost:8080` — the same traffic goes through the gateway container, also covering `/lab/*` routes that the Angular dev proxy doesn't handle.
+- `http://localhost:4200` - the Angular dev server's own `proxy.conf.json` routes `/api` and `/notifications` to the locally running API.
+- `http://localhost:8080` - the same traffic goes through the gateway container, also covering `/lab/*` routes that the Angular dev proxy doesn't handle.
 
 <br>
 
@@ -171,7 +171,7 @@ or, to keep the containers around for a fast restart later:
 
 ### Switching between full-docker and hybrid modes
 
-A Docker container has its mounts and published ports **baked in at creation time** — they don't update when you change the compose files. The gateway therefore needs to be re-created with the correct configuration whenever you cross between modes. Always run `down` (not `stop`) for the mode you're leaving before bringing up the other one.
+A Docker container has its mounts and published ports **baked in at creation time** - they don't update when you change the compose files. The gateway therefore needs to be re-created with the correct configuration whenever you cross between modes. Always run `down` (not `stop`) for the mode you're leaving before bringing up the other one.
 
 **Full-docker → Hybrid:**
 ```powershell
