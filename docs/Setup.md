@@ -103,7 +103,7 @@ This is the **hybrid** development flow: _InsightMed.API_, _InsightMed.LabRpcSer
 ### Prerequisites
 
 Backend:
-- **.NET 10 SDK**
+- .NET 10 SDK
 
 Frontend:
 - Node.js 24.11.1
@@ -142,16 +142,7 @@ From a fresh state (nothing running):
 
 3. In _InsightMed.Web_, run `npm ci` (first time only) followed by `ng serve`.
 
-Endpoints in hybrid mode:
-- API Gateway: http://localhost:8080
-- Angular dev server (direct): http://localhost:4200
-- InsightMed API (direct, Swagger): http://localhost:5000/swagger/index.html
-- LabRpcServer (direct): http://localhost:5100
-- Kibana / RabbitMQ UI / Elasticsearch: same ports as in full-docker mode
-
-Either entry point works during development:
-- `http://localhost:4200` - the Angular dev server's own `proxy.conf.json` routes `/api` and `/notifications` to the locally running API.
-- `http://localhost:8080` - the same traffic goes through the gateway container, also covering `/lab/*` routes that the Angular dev proxy doesn't handle.
+Make sure that the "Stop debugger when browser window is closed" option in Visual Studio is unchecked to avoid unwanted process termination during the testing.
 
 <br>
 
