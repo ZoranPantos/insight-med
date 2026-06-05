@@ -48,95 +48,99 @@ VALUES
     (13, N'Urine Ketones'),
     (14, N'Fecal Occult Blood'),
     (15, N'COVID-19 Antigen');
-
 SET IDENTITY_INSERT LabParameters OFF;
 
-INSERT INTO [Patients] ([Uid], [FirstName], [LastName], [DateOfBirth], [Gender], [BloodGroup], [Email], [Phone], [SmokingStatus], [ExerciseLevel], [DietType], [HeightCm], [WeightKg])
+SET IDENTITY_INSERT [Patients] ON;
+INSERT INTO [Patients] ([Id], [Uid], [FirstName], [LastName], [DateOfBirth], [Gender], [BloodGroup], [Email], [Phone], [SmokingStatus], [ExerciseLevel], [DietType], [HeightCm], [WeightKg])
 VALUES
-    ('UID-1001', 'John', 'Doe', '1985-06-15', 0, 0, 'john.doe@example.com', '+38766123123', 0, 2, 0, 177.7, 74.1),
-    ('UID-1002', 'Jane', 'Smith', '1990-02-20', 1, 2, 'jane.smith@example.com', '+38766123123', 1, 1, 1, 160.9, 55.5),
-    ('UID-1003', 'Michael', 'Johnson', '1975-11-30', 0, 4, 'michael.johanson@example.com', '+38766123123', 2, 0, 2, 180.1, 77.6),
-    ('UID-1004', 'Emily', 'Davis', '2000-04-10', 1, 6, 'emily.davis@example.com', '+38766123123', 0, 0, 3, 159.3, 49.9),
-    ('UID-1005', 'David', 'Wilson', '1960-08-25', 0, 1, 'david.wilson@example.com', '+38766123123', 1, 1, 4, 175.6, 79.4),
-    ('UID-1006', 'Sarah', 'Martinez', '1988-12-05', 1, 3, 'sarah.martinez@example.com', '+38766123123', 2, 2, 5, 172.8, 66.5),
-    ('UID-1007', 'Robert', 'Anderson', '1995-07-18', 0, 5, 'anderson.robert@example.com', '+38766123123', 0, 2, 6, 190.1, 110.4),
-    ('UID-1008', 'Linda', 'Taylor', '1972-03-12', 1, 7, 'taylor.linda@example.com', '+38766123123', 1, 1, 7, 165.3, 74.4),
-    ('UID-1009', 'James', 'Thomas', '1982-09-22', 0, 0, 'james.thomas@example.com', '+38766123123', 2, 0, 8, 176.6, 75.4),
-    ('UID-1010', 'Patricia', 'Hernandez', '1993-01-08', 1, 2, 'patricia.hernandez@example.com', '+38766123123', 0, 0, 9, 155.5, 49.5),
-    ('UID-1011', 'Alice', 'Brown', '1991-05-12', 1, 0, 'alice.brown@example.com', '+38766123123', 1, 1, 10, 166.6, 67.4),
-    ('UID-1012', 'Tom', 'Clark', '1983-08-24', 0, 1, 'tom.clark@example.com', '+38766123123', 2, 2, 0, 182.3, 89.4),
-    ('UID-1013', 'Sophia', 'Lewis', '1998-11-03', 1, 2, 'sophia.lewis@example.com', '+38766123123', 0, 2, 1, 174.2, 68.1),
-    ('UID-1014', 'Daniel', 'Walker', '1979-01-19', 0, 3, 'daniel.walker@example.com', '+38766123123', 1, 1, 2, 171.7, 79.1),
-    ('UID-1015', 'Olivia', 'Hall', '2001-07-29', 1, 4, 'olivia.hall@example.com', '+38766123123', 2, 0, 3, 168.4, 66.4),
-    ('UID-1016', 'Matthew', 'Allen', '1965-03-14', 0, 5, 'matthew.allen@example.com', '+38766123123', 0, 0, 4, 183.8, 77.4),
-    ('UID-1017', 'Emma', 'Young', '1993-09-08', 1, 6, 'emma.young@example.com', '+38766123123', 1, 1, 5, 163.9, 59.4),
-    ('UID-1018', 'Christopher', 'King', '1987-12-01', 0, 7, 'chris.king@example.com', '+38766123123', 2, 2, 6, 188.7, 85.1),
-    ('UID-1019', 'Ava', 'Wright', '1996-02-15', 1, 0, 'ava.wright@example.com', '+38766123123', 0, 2, 7, 177.7, 67.9),
-    ('UID-1020', 'Andrew', 'Scott', '1970-04-22', 0, 1, 'andrew.scott@example.com', '+38766123123', 1, 1, 8, 179.9, 66.5),
-    ('UID-1021', 'Isabella', 'Torres', '1992-06-30', 1, 2, 'isabella.torres@example.com', '+38766123123', 2, 0, 9, 171.5, 67.2),
-    ('UID-1022', 'Joshua', 'Nguyen', '1989-10-11', 0, 3, 'joshua.nguyen@example.com', '+38766123123', 0, 0, 10, 175.4, 77.7),
-    ('UID-1023', 'Mia', 'Hill', '1999-01-05', 1, 4, 'mia.hill@example.com', '+38766123123', 1, 1, 0, 166.7, 55.7),
-    ('UID-1024', 'Ryan', 'Flores', '1981-08-17', 0, 5, 'ryan.flores@example.com', '+38766123123', 2, 2, 1, 185.9, 82.1),
-    ('UID-1025', 'Charlotte', 'Green', '1994-03-25', 1, 6, 'charlotte.green@example.com', '+38766123123', 0, 2, 2, 159.2, 49.7),
-    ('UID-1026', 'Nathan', 'Adams', '1976-11-18', 0, 7, 'nathan.adams@example.com', '+38766123123', 1, 1, 3, 177.2, 86.4),
-    ('UID-1027', 'Amelia', 'Baker', '1997-09-09', 1, 0, 'amelia.baker@example.com', '+38766123123', 2, 0, 4, 165.8, 57.4),
-    ('UID-1028', 'Samuel', 'Gonzalez', '1984-05-14', 0, 2, 'samuel.gonzalez@example.com', '+38766123123', 0, 0, 5, 166.5, 61.1),
-    ('UID-1029', 'Harper', 'Nelson', '2002-02-28', 1, 4, 'harper.nelson@example.com', '+38766123123', 1, 1, 6, 179.8, 81.6),
-    ('UID-1030', 'Benjamin', 'Carter', '1968-12-07', 0, 6, 'benjamin.carter@example.com', '+38766123123', 2, 2, 7, 177.1, 72.9);
+    (1,  'UID-1001', 'John', 'Doe', '1985-06-15', 0, 0, 'john.doe@example.com', '+38766123123', 0, 2, 0, 177.7, 74.1),
+    (2,  'UID-1002', 'Jane', 'Smith', '1990-02-20', 1, 2, 'jane.smith@example.com', '+38766123123', 1, 1, 1, 160.9, 55.5),
+    (3,  'UID-1003', 'Michael', 'Johnson', '1975-11-30', 0, 4, 'michael.johanson@example.com', '+38766123123', 2, 0, 2, 180.1, 77.6),
+    (4,  'UID-1004', 'Emily', 'Davis', '2000-04-10', 1, 6, 'emily.davis@example.com', '+38766123123', 0, 0, 3, 159.3, 49.9),
+    (5,  'UID-1005', 'David', 'Wilson', '1960-08-25', 0, 1, 'david.wilson@example.com', '+38766123123', 1, 1, 4, 175.6, 79.4),
+    (6,  'UID-1006', 'Sarah', 'Martinez', '1988-12-05', 1, 3, 'sarah.martinez@example.com', '+38766123123', 2, 2, 5, 172.8, 66.5),
+    (7,  'UID-1007', 'Robert', 'Anderson', '1995-07-18', 0, 5, 'anderson.robert@example.com', '+38766123123', 0, 2, 6, 190.1, 110.4),
+    (8,  'UID-1008', 'Linda', 'Taylor', '1972-03-12', 1, 7, 'taylor.linda@example.com', '+38766123123', 1, 1, 7, 165.3, 74.4),
+    (9,  'UID-1009', 'James', 'Thomas', '1982-09-22', 0, 0, 'james.thomas@example.com', '+38766123123', 2, 0, 8, 176.6, 75.4),
+    (10, 'UID-1010', 'Patricia', 'Hernandez', '1993-01-08', 1, 2, 'patricia.hernandez@example.com', '+38766123123', 0, 0, 9, 155.5, 49.5),
+    (11, 'UID-1011', 'Alice', 'Brown', '1991-05-12', 1, 0, 'alice.brown@example.com', '+38766123123', 1, 1, 10, 166.6, 67.4),
+    (12, 'UID-1012', 'Tom', 'Clark', '1983-08-24', 0, 1, 'tom.clark@example.com', '+38766123123', 2, 2, 0, 182.3, 89.4),
+    (13, 'UID-1013', 'Sophia', 'Lewis', '1998-11-03', 1, 2, 'sophia.lewis@example.com', '+38766123123', 0, 2, 1, 174.2, 68.1),
+    (14, 'UID-1014', 'Daniel', 'Walker', '1979-01-19', 0, 3, 'daniel.walker@example.com', '+38766123123', 1, 1, 2, 171.7, 79.1),
+    (15, 'UID-1015', 'Olivia', 'Hall', '2001-07-29', 1, 4, 'olivia.hall@example.com', '+38766123123', 2, 0, 3, 168.4, 66.4),
+    (16, 'UID-1016', 'Matthew', 'Allen', '1965-03-14', 0, 5, 'matthew.allen@example.com', '+38766123123', 0, 0, 4, 183.8, 77.4),
+    (17, 'UID-1017', 'Emma', 'Young', '1993-09-08', 1, 6, 'emma.young@example.com', '+38766123123', 1, 1, 5, 163.9, 59.4),
+    (18, 'UID-1018', 'Christopher', 'King', '1987-12-01', 0, 7, 'chris.king@example.com', '+38766123123', 2, 2, 6, 188.7, 85.1),
+    (19, 'UID-1019', 'Ava', 'Wright', '1996-02-15', 1, 0, 'ava.wright@example.com', '+38766123123', 0, 2, 7, 177.7, 67.9),
+    (20, 'UID-1020', 'Andrew', 'Scott', '1970-04-22', 0, 1, 'andrew.scott@example.com', '+38766123123', 1, 1, 8, 179.9, 66.5),
+    (21, 'UID-1021', 'Isabella', 'Torres', '1992-06-30', 1, 2, 'isabella.torres@example.com', '+38766123123', 2, 0, 9, 171.5, 67.2),
+    (22, 'UID-1022', 'Joshua', 'Nguyen', '1989-10-11', 0, 3, 'joshua.nguyen@example.com', '+38766123123', 0, 0, 10, 175.4, 77.7),
+    (23, 'UID-1023', 'Mia', 'Hill', '1999-01-05', 1, 4, 'mia.hill@example.com', '+38766123123', 1, 1, 0, 166.7, 55.7),
+    (24, 'UID-1024', 'Ryan', 'Flores', '1981-08-17', 0, 5, 'ryan.flores@example.com', '+38766123123', 2, 2, 1, 185.9, 82.1),
+    (25, 'UID-1025', 'Charlotte', 'Green', '1994-03-25', 1, 6, 'charlotte.green@example.com', '+38766123123', 0, 2, 2, 159.2, 49.7),
+    (26, 'UID-1026', 'Nathan', 'Adams', '1976-11-18', 0, 7, 'nathan.adams@example.com', '+38766123123', 1, 1, 3, 177.2, 86.4),
+    (27, 'UID-1027', 'Amelia', 'Baker', '1997-09-09', 1, 0, 'amelia.baker@example.com', '+38766123123', 2, 0, 4, 165.8, 57.4),
+    (28, 'UID-1028', 'Samuel', 'Gonzalez', '1984-05-14', 0, 2, 'samuel.gonzalez@example.com', '+38766123123', 0, 0, 5, 166.5, 61.1),
+    (29, 'UID-1029', 'Harper', 'Nelson', '2002-02-28', 1, 4, 'harper.nelson@example.com', '+38766123123', 1, 1, 6, 179.8, 81.6),
+    (30, 'UID-1030', 'Benjamin', 'Carter', '1968-12-07', 0, 6, 'benjamin.carter@example.com', '+38766123123', 2, 2, 7, 177.1, 72.9);
+SET IDENTITY_INSERT [Patients] OFF;
 
-INSERT INTO [LabRequests] ([Created], [LabRequestState], [PatientId], [LabParameterIds])
+SET IDENTITY_INSERT [LabRequests] ON;
+INSERT INTO [LabRequests] ([Id], [Created], [LabRequestState], [PatientId], [LabParameterIds])
 VALUES
-    ('2023-01-10 09:00:00', 1, 1, '[1,2,3,15]'), 
-    ('2023-02-15 10:30:00', 0, 2, '[4,5,11]'), 
-    ('2023-03-20 11:45:00', 1, 3, '[2,3,6]'), 
-    ('2023-04-25 14:00:00', 0, 4, '[1,7]'), 
-    ('2023-05-30 15:15:00', 1, 5, '[3,8,9,13]'), 
-    ('2023-06-05 08:45:00', 0, 6, '[2,5,14]'), 
-    ('2023-07-10 12:00:00', 1, 7, '[4,6,7]'), 
-    ('2023-08-15 13:30:00', 0, 8, '[1,3,5]'), 
-    ('2023-09-20 16:00:00', 1, 9, '[8,9,12]'), 
-    ('2023-10-25 17:45:00', 0, 10, '[2,4,6]'),
-    ('2023-11-05 08:30:00', 1, 11, '[1,2,3,4,5,15]'), 
-    ('2023-11-12 09:15:00', 0, 12, '[5,6,7,11,13]'), 
-    ('2023-11-20 14:00:00', 1, 13, '[1,2,8,9,10,12]'),
-    ('2023-11-25 10:45:00', 0, 14, '[1,2,3,4,5,6,7]'),
-    ('2023-12-01 11:30:00', 1, 15, '[3,4,13,14,15]'),
-    ('2023-12-08 09:00:00', 0, 16, '[1,4,5,9,10,14]'),
-    ('2023-12-15 15:20:00', 1, 17, '[1,2,11,12,15]'),
-    ('2023-12-20 08:15:00', 0, 18, '[1,3,5,6,10]'),
-    ('2024-01-05 10:00:00', 1, 19, '[1,2,3,4,5,6,7]'),
-    ('2024-01-12 13:45:00', 0, 20, '[8,9,10,13,14]');
+    (1,  '2023-01-10 09:00:00', 1, 1, '[1,2,3,15]'), 
+    (2,  '2023-02-15 10:30:00', 0, 2, '[4,5,11]'), 
+    (3,  '2023-03-20 11:45:00', 1, 3, '[2,3,6]'), 
+    (4,  '2023-04-25 14:00:00', 0, 4, '[1,7]'), 
+    (5,  '2023-05-30 15:15:00', 1, 5, '[3,8,9,13]'), 
+    (6,  '2023-06-05 08:45:00', 0, 6, '[2,5,14]'), 
+    (7,  '2023-07-10 12:00:00', 1, 7, '[4,6,7]'), 
+    (8,  '2023-08-15 13:30:00', 0, 8, '[1,3,5]'), 
+    (9,  '2023-09-20 16:00:00', 1, 9, '[8,9,12]'), 
+    (10, '2023-10-25 17:45:00', 0, 10, '[2,4,6]'),
+    (11, '2023-11-05 08:30:00', 1, 11, '[1,2,3,4,5,15]'), 
+    (12, '2023-11-12 09:15:00', 0, 12, '[5,6,7,11,13]'), 
+    (13, '2023-11-20 14:00:00', 1, 13, '[1,2,8,9,10,12]'),
+    (14, '2023-11-25 10:45:00', 0, 14, '[1,2,3,4,5,6,7]'),
+    (15, '2023-12-01 11:30:00', 1, 15, '[3,4,13,14,15]'),
+    (16, '2023-12-08 09:00:00', 0, 16, '[1,4,5,9,10,14]'),
+    (17, '2023-12-15 15:20:00', 1, 17, '[1,2,11,12,15]'),
+    (18, '2023-12-20 08:15:00', 0, 18, '[1,3,5,6,10]'),
+    (19, '2024-01-05 10:00:00', 1, 19, '[1,2,3,4,5,6,7]'),
+    (20, '2024-01-12 13:45:00', 0, 20, '[8,9,10,13,14]');
+SET IDENTITY_INSERT [LabRequests] OFF;
 
-INSERT INTO [LabReports] ([Content], [Created], [LabRequestId], [PatientId])
+SET IDENTITY_INSERT [LabReports] ON;
+INSERT INTO [LabReports] ([Id], [Content], [Created], [LabRequestId], [PatientId])
 VALUES
-    (N'[
+    (1, N'[
         {"Id":1,"Name":"Hemoglobin","IsPositive":null,"Measurement":14.5,"Reference":{"MinThreshold":12.0,"MaxThreshold":17.5,"Positive":null,"Unit":"g/dL"}},
         {"Id":2,"Name":"White Blood Cell Count","IsPositive":null,"Measurement":7.2,"Reference":{"MinThreshold":4.5,"MaxThreshold":11.0,"Positive":null,"Unit":"10^3/µL"}},
         {"Id":3,"Name":"Glucose","IsPositive":null,"Measurement":88.0,"Reference":{"MinThreshold":70.0,"MaxThreshold":100.0,"Positive":null,"Unit":"mg/dL"}},
         {"Id":15,"Name":"COVID-19 Antigen","IsPositive":false,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false,"Unit":null}}
     ]', '2023-01-12 14:00:00', 1, 1),
-    (N'[
+    (2, N'[
         {"Id":2,"Name":"White Blood Cell Count","IsPositive":null,"Measurement":4.0,"Reference":{"MinThreshold":4.5,"MaxThreshold":11.0,"Positive":null,"Unit":"10^3/µL"}},
         {"Id":3,"Name":"Glucose","IsPositive":null,"Measurement":92.0,"Reference":{"MinThreshold":70.0,"MaxThreshold":100.0,"Positive":null,"Unit":"mg/dL"}},
         {"Id":6,"Name":"Urine pH","IsPositive":null,"Measurement":6.0,"Reference":{"MinThreshold":4.5,"MaxThreshold":8.0,"Positive":null,"Unit":"pH"}}
     ]', '2023-03-22 16:45:00', 3, 3),
-    (N'[
+    (3, N'[
         {"Id":3,"Name":"Glucose","IsPositive":null,"Measurement":100.0,"Reference":{"MinThreshold":70.0,"MaxThreshold":100.0,"Positive":null,"Unit":"mg/dL"}},
         {"Id":8,"Name":"Platelet Count","IsPositive":null,"Measurement":250.0,"Reference":{"MinThreshold":150.0,"MaxThreshold":400.0,"Positive":null,"Unit":"10^3/µL"}},
         {"Id":9,"Name":"Thyroid Stimulating Hormone (TSH)","IsPositive":null,"Measurement":2.1,"Reference":{"MinThreshold":0.4,"MaxThreshold":4.0,"Positive":null,"Unit":"µIU/mL"}},
         {"Id":13,"Name":"Urine Ketones","IsPositive":true,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false,"Unit":null}}
     ]', '2023-05-31 10:15:00', 5, 5),
-    (N'[
+    (4, N'[
         {"Id":4,"Name":"Cholesterol","IsPositive":null,"Measurement":190.0,"Reference":{"MinThreshold":125.0,"MaxThreshold":200.0,"Positive":null,"Unit":"mg/dL"}},
         {"Id":6,"Name":"Urine pH","IsPositive":null,"Measurement":6.5,"Reference":{"MinThreshold":4.5,"MaxThreshold":8.0,"Positive":null,"Unit":"pH"}},
         {"Id":7,"Name":"Bilirubin","IsPositive":null,"Measurement":0.9,"Reference":{"MinThreshold":0.1,"MaxThreshold":1.2,"Positive":null,"Unit":"mg/dL"}}
     ]', '2023-07-12 12:45:00', 7, 7),
-    (N'[
+    (5, N'[
         {"Id":8,"Name":"Platelet Count","IsPositive":null,"Measurement":210.0,"Reference":{"MinThreshold":150.0,"MaxThreshold":400.0,"Positive":null,"Unit":"10^3/µL"}},
         {"Id":9,"Name":"Thyroid Stimulating Hormone (TSH)","IsPositive":null,"Measurement":3.5,"Reference":{"MinThreshold":0.4,"MaxThreshold":4.0,"Positive":null,"Unit":"µIU/mL"}},
         {"Id":12,"Name":"HIV I/II Antibody","IsPositive":false,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false,"Unit":null}}
     ]', '2023-09-22 15:15:00', 9, 9),
-    (N'[
+    (6, N'[
         {"Id":1,"Name":"Hemoglobin","IsPositive":null,"Measurement":18.2,"Reference":{"MinThreshold":12.0,"MaxThreshold":17.5,"Positive":null,"Unit":"g/dL"}},
         {"Id":2,"Name":"White Blood Cell Count","IsPositive":null,"Measurement":5.5,"Reference":{"MinThreshold":4.5,"MaxThreshold":11.0,"Positive":null,"Unit":"10^3/µL"}},
         {"Id":3,"Name":"Glucose","IsPositive":null,"Measurement":64.4,"Reference":{"MinThreshold":70.0,"MaxThreshold":100.0,"Positive":null,"Unit":"mg/dL"}},
@@ -144,7 +148,7 @@ VALUES
         {"Id":5,"Name":"Creatinine","IsPositive":null,"Measurement":0.9,"Reference":{"MinThreshold":0.7,"MaxThreshold":1.3,"Positive":null,"Unit":"mg/dL"}},
         {"Id":15,"Name":"COVID-19 Antigen","IsPositive":false,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false,"Unit":null}}
     ]', '2023-11-06 14:00:00', 11, 11),
-    (N'[
+    (7, N'[
         {"Id":1,"Name":"Hemoglobin","IsPositive":null,"Measurement":14.0,"Reference":{"MinThreshold":12.0,"MaxThreshold":17.5,"Positive":null,"Unit":"g/dL"}},
         {"Id":2,"Name":"White Blood Cell Count","IsPositive":null,"Measurement":8.0,"Reference":{"MinThreshold":4.5,"MaxThreshold":11.0,"Positive":null,"Unit":"10^3/µL"}},
         {"Id":8,"Name":"Platelet Count","IsPositive":null,"Measurement":139.6,"Reference":{"MinThreshold":150.0,"MaxThreshold":400.0,"Positive":null,"Unit":"10^3/µL"}},
@@ -152,21 +156,21 @@ VALUES
         {"Id":10,"Name":"Vitamin D","IsPositive":null,"Measurement":35.0,"Reference":{"MinThreshold":30.0,"MaxThreshold":100.0,"Positive":null,"Unit":"ng/mL"}},
         {"Id":12,"Name":"HIV I/II Antibody","IsPositive":false,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false,"Unit":null}}
     ]', '2023-11-21 09:30:00', 13, 13),
-    (N'[
+    (8, N'[
         {"Id":3,"Name":"Glucose","IsPositive":null,"Measurement":110.0,"Reference":{"MinThreshold":70.0,"MaxThreshold":100.0,"Positive":null,"Unit":"mg/dL"}},
         {"Id":4,"Name":"Cholesterol","IsPositive":null,"Measurement":240.0,"Reference":{"MinThreshold":125.0,"MaxThreshold":200.0,"Positive":null,"Unit":"mg/dL"}},
         {"Id":13,"Name":"Urine Ketones","IsPositive":true,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false,"Unit":null}},
         {"Id":14,"Name":"Fecal Occult Blood","IsPositive":false,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false,"Unit":null}},
         {"Id":15,"Name":"COVID-19 Antigen","IsPositive":false,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false,"Unit":null}}
     ]', '2023-12-02 10:00:00', 15, 15),
-    (N'[
+    (9, N'[
         {"Id":1,"Name":"Hemoglobin","IsPositive":null,"Measurement":12.5,"Reference":{"MinThreshold":12.0,"MaxThreshold":17.5,"Positive":null,"Unit":"g/dL"}},
         {"Id":2,"Name":"White Blood Cell Count","IsPositive":null,"Measurement":9.5,"Reference":{"MinThreshold":4.5,"MaxThreshold":11.0,"Positive":null,"Unit":"10^3/µL"}},
         {"Id":11,"Name":"Hepatitis B Surface Antigen","IsPositive":true,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false,"Unit":null}},
         {"Id":12,"Name":"HIV I/II Antibody","IsPositive":false,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false,"Unit":null}},
         {"Id":15,"Name":"COVID-19 Antigen","IsPositive":false,"Measurement":null,"Reference":{"MinThreshold":null,"MaxThreshold":null,"Positive":false,"Unit":null}}
     ]', '2023-12-16 11:00:00', 17, 17),
-    (N'[
+    (10, N'[
         {"Id":1,"Name":"Hemoglobin","IsPositive":null,"Measurement":15.0,"Reference":{"MinThreshold":12.0,"MaxThreshold":17.5,"Positive":null,"Unit":"g/dL"}},
         {"Id":2,"Name":"White Blood Cell Count","IsPositive":null,"Measurement":6.0,"Reference":{"MinThreshold":4.5,"MaxThreshold":11.0,"Positive":null,"Unit":"10^3/µL"}},
         {"Id":3,"Name":"Glucose","IsPositive":null,"Measurement":82.0,"Reference":{"MinThreshold":70.0,"MaxThreshold":100.0,"Positive":null,"Unit":"mg/dL"}},
@@ -175,19 +179,22 @@ VALUES
         {"Id":6,"Name":"Urine pH","IsPositive":null,"Measurement":7.0,"Reference":{"MinThreshold":4.5,"MaxThreshold":8.0,"Positive":null,"Unit":"pH"}},
         {"Id":7,"Name":"Bilirubin","IsPositive":null,"Measurement":0.5,"Reference":{"MinThreshold":0.1,"MaxThreshold":1.2,"Positive":null,"Unit":"mg/dL"}}
     ]', '2024-01-06 09:15:00', 19, 19);
+SET IDENTITY_INSERT [LabReports] OFF;
 
-INSERT INTO [Notifications] ([Message], [LabReportId], [Seen], [RequesterId])
+SET IDENTITY_INSERT [Notifications] ON;
+INSERT INTO [Notifications] ([Id], [Message], [LabReportId], [Seen], [RequesterId])
 VALUES
-    ('Report for patient John Doe UID-1001 is available. Date created: Jan 12, 2023, 2:00 PM', 1, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
-    ('Report for patient Michael Johnson UID-1003 is available. Date created: Mar 22, 2023, 4:45 PM', 2, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
-    ('Report for patient David Wilson UID-1005 is available. Date created: May 31, 2023, 10:15 AM', 3, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
-    ('Report for patient Robert Anderson UID-1007 is available. Date created: Jul 12, 2023, 12:45 PM', 4, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
-    ('Report for patient James Thomas UID-1009 is available. Date created: Sep 22, 2023, 3:15 PM', 5, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
-    ('Report for patient Alice Brown UID-1011 is available. Date created: Nov 6, 2023, 2:00 PM', 6, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
-    ('Report for patient Sophia Lewis UID-1013 is available. Date created: Nov 21, 2023, 9:30 AM', 7, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
-    ('Report for patient Olivia Hall UID-1015 is available. Date created: Dec 2, 2023, 10:00 AM', 8, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
-    ('Report for patient Emma Young UID-1017 is available. Date created: Dec 16, 2023, 11:00 AM', 9, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
-    ('Report for patient Ava Wright UID-1019 is available. Date created: Jan 6, 2024, 9:15 AM', 10, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa');
+    (1,  'Report for patient John Doe UID-1001 is available. Date created: Jan 12, 2023, 2:00 PM', 1, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
+    (2,  'Report for patient Michael Johnson UID-1003 is available. Date created: Mar 22, 2023, 4:45 PM', 2, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
+    (3,  'Report for patient David Wilson UID-1005 is available. Date created: May 31, 2023, 10:15 AM', 3, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
+    (4,  'Report for patient Robert Anderson UID-1007 is available. Date created: Jul 12, 2023, 12:45 PM', 4, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
+    (5,  'Report for patient James Thomas UID-1009 is available. Date created: Sep 22, 2023, 3:15 PM', 5, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
+    (6,  'Report for patient Alice Brown UID-1011 is available. Date created: Nov 6, 2023, 2:00 PM', 6, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
+    (7,  'Report for patient Sophia Lewis UID-1013 is available. Date created: Nov 21, 2023, 9:30 AM', 7, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
+    (8,  'Report for patient Olivia Hall UID-1015 is available. Date created: Dec 2, 2023, 10:00 AM', 8, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
+    (9,  'Report for patient Emma Young UID-1017 is available. Date created: Dec 16, 2023, 11:00 AM', 9, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa'),
+    (10, 'Report for patient Ava Wright UID-1019 is available. Date created: Jan 6, 2024, 9:15 AM', 10, 0, N'a72ec20d-96b2-4fd1-852a-d43e4548c2fa');
+SET IDENTITY_INSERT [Notifications] OFF;
 
 ALTER TABLE [AspNetUsers] CHECK CONSTRAINT ALL;
 ALTER TABLE [LabRequests] CHECK CONSTRAINT ALL;
